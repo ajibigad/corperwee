@@ -1,0 +1,21 @@
+<!--This would be used to display error message and is configurable like the java erro dialog box-->
+<!--<div class="modal fade" tabindex="-1" role="dialog">-->
+    <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+            <!---->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<div class="modal-header alert alert-block" ng-class="{ 'alert-danger' : alertType < 0, 'alert-info' : alertType == 0, 'alert-success' : alertType > 0 }">
+    <h4 class="modal-title"><span ng-class="{ 'glyphicon-warning-sign' : alertType < 0, 'glyphicon-info-sign' : alertType == 0, 'glyphicon-ok-sign' : alertType > 0}" class="glyphicon"></span>{{alertTitle}}</h4>
+</div>
+<div class="modal-body">
+    <h4 class="text-center" ng-class="{'text-danger' : alertType < 0, 'text-info' : alertType == 0, 'text-success' : alertType > 0}">
+        {{alertMessage}}
+    </h4>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-block" type="button" ng-click="ok()" ng-class="{'btn-danger' : alertType < 0, 'btn-primary' : alertType == 0, 'btn-success' : alertType >0}">{{okMessage}}</button>
+    <!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+</div>

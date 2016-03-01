@@ -1,0 +1,93 @@
+<div class="row">
+    <div class="col-xs-1 col-lg-2"></div>
+    <div class="col-xs-10 col-lg-8">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{user.username}}'s Profile</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <a href="#" class="thumbnail">
+                            <img src="https://placeholdit.imgix.net/~text?txtsize=16&bg=118800&txt=171%C3%97171&w=171&h=171" alt="...">
+                        </a>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{user.username}}'s Details</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Username:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.username}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">FirstName:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.firstname}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">LastName:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.lastname}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Email:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.email}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><span class="text-nowrap">Phone Number:</span></label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.phoneNumber}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">State Code:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.stateCode}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">State:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.state | uppercase}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">L.G.A:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.lga | uppercase}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Town:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.town | uppercase}}</p>
+                                        </div>
+                                    </div>
+                                    <!--<div class="form-group">-->
+                                        <!--<label for="inputPassword" class="col-sm-2 control-label">Password</label>-->
+                                        <!--<div class="col-md-9">-->
+                                            <!--<input type="password" class="form-control" id="inputPassword" placeholder="Password">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                </form>
+                                <!--<pre>{{user | json}}</pre>-->
+                                <a class="btn btn-primary" ui-sref="corperwee.updateProfile({username : user.username})" ng-show="updateButton">Update Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-1 col-lg-2"></div>
+</div>

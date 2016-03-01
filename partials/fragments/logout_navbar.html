@@ -1,0 +1,382 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- i need to fix this nav brand and the toggle button to work and display as appropriate on a mobile view-->
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img src="img/logo.png" alt="Your Logo"></a>
+        </div>
+
+        <!--<a class="navbar-brand" href="#"><img src="images/logo.png" alt="Your Logo"></a>-->
+        <div class="collapse navbar-collapse  navbar-responsive-collapse" id="main-navbar">
+            <form class="navbar-form navbar-right">
+                <div class="form-inline">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signInModal">SIGN
+                        IN
+                    </button>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#signUpModal">
+                        SIGN UP
+                    </button>
+                    <button type="button" class="btn btn-warning" ng-click="sayHello()">Say Happy Hello</button>
+                </div>
+            </form>
+
+            <!-- Sign In Modal -->
+            <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" ng-controller="SignInController">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="signInModalLabel">LOGIN IN</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div ng-show="invalidLogin" class="alert alert-danger fade in">
+                                <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                                <h4>Invalid Username/Password</h4>
+                            </div>
+                            <form name="signInForm" novalidate>
+                                <div class="form-horizontal">
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signInForm.username.$dirty && signInForm.username.$invalid, 'has-success' : signInForm.username.$dirty && signInForm.username.$valid}">
+                                        <label for="signin.username" class="col-xs-2">Username</label>
+
+                                        <div class="col-xs-10">
+                                            <input autocomplete="false" value="" name="username" ng-required="true"
+                                                   ng-minlength="4" ng-maxlength="20" type="text" class="form-control"
+                                                   id="signin.username" placeholder="Username" ng-model="user.username">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.username.$dirty && signInForm.username.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.username.$dirty && signInForm.username.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.username.$dirty && signInForm.username.$error.required">UserName cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.username.$dirty && signInForm.username.$error.minlength">UserName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.username.$dirty && signInForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signInForm.password.$dirty && signInForm.password.$invalid, 'has-success' : signInForm.password.$dirty && signInForm.password.$valid}">
+                                        <label for="signin.password" class="col-xs-2">Password</label>
+
+                                        <div class="col-xs-10">
+                                            <input autocomplete="false" value="" name="password" ng-required="true"
+                                                   ng-minlength="8" ng-maxlength="20" type="password"
+                                                   class="form-control" id="signin.password" placeholder="Password"
+                                                   ng-model="user.password">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.password.$dirty && signInForm.password.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.password.$dirty && signInForm.password.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.password.$dirty && signInForm.password.$error.required">Password cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.password.$dirty && signInForm.password.$error.minlength">Password must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.password.$dirty && signInForm.password.$error.maxlength">Password must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <pre>{{user | json}}</pre>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- end model body -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-block" ng-disabled="signInForm.$invalid"
+                                    id="signIn-btn" ng-click="signIn()" ladda="signInLoading" data-style="expand-right">Sign In
+                            </button>
+                            <button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sign Up Modal -->
+            <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" ng-controller="SignUpController">
+                        <!-- the sign up controller would stay here -->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="signUpModalLabel">Please Fill your Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form name="signUpForm" novalidate>
+                                <div ng-show="failedSignUp" class="alert alert-danger fade in" id="signupfailurealert">
+                                    <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                                    <h4>{{errorMessage}}</h4>
+                                </div>
+                                <div class="form-horizontal">
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.firstname.$dirty && signUpForm.firstname.$invalid, 'has-success' : signUpForm.firstname.$dirty && signUpForm.firstname.$valid}">
+                                        <label for="signup.firstname" class="col-xs-2">First Name</label>
+
+                                        <div class="col-xs-10">
+                                            <input type="text" name="firstname" ng-required="true" ng-minlength="2"
+                                                   ng-maxlength="20" class="form-control" id="signup.firstname"
+                                                   placeholder="First Name" ng-model="newUser.firstname">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.firstname.$dirty && signUpForm.firstname.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.firstname.$dirty && signUpForm.firstname.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.firstname.$dirty && signUpForm.firstname.$error.required">Firstname cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.firstname.$dirty && signUpForm.firstname.$error.minlength">FirstName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.firstname.$dirty && signUpForm.firstname.$error.maxlength">Firstname must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.lastname.$dirty && signUpForm.lastname.$invalid, 'has-success' : signUpForm.lastname.$dirty && signUpForm.lastname.$valid}">
+                                        <label for="signup.lastname" class="col-xs-2">Last Name</label>
+
+                                        <div class="col-xs-10">
+                                            <input name="lastname" ng-required="true" ng-minlength="5" ng-maxlength="20"
+                                                   type="text" class="form-control" id="signup.lastname"
+                                                   placeholder="Last Name" ng-model="newUser.lastname">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.lastname.$dirty && signUpForm.lastname.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.lastname.$dirty && signUpForm.lastname.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.lastname.$dirty && signUpForm.lastname.$error.required">LastName cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.lastname.$dirty && signUpForm.lastname.$error.minlength">LastName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.lastname.$dirty && signUpForm.lastname.$error.maxlength">Lasttname must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.username.$dirty && signUpForm.username.$invalid, 'has-success' : signUpForm.username.$dirty && signUpForm.username.$valid}">
+                                        <label for="signup.username" class="col-xs-2">Username</label>
+
+                                        <div class="col-xs-10">
+                                            <input name="username" ng-required="true" ng-minlength="5" ng-maxlength="20"
+                                                   type="text" class="form-control" id="signup.username"
+                                                   placeholder="Username" ng-model="newUser.username">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.username.$dirty && signUpForm.username.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.username.$dirty && signUpForm.username.$error.required">UserName cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.username.$dirty && signUpForm.username.$error.minlength">UserName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.username.$dirty && signUpForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.password.$dirty && signUpForm.password.$invalid, 'has-success' : signUpForm.password.$dirty && signUpForm.password.$valid}">
+                                        <label for="signup.password" class="col-xs-2">Password</label>
+
+                                        <div class="col-xs-10">
+                                            <input name="password" ng-required="true" ng-minlength="8" ng-maxlength="20"
+                                                   type="password" class="form-control" id="signup.password"
+                                                   placeholder="Password" ng-model="newUser.password">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.password.$dirty && signUpForm.password.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.password.$dirty && signUpForm.password.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.password.$dirty && signUpForm.password.$error.required">Password cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.password.$dirty && signUpForm.password.$error.minlength">Password must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.password.$dirty && signUpForm.password.$error.maxlength">Password must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.confirmPassword.$dirty && (signUpForm.confirmPassword.$invalid || !(newUser.confirmPassword == newUser.password)), 'has-success' : signUpForm.confirmPassword.$dirty && signUpForm.confirmPassword.$valid && (newUser.confirmPassword == newUser.password)}">
+                                        <label for="signup.confirmPassword" class="col-xs-2">Confirm Password</label>
+
+                                        <div class="col-xs-10">
+                                            <input name="confirmPassword" ng-required="true" ng-minlength="8"
+                                                   ng-maxlength="20" type="password" class="form-control"
+                                                   id="signup.confirmPassword" placeholder="Confirm Password"
+                                                   ng-model="newUser.confirmPassword">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.confirmPassword.$dirty && signUpForm.confirmPassword.$valid && (newUser.confirmPassword == newUser.password)"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.confirmPassword.$dirty && (signUpForm.confirmPassword.$invalid || !(newUser.confirmPassword == newUser.password))"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.confirmPassword.$dirty && signUpForm.confirmPassword.$error.required">Password cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.confirmPassword.$dirty && signUpForm.confirmPassword.$error.minlength">Password must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.confirmPassword.$dirty && signUpForm.confirmPassword.$error.maxlength">Password must not exceed 20 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.confirmPassword.$dirty && !signUpForm.confirmPassword.$error.required && !signUpForm.confirmPassword.$error.maxlength && !signUpForm.confirmPassword.$error.minlength && !(newUser.confirmPassword == newUser.password)">Password does not match</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.email.$dirty && signUpForm.email.$invalid, 'has-success' : signUpForm.email.$dirty && signUpForm.email.$valid}">
+                                        <label for="signup.email" class="col-xs-2">Email Address</label>
+
+                                        <div class="col-xs-10">
+                                            <input name="email" type="email" ng-required="true" required="true"
+                                                   class="form-control" id="signup.email"
+                                                   placeholder="Email Address" ng-model="newUser.email">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.email.$dirty && signUpForm.email.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.email.$dirty && signUpForm.email.$error.required">Email cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.email.$dirty && signUpForm.email.$error.email">Invalid Email</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.phoneNumber.$dirty && signUpForm.phoneNumber.$invalid, 'has-success' : signUpForm.phoneNumber.$dirty && signUpForm.phoneNumber.$valid}">
+                                        <label for="signup.phoneNumber" class="col-xs-2">Phone Number</label>
+
+                                        <div class="col-xs-10">
+                                            <input name="phoneNumber" type="tel" class="form-control"
+                                                   id="signup.phoneNumber" placeholder="Phone number here"
+                                                   ng-model="newUser.phoneNumber"
+                                                   ng-maxlength="11" ng-minlength="11" ng-pattern="phoneNumberRegex"
+                                                   required="true" ng-required="true">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.phoneNumber.$dirty && signUpForm.phoneNumber.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.phoneNumber.$dirty && signUpForm.phoneNumber.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.phoneNumber.$dirty && signUpForm.phoneNumber.$error.required">Phone number cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.phoneNumber.$dirty && signUpForm.phoneNumber.$invalid">Invalid Phone Number: Must be 11 digits</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : signUpForm.stateCode.$dirty && signUpForm.stateCode.$invalid, 'has-success' : signUpForm.stateCode.$dirty && signUpForm.stateCode.$valid}">
+                                        <label for="signup.stateCode" class="col-xs-2">State Code</label>
+
+                                        <div class="col-xs-10">
+                                            <input type="text" class="form-control" id="signup.stateCode"
+                                                   placeholder="State Code" ng-model="newUser.stateCode"
+                                                   ng-required="true" name="stateCode">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.stateCode.$dirty && signUpForm.stateCode.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signUpForm.stateCode.$dirty && signUpForm.stateCode.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signUpForm.stateCode.$dirty && signUpForm.stateCode.$error.required">State Code cannot be empty</span>
+                                            <!--<span class="help-block" ng-show="signUpForm.state.$dirty && signUpForm.state.$invalid">Invalid Phone Number: Must be 11 digits</span>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-inline" ng-form="locationDetails">
+                                        <div class="col-xs-4">
+                                            <div class="form-group">
+                                                <label for="signup.state">State</label>
+                                                <select name="state" id="signup.state" class="form-control"
+                                                        ng-model="newUser.state"
+                                                        <!--ng-options="state.name as state.name for state in states"-->
+                                                        <!--ng-required="true" -->
+                                                        required="true">
+                                                    <option value="" selected>Please select a State</option>
+                                                    <option value="lagos">Lagos</option>
+                                                    <option value="anambra">Anambra</option>
+                                                </select>
+                                                <span class="help-block text-danger"
+                                                      ng-show="signUpForm.state.$dirty && signUpForm.state.$error.required">Please a state must be selected</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <div class="form-group">
+                                                <label for="signup.lga">L.G.A</label>
+                                                <select name="lga" id="signup.lga" class="form-control"
+                                                        ng-model="newUser.lga" ng-required="true">
+                                                    <option value="">Please select a LGA</option>
+                                                    <option value="awka-south">Awka-South</option>
+                                                    <option value="awka-north">Awka-North</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <div class="form-group">
+                                                <label for="signup.town">Town</label>
+                                                <select id="signup.town" class="form-control" ng-model="newUser.town"
+                                                        name="town" ng-required="true">
+                                                    <option value="">Please select a Town</option>
+                                                    <option value="amawbia">AMAWBIA</option>
+                                                    <option value="unizik">UNIZIK</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- end col-xs-4 -->
+                                        <div class="has-error">
+                                            <span class="help-block text-center text-danger"
+                                                  ng-show="locationDetails.$dirty && locationDetails.$invalid">Please select all location options</span>
+                                        </div>
+                                    </div>
+                                    <!-- end form-inline -->
+                                    <div class="form-group">
+                                        <pre>{{newUser | json}}</pre>
+                                    </div>
+                                    <!--<div class="form-group col-xs-2">-->
+                                    <!--<button type="submit" class="btn btn-primary"  id="signup-btn">Sign Up</button>-->
+                                    <!--</div>-->
+                                    <!--<button type="submit" class="btn btn-primary btn-block"  ng-disabled="signUpForm.$invalid" id="signup-btn-footer">Sign Up</button>-->
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-block" ng-disabled="signUpForm.$invalid"
+                                    id="signup-btn" ng-click="signUp()" ladda="signUpLoading" data-style="expand-right">Sign Up
+                            </button>
+                            <button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
+                            <!--<button type="button" class="btn btn-primary">Sign Up</button>-->
+                        </div>
+                    </div>
+                    <!-- modal content and form controller end here-->
+                </div>
+            </div>
+            <!-- End Sign Up Modal -->
+        </div>
+        <!-- end navbar collapse-->
+    </div>
+    <!-- nav fluid container -->
+</nav><!-- end navbar -->

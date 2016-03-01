@@ -1,0 +1,234 @@
+/* Navbar */
+
+ul.nav.navbar-nav a {
+	color: #000000;
+}
+
+/*#main-navbar {*/
+	/*background-color: #E8E8E8;*/
+/*}*/
+
+a.navbar-brand {
+	background-color: #080808;
+	margin-right: 1px;
+	width: 104px;
+}
+
+/*End NavBar styling*/
+
+/*Global Styles*/
+
+.alert {
+	/*margin-top: 20px;*/
+	/*display: none;*/
+}
+
+.btn-default {
+	background-color: #000000;
+	color: white;
+}
+
+.glyphicon {
+	margin-right: 5px;
+}
+
+
+/*li.active {*/
+	/*background-color: #D1D1D1;*/
+/*}*/
+
+#searchBar{
+	width: 200px;
+	margin: 0px;
+	display: inline;
+}
+
+/*End Global Style*/
+
+/* Typography */
+
+body{
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizelegibility;
+}
+
+#myCarousel {
+	margin-top: 52px;
+}
+
+.carousel-caption{
+	font-size: 24px;
+}
+
+.carousel-caption h4{
+	font-size: 32px;
+}
+
+#bigCallout {
+	margin-top: 10px;
+}
+
+.well .page-header{
+	margin-top: 0px;
+}
+
+.well .page-header h1{
+	margin-top: 0px;
+}
+
+#navtabs li {
+	text-align: center;
+}
+
+/* End Typography */
+
+/* Layout */
+
+#reviews {
+	text-align: center;
+}
+
+#reviews img{
+	margin-bottom: 10px;
+}
+
+#tab-image {
+	margin-right: 10px;
+}
+
+#feedback-btn-div{
+	padding-right: 0px;
+	border-right: 0px;
+}
+
+.thumbnail {
+	position: relative;
+}
+
+.thumbnail .price{
+	font-size: 20px;
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	padding: 10px;
+}
+
+footer {
+	background: #333;
+	color: #eee;
+	font-size: 11px;
+	padding: 20px;
+}
+
+/*End Layout*/
+
+/*UI styling*/
+
+#myCarousel .item{
+	height: 400px;
+	background-size: 100% auto;
+}
+
+#slide-1 {
+	background: url("../img/carousel-image%201_resized.jpg") no-repeat top center;
+	background-size: contain;
+}
+
+#slide-2 {
+	background: url("../img/carousel-image%202.jpg") no-repeat top center;
+}
+
+#slide-3 {
+	background: url("../img/carousel-image%203.jpg") no-repeat top center;
+}
+
+.item {
+
+}
+
+/*End UI styling*/
+
+/*Media Queries*/
+
+/*Screen size for mobile phones  <= 480px*/
+@media (max-width: 480px) {
+
+	#myCarousel .item{
+		height: 200px;
+	}
+
+	.carousel-caption{
+		font-size: 12px;
+	}
+
+	.carousel-caption h4{
+		font-size: 16px;
+	}
+
+	.thumbnail .price{
+		font-size: 14px;
+		padding: 5px;
+	}
+
+	.thumbnail .price sup{
+		font-size: 10px;
+	}
+}
+
+/* Btw 480px and 767px*/
+@media (min-width: 480px) {
+
+	#myCarousel .item{
+		height: 250px;
+	}
+
+	.carousel-caption{
+		font-size: 15px;
+	}
+
+	.carousel-caption h4{
+		font-size: 19px;
+	}
+}
+
+ /*Tablets Size >= 768px*/
+@media (min-width: 768px) {
+	#myCarousel .item{
+		height: 300px;
+	}
+
+	.carousel-caption{
+		font-size: 19px;
+	}
+
+	.carousel-caption h4{
+		font-size: 23px;
+	}
+}
+
+@media (min-width: 1200px) {
+	#myCarousel .item{
+		height: 400px;
+	}
+
+	.carousel-caption{
+		font-size: 24px;
+	}
+
+	.carousel-caption h4{
+		font-size: 32px;
+	}
+}
+
+/* End Media Queries*/
+
+.nojs {
+	padding: 2px;
+	padding-left: 6px;
+	margin-bottom: 5px;
+	background: #ff0000;
+	color: #ffffff;
+	font-size: 15px;
+	border: 1px solid #ff0000;
+	border-radius: 5px;
+}

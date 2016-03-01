@@ -1,0 +1,192 @@
+<div class="row">
+    <div class="col-xs-1 col-lg-2"></div>
+    <div class="col-xs-10 col-lg-8">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">Update {{user.username}}'s Profile</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <a href="#" class="thumbnail">
+                            <img src="https://placeholdit.imgix.net/~text?txtsize=16&bg=118800&txt=171%C3%97171&w=171&h=171" alt="...">
+                        </a>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{user.username}}'s Details</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form name="updateForm" class="form-horizontal" novalidate>
+                                    <div ng-show="failedUpdate" class="alert alert-danger fade in" id="updatefailurealert">
+                                        <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                                        <h4>{{errorMessage}}</h4>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Username:</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{user.username}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : updateForm.firstname.$dirty && updateForm.firstname.$invalid, 'has-success' : updateForm.firstname.$dirty && updateForm.firstname.$valid}">
+                                        <label class="col-md-3 control-label">FirstName:</label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="firstname" ng-required="true" ng-minlength="2"
+                                                   ng-maxlength="20" class="form-control" id="update.firstname"
+                                                   placeholder="First Name" ng-model="user.firstname">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.firstname.$dirty && updateForm.firstname.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.firstname.$dirty && updateForm.firstname.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.firstname.$dirty && updateForm.firstname.$error.required">Firstname cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.firstname.$dirty && updateForm.firstname.$error.minlength">FirstName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.firstname.$dirty && updateForm.firstname.$error.maxlength">Firstname must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : updateForm.lastname.$dirty && updateForm.lastname.$invalid, 'has-success' : updateForm.lastname.$dirty && updateForm.lastname.$valid}">
+                                        <label class="col-md-3 control-label">LastName:</label>
+
+                                        <div class="col-md-9">
+                                            <input name="lastname" ng-required="true" ng-minlength="5" ng-maxlength="20"
+                                                   type="text" class="form-control" id="update.lastname"
+                                                   placeholder="Last Name" ng-model="user.lastname">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.lastname.$dirty && updateForm.lastname.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.lastname.$dirty && updateForm.lastname.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.lastname.$dirty && updateForm.lastname.$error.required">LastName cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.lastname.$dirty && updateForm.lastname.$error.minlength">LastName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.lastname.$dirty && updateForm.lastname.$error.maxlength">Lasttname must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : updateForm.email.$dirty && updateForm.email.$invalid, 'has-success' : updateForm.email.$dirty && updateForm.email.$valid}">
+                                        <label class="col-md-3 control-label">Email:</label>
+
+                                        <div class="col-md-9">
+                                            <input name="email" type="email" ng-required="true" required="true"
+                                                   class="form-control" id="update.email"
+                                                   placeholder="Email Address" ng-model="user.email">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.email.$dirty && updateForm.email.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.email.$dirty && updateForm.email.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.email.$dirty && updateForm.email.$error.required">Email cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.email.$dirty && updateForm.email.$error.email">Invalid Email</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : updateForm.phoneNumber.$dirty && updateForm.phoneNumber.$invalid, 'has-success' : updateForm.phoneNumber.$dirty && updateForm.phoneNumber.$valid}">
+                                        <label class="col-md-3 control-label"><span class="text-nowrap">Phone Number:</span></label>
+
+                                        <div class="col-md-9">
+                                            <input name="phoneNumber" type="tel" class="form-control"
+                                                   id="update.phoneNumber" placeholder="Phone number here"
+                                                   ng-model="user.phoneNumber"
+                                                   ng-maxlength="11" ng-minlength="11"
+                                                   required="true" ng-required="true" ng-pattern="phoneNumberRegex">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.phoneNumber.$dirty && updateForm.phoneNumber.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.phoneNumber.$dirty && updateForm.phoneNumber.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.phoneNumber.$dirty && updateForm.phoneNumber.$error.required">Phone number cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.phoneNumber.$dirty && updateForm.phoneNumber.$invalid">Invalid Phone Number: Must be 11 digits</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : updateForm.stateCode.$dirty && updateForm.stateCode.$invalid, 'has-success' : updateForm.stateCode.$dirty && updateForm.stateCode.$valid}">
+                                        <label class="col-md-3 control-label">State Code:</label>
+
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="update.stateCode"
+                                                   placeholder="State Code" ng-model="user.stateCode"
+                                                   ng-required="true" name="stateCode">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.stateCode.$dirty && updateForm.stateCode.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="updateForm.stateCode.$dirty && updateForm.stateCode.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="updateForm.stateCode.$dirty && updateForm.stateCode.$error.required">State Code cannot be empty</span>
+                                            <!--<span class="help-block" ng-show="updateForm.state.$dirty && updateForm.state.$invalid">Invalid Phone Number: Must be 11 digits</span>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label class="col-md-3 control-label">State:</label>
+                                        <div class="col-md-9">
+                                            <select name="state" id="update.state" class="form-control"
+                                                    ng-model="user.state"
+                                            ng-required="true"><!--ng-options="state.name as state.name for state in states"-->
+                                            <option value="" selected>Please select a State</option>
+                                            <option value="lagos">Lagos</option>
+                                            <option value="anambra">Anambra</option>
+                                            </select>
+                                                <span class="help-block text-danger"
+                                                      ng-show="updateForm.state.$dirty && updateForm.state.$error.required">Please a state must be selected</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label class="col-md-3 control-label">L.G.A:</label>
+                                        <div class="col-md-9">
+                                            <select name="lga" id="update.lga" class="form-control"
+                                                    ng-model="user.lga" ng-required="true">
+                                                <option value="">Please select a LGA</option>
+                                                <option value="awka-south">Awka-South</option>
+                                                <option value="awka-north">Awka-North</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label class="col-md-3 control-label">Town:</label>
+                                        <div class="col-md-9">
+                                            <select id="update.town" class="form-control" ng-model="user.town"
+                                                    name="town" ng-required="true">
+                                                <option value="">Please select a Town</option>
+                                                <option value="amawbia">AMAWBIA</option>
+                                                <option value="unizik">UNIZIK</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!--<pre>{{user | json}}</pre>-->
+                                <a class="btn btn-primary" ng-disabled="updateForm.$invalid" id="update-btn" ng-click="update()"
+                                   ladda="updateLoading" data-style="expand-right">
+                                    {{updateButtonText}}
+                                </a>
+                                <button class="btn btn-success" ng-click="reset()">Reset Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-1 col-lg-2"></div>
+</div>
