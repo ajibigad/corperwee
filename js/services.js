@@ -50,24 +50,19 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
                 //    return data;
                 //});
                 auth.getUserDetails(username);
-                console.log((auth.userDetails ? auth.userDetails.username : "undefinedee") + " found in login api");
-                console.log(auth.user);
-                console.log(auth.userDetails);
                 $cookieStore.put('user', auth.user);
                 //$cookieStore.put('userDetails', auth.userDetails); // this allows us to make this call only once
                 return auth.user;
-            }, function(response){console.log("falied login"); return $q.reject(response)});
+            }, function(response){ return $q.reject(response)});
         };
         auth.logout = function () {
             return $http.get(appEndpoints.LOGOUT_ENDPOINT).then(function (response) {
-                console.log('logging out........');
                 auth.user = undefined;
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
                 $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
             }, function (response) {//just temp hack till i fix logout on server or client side
-                console.log('logging out even with error happening........');
                 auth.user = undefined;
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
@@ -94,7 +89,6 @@ angular.module('myApp.services')
               getUserDetails : function (username) {
                   //use http to fetch user object for the userName
                   return $http.get(appEndpoints.USER_ENDPOINT + "/" + username).then(function (response) {
-                      console.log(response.data.username + " found in user service");
                       return response.data;
                   }, function (response) {
                       return $q.reject(response.data); // this should be an error object, error.message should return the error message
@@ -102,7 +96,6 @@ angular.module('myApp.services')
               },
               updateUserDetails : function (user) {
                   return $http.put(appEndpoints.USER_ENDPOINT, user).then(function (response) {
-                      console.log(response.data.username + " user updated in user service");
                       return response.data;
                   }, function (response) {
                       return $q.reject(response.data); // this should be an error object, error.message should return the error message
@@ -118,7 +111,6 @@ angular.module('myApp.services')
         var getAllCategories = function () {
             $http.get(appEndpoints.CATOGORY_ENDPOINT).then(function (response) {
                 self.allCategories = response.data;
-                console.log(JSON.stringify(self.allCategories));
                 $rootScope.$broadcast('categoryService:changed', self.allCategories);
             }, function (response) {
                 alert("Error in Fetching Categories");

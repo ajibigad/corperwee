@@ -74,8 +74,6 @@ angular.module('myApp', [
 
         authService.user = $cookieStore.get('user'); //in case of a page refresh
         authService.userDetails = $cookieStore.get('userDetails');
-        console.log(authService.user);
-        console.log(authService.userDetails);
         //$http.defaults.headers.common.Authorization = "Basic " + btoa("user" + ":" + "password");
     }]
 );

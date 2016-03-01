@@ -4,17 +4,12 @@
 
 angular.module('myApp.controllers', []).
     controller('MainController', ['authService', '$rootScope', '$scope', '$state', 'userService', 'categoryService', function (authService, $rootScope, $scope, $state, userService, categoryService) {
-        console.log(authService.userDetails);
-        //$scope.authServiceUser = authService.user;
         $scope.currentUser = authService.userDetails;
         $scope.logout = function () {
             authService.logout().then(function () {
-                console.log('logging out dick.....');
-                //$scope.current_username = null;
                 $state.go('welcome');
             }, function () {
                 //show alert to say error occurred during logout
-                console.log('logging out failed.....');
                 $state.go('welcome'); //just temp hack till i fix logout on server side
             }, function () {
                 console.log('still trying to logout... pls endure');
@@ -22,7 +17,6 @@ angular.module('myApp.controllers', []).
         };
         $scope.sayHello = function () {
             userService.sayHello('').then(function (response) {
-                console.log("it worked men");
                 alert(response.data);
             }, function (response) {
                 console.log(response.status);
@@ -30,7 +24,6 @@ angular.module('myApp.controllers', []).
             });
         };
         $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
-            console.log("logger got called");
             $scope.currentUser = newUserDetails;
             $rootScope.title = "NYSC - Home";
             $rootScope.logged_in = true; //this should be set by the authService
@@ -46,8 +39,6 @@ angular.module('myApp.controllers', []).
         $rootScope.navbar_url = 'partials/fragments/logout_navbar.html';
     }])
     .controller('CorperWeeCtrl', ['$rootScope', '$scope', 'authService', 'userService', function ($rootScope, $scope, authService, userService) {
-        //$scope.current_user = userService.currentUser;
-        //console.log(currentUser);
         $rootScope.title = "NYSC - Home";
         $rootScope.logged_in = true; //this should be set by the authService
         $rootScope.style = 'dashboard.css';
@@ -58,10 +49,7 @@ angular.module('myApp.controllers', []).
         $scope.searchLoading = false;
         $scope.showSearchFilter = false;
         $scope.categories = categoryService.allCategories;
-        console.log(categoryService.allCategories);
-        console.log("all categories");
         if(authService.userDetails){// for cases of a page refresh
-            console.log(authService); console.log("inside if statement");
             $scope.searchParams = {
                 state : authService.userDetails.state,
                 lga : authService.userDetails.lga,
@@ -70,7 +58,6 @@ angular.module('myApp.controllers', []).
         }
 
         $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
-            console.log("inside event listener");
             $scope.searchParams = {
                 state : newUserDetails.state,
                 lga : newUserDetails.lga,
@@ -94,8 +81,6 @@ angular.module('myApp.controllers', []).
             $scope.signUpLoading = true;
             //this should be called after a successful login
             signUpService.signUp(newUser).then(function (response) {
-                //newUser = response.data;
-                console.log(response.data);
                 authService.login(newUser.username, newUser.password).then(function (data) {
                     //direct to home page
                     $scope.signUpLoading = false;
@@ -125,7 +110,6 @@ angular.module('myApp.controllers', []).
         var getStates = function () {
             nigStatesService.getAllStates().then(function (response) {
                 $scope.states = response.data;
-                console.log($scope.states.size());
             }, function (response) {
                 var errorMessage = "Failed to fetch states";
                 //switch (response.status){
@@ -152,7 +136,6 @@ angular.module('myApp.controllers', []).
                 //direct to home page
                 //this should be called after a successful login
                 $scope.signInLoading = false;
-                console.log('login y?');
                 $('#signInModal').on('hide.bs.modal', function (e) {
                     $state.go('corperwee.home');
                 }).modal('hide');
@@ -168,7 +151,6 @@ angular.module('myApp.controllers', []).
                 alertModalService.modalTemplateOptions.title = "Sign In Error!!!";
                 alertModalService.modalTemplateOptions.message = errorMessage;
                 alertModalService.showErrorAlert();
-                console.log("login failed.......");
                 response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;
             });
         };
@@ -190,7 +172,6 @@ angular.module('myApp.controllers', []).
     .controller('ViewProfileCtrl', function ($stateParams, $scope, authService, userService) {
         var username = $stateParams.username;
         $scope.updateButton = false;
-        console.log(username + " in view profile");
         if(username === authService.userDetails.username){ //i can use the currentUser from the parent scope but this is safer
             $scope.user = authService.userDetails;
             $scope.updateButton = true;
@@ -207,7 +188,6 @@ angular.module('myApp.controllers', []).
         var username = $stateParams.username;
         var buttonDefault = "Update Profile";
         var buttonLoading = "Updating.......";
-        console.log(username + " in update profile");
         $scope.failedUpdate = false;
         $scope.phoneNumberRegex = /\d{11}/;
         $scope.updateButtonText = buttonDefault;
@@ -220,7 +200,6 @@ angular.module('myApp.controllers', []).
                 message : "Please you dont have permission to update user : " + username + "'" + "s Profile. Click <a ui-sref='corperwee.viewProfile({username : user.username})'>here</a> to view his/her profile"
             };
             //alertModalService.showErrorAlert(modalTemplateOptions);
-            //console.log($state.current);
             $state.go('corperwee.viewProfile', {
                 username: authService.userDetails.username
             });
@@ -235,7 +214,7 @@ angular.module('myApp.controllers', []).
                 $scope.updateLoading = false;
                 $scope.alertUpdateResult(false);
             }
-            else{console.log("update service called");
+            else{
                 userService.updateUserDetails($scope.user).then(function (data) {
                     $scope.updateButtonText = buttonDefault;
                     $scope.updateLoading = false;
