@@ -47,6 +47,11 @@ angular.module('myApp', [
                 controller: 'HomeController',
                 templateUrl: 'partials/fragments/home.html'
             })
+            .state('corperwee.home.searchResults',{
+                url: '/searchResults',
+                //controller: '',
+                templateUrl: 'partials/fragments/search_results.html'
+            })
             .state('corperwee.viewProfile', {
                 url: '/viewProfile/:username',
                 controller: 'ViewProfileCtrl',

@@ -44,10 +44,11 @@ angular.module('myApp.controllers', []).
         $rootScope.style = 'dashboard.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
     }])
-    .controller('HomeController', function ($scope, authService, categoryService) {
+    .controller('HomeController', function ($scope, authService, categoryService, $state) {
         $scope.searchBtnText = "Search";
         $scope.searchLoading = false;
         $scope.showSearchFilter = false;
+        $scope.searchResults = [];
         $scope.categories = categoryService.allCategories;
         if(authService.userDetails){// for cases of a page refresh
             $scope.searchParams = {
@@ -71,7 +72,9 @@ angular.module('myApp.controllers', []).
 
         $scope.toggleFilterShow = function () {
             $scope.showSearchFilter = $scope.showSearchFilter ? false : true;
-        }
+        };
+
+        $state.go('corperwee.home.searchResults');
     })
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService) {
         $scope.newUser = {};
