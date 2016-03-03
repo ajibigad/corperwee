@@ -91,6 +91,7 @@ angular.module('myApp', [
 
         authService.user = $cookieStore.get('user'); //in case of a page refresh
         authService.userDetails = $cookieStore.get('userDetails');
+        $rootScope.$broadcast('authService:changed', authService.user, authService.userDetails);
     }]
 );
 

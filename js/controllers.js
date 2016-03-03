@@ -44,39 +44,67 @@ angular.module('myApp.controllers', []).
         $rootScope.style = 'dashboard.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
     }])
-    .controller('HomeController', function ($scope, authService, categoryService, $state) {
-        $scope.searchBtnText = "Search";
+    .controller('HomeController', function ($scope, authService, categoryService, $state, placeService) {
+        var defaultButtonTxt = "Search";
+        var pageNumber = 0; // to be increased by load more results function
+        var pageSize = 2;
+        $scope.lastPage = false;
+        $scope.searchBtnText = defaultButtonTxt;
         $scope.searchLoading = false;
         $scope.showSearchFilter = false;
         $scope.searchResults = [];
+        $scope.sortingProperties = ["name", "rating", "addedBy"];
         $scope.categories = categoryService.allCategories;
-        if(authService.userDetails){// for cases of a page refresh
-            $scope.searchParams = {
-                state : authService.userDetails.state,
-                lga : authService.userDetails.lga,
-                town : authService.userDetails.town
-            };
-        }
+        $scope.searchParams = angular.copy(placeService.searchParams);
+        $scope.fetchResults = function () {
+            $scope.searchBtnText = "Searching";
+            $scope.searchLoading = true;
+            placeService.getPagedPlaces($scope.searchParams).then(function (data) {
+                $scope.searchResults = data.content;
+                pageNumber++;
+                $scope.lastPage = data.last;
+            }, function(){
+                //alert error that occurred
+                alert("Error in fetching places");
+            }).finally(function () {
+                $scope.searchBtnText = defaultButtonTxt;
+                $scope.searchLoading = false;
+            });
+        };
+        var resetSearchParams = function (userDetails) {
+            $scope.searchParams.state = userDetails.state;
+            $scope.searchParams.lga = userDetails.lga;
+            $scope.searchParams.town = userDetails.town;
+            $scope.searchParams.sortingProperty = $scope.sortingProperties[1];
+            $scope.searchParams.sortingOrder = placeService.sortingOrders.DESC;
+            $scope.searchParams.pageNumber = pageNumber;
+            $scope.searchParams.pageSize = pageSize;
+            console.log(JSON.stringify($scope.searchParams));
+            console.log("in reset baba!!!!!!!!!");
+            $scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
+        };
 
         $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
             if(newUserDetails){
-                $scope.searchParams = {
-                    state : newUserDetails.state,
-                    lga : newUserDetails.lga,
-                    town : newUserDetails.town
-                };
+                resetSearchParams(newUserDetails);
             }
 
         }, true);
 
+        if(authService.userDetails){// for cases of a page refresh
+            resetSearchParams(authService.userDetails);
+        }
+
         $scope.$on('categoryService:changed', function (event, categories) {
             $scope.categories = categories;
+            $scope.searchParams.category = $scope.categories[0];
         });
 
         $scope.toggleFilterShow = function () {
             $scope.showSearchFilter = $scope.showSearchFilter ? false : true;
         };
 
+        $scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
         $state.go('corperwee.home.searchResults');
     })
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService) {
@@ -255,6 +283,7 @@ angular.module('myApp.controllers', []).
         $scope.failedAction = false;
         $scope.place = {};
         $scope.addPlaceButtonText = defaultButtonText;
+        $scope.phoneNumberRegex = /\d{11}/;
         $scope.categories = categoryService.allCategories;
         $scope.$on('categoryService:changed', function (event, categories) {
             $scope.categories = categories;

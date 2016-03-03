@@ -6,20 +6,26 @@
                     <img src="http://placehold.it/82x82&text=N/A" alt="" class="thumbnail"/>
                 </div>
                 <div class="ratings">
-                    <strong>Ratings :</strong> Stars would stay here then a border next
+                    <strong>Ratings :</strong>
+                    <span class="glyphicon glyphicon-star"></span>
+                    <span class="glyphicon glyphicon-star"></span>
+                    <span class="glyphicon glyphicon-star"></span>
+                    <span class="glyphicon glyphicon-star"></span>
+                    <span class="glyphicon glyphicon-star"></span>
                 </div>
                 <span class="divider"></span>
             </div>
             <div class="col-xs-8">
-                <div><strong>Name :</strong> Kolawole And Sons</div>
-                <div><strong>Added by :</strong><a href="" ui-sref="corperwee.viewProfile({username : ajibigad})"></a>ajibigad</div>
-                <div><strong>Added on :</strong> date...</div>
+                <div><strong>Name : </strong>{{result.name}}</div>
+                <div><strong>Added by : </strong><a href="" ui-sref="corperwee.viewProfile({username : result.addedBy.username})">{{result.addedBy.username}}</a></div>
+                <div><strong>Added on : </strong>{{result.dateAdded | date : 'medium'}}</div>
+                <div><strong>Category : </strong>{{result.category.description}}</div>
                 <div>
-                    <a ng-href="" class="btn btn-default btn-xs btn-info">Get Direction</a>
+                    <a  class="btn btn-default btn-xs btn-info">Get Direction</a>
                     <span class="divider"></span>
-                    <a ng-href="" class="btn btn-default btn-xs btn-info">View Reviewa</a>
+                    <a  class="btn btn-default btn-xs btn-info">View Reviewa</a>
                     <span class="divider"></span>
-                    <a ng-href="" class="btn btn-default btn-xs btn-info">Rate & Review</a>
+                    <a  class="btn btn-default btn-xs btn-info">Rate & Review</a>
                 </div>
             </div>
         </div>

@@ -134,7 +134,8 @@ angular.module('myApp.services')
             pageNumber : "",
             pageSize : "",
             sortingProperty : "",
-            sortingOrder : ""
+            sortingOrder : "",
+            category : ""
         };
 
         this.sortingOrders = {
@@ -143,7 +144,7 @@ angular.module('myApp.services')
         };
 
         this.getPagedPlaces = function(searchParams){
-            return $http.get(appEndpoints.PLACE_ENDPOINT + "/paged", searchParams).then(function(response){
+            return $http.post(appEndpoints.PLACE_ENDPOINT + "/town/paged", searchParams).then(function(response){
                 return response.data;
             });
         }

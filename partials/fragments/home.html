@@ -13,53 +13,64 @@
         </p>
     </div>
     <div class="col-lg-10">
-        <form class="form-inline" ng-submit="search()" name="searchForm">
-            <div class="form-group">
-                <label for="search.state">State</label>
-                <select id="search.state" class="form-control" ng-model="searchParams.state"
-                        name="state" ng-required="true">
-                    <option value="" selected>Please select a State</option>
-                    <option value="lagos">Lagos</option>
-                    <option value="anambra">Anambra</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="search.lga">L.G.A</label>
-                <select id="search.lga" class="form-control" ng-model="searchParams.lga"
-                        name="lga" ng-required="true">
-                    <option value="">Please select a LGA</option>
-                    <option value="awka-south">Awka-South</option>
-                    <option value="awka-north">Awka-North</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="search.town">Town</label>
-                <select id="search.town" class="form-control" ng-model="searchParams.town"
-                        name="town" ng-required="true">
-                    <option value="">Please select a Town</option>
-                    <option value="amawbia">AMAWBIA</option>
-                    <option value="unizik">UNIZIK</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary" ng-disabled="searchForm.$invalid" ladda="searchLoading" data-style="expand-right">{{searchBtnText}}</button>
-        </form>
+        <div class="well">
+            <form class="form-inline" ng-submit="fetchResults()" name="searchForm">
+                <div class="form-group">
+                    <label for="search.state">State</label>
+                    <select id="search.state" class="form-control" ng-model="searchParams.state"
+                            name="state" ng-required="true">
+                        <option value="" selected>Please select a State</option>
+                        <option value="lagos">Lagos</option>
+                        <option value="anambra">Anambra</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="search.lga">L.G.A</label>
+                    <select id="search.lga" class="form-control" ng-model="searchParams.lga"
+                            name="lga" ng-required="true">
+                        <option value="">Please select a LGA</option>
+                        <option value="awka-south">Awka-South</option>
+                        <option value="awka-north">Awka-North</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="search.town">Town</label>
+                    <select id="search.town" class="form-control" ng-model="searchParams.town"
+                            name="town" ng-required="true">
+                        <option value="">Please select a Town</option>
+                        <option value="amawbia">AMAWBIA</option>
+                        <option value="unizik">UNIZIK</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" ng-disabled="searchForm.$invalid" ladda="searchLoading" data-style="expand-right">{{searchBtnText}}</button>
+            </form>
+        </div>
+
     </div>
 </div>
 <div class="row">
     <div class="col-lg-12">
-        <ul class="nav nav-pills nav-justified">
-            <li role="presentation" ng-repeat="category in categories"><a href="#">{{category.description}}</a></li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    Sort By <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="">Name</a></li>
-                    <li><a href="">Ratings</a></li>
-                    <li><a href="">Added by</a></li>
-                </ul>
-            </li>
-        </ul>
+        <button type="button" class="navbar-toggle collapsed navbar-default" data-toggle="collapse" data-target="#categoriesNav" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="categoriesNav">
+            <ul class="nav nav-pills nav-justified navbar-default">
+                <li role="presentation" ng-repeat="category in categories"><a ng-click="searchParams.category = category">{{category.description}}</a></li>
+                <li role="presentation" class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">
+                        Sort By <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="property in sortingProperties">
+                            <a ng-click="searchParams.sortingProperty = property"><span ng-show="searchParams.sortingProperty === property" class="glyphicon glyphicon-ok"></span>{{property | uppercase}}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 <div class="row">
@@ -72,11 +83,11 @@
 </div>
 <div class="row">
     <div class="col-lg-12">
-        <div class="well text-center" ng-if="!searchLoading">
-            Loading results...
+        <div class="well text-center" ng-if="searchLoading">
+            <button class="btn btn-warning btn-block" ladda="searchLoading" data-style="expand-right">Loading results...</button>
         </div>
         <div ui-view></div>
-        <div class="well text-center" ng-if="searchResults.size < 0">
+        <div class="well text-center" ng-if="searchResults.length == 0 && !searchLoading">
             No results found.
         </div>
     </div>
