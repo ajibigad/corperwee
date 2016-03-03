@@ -62,13 +62,13 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
-                //$rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+                $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
             }, function (response) {//just temp hack till i fix logout on server or client side
                 auth.user = undefined;
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
-                //$rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+                $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
             });
         };
         return auth;
