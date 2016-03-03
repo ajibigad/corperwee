@@ -59,11 +59,14 @@ angular.module('myApp.controllers', []).
         }
 
         $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
-            $scope.searchParams = {
-                state : newUserDetails.state,
-                lga : newUserDetails.lga,
-                town : newUserDetails.town
-            };
+            if(newUserDetails){
+                $scope.searchParams = {
+                    state : newUserDetails.state,
+                    lga : newUserDetails.lga,
+                    town : newUserDetails.town
+                };
+            }
+
         }, true);
 
         $scope.$on('categoryService:changed', function (event, categories) {
@@ -223,14 +226,15 @@ angular.module('myApp.controllers', []).
                     $scope.updateLoading = false;
                     authService.updateUserDetails(data);
                     $scope.user = data;
-                    $scope.alertUpdateResult(false);
+                    alertUpdateResult(false);
                 }, function (error) {
                     $scope.updateLoading = false;
-                    $scope.alertUpdateResult(true);
+                    $scope.updateButtonText = buttonDefault;
+                    alertUpdateResult(true);
                 });
             }
         };
-        $scope.alertUpdateResult = function (error) {
+        var alertUpdateResult = function (error) {
             if(error){
                 alertModalService.modalTemplateOptions.title = "Update Action Failed!!!";
                 alertModalService.modalTemplateOptions.message = "Action to update user : " + username + "'" + "s Profile failed";
@@ -241,8 +245,47 @@ angular.module('myApp.controllers', []).
                 alertModalService.modalTemplateOptions.message = "Action to update user : " + username + "'" + "s Profile was successful";
                 alertModalService.showSuccessAlert();
             }
-        }
+        };
         $scope.reset = function () {
             $scope.user = angular.copy(authService.userDetails);
         };
-    });
+    })
+    .controller('AddPlaceCtrl', function ($scope, authService, alertModalService, $state, categoryService, placeService) {
+        var defaultButtonText = 'Add Place';
+        $scope.failedAction = false;
+        $scope.place = {};
+        $scope.addPlaceButtonText = defaultButtonText;
+        $scope.categories = categoryService.allCategories;
+        $scope.$on('categoryService:changed', function (event, categories) {
+            $scope.categories = categories;
+        });
+        $scope.addPlace = function () {
+            $scope.addPlaceButtonText = "Adding .......";
+            $scope.addPlaceLoading = true;
+            //$scope.place.addedBy = authService.userDetails;
+            placeService.addPlace($scope.place).then(function(data){
+                $scope.place = data;
+                $scope.addPlaceButtonText = defaultButtonText;
+                $scope.addPlaceLoading = false;
+                alertActionResult(false);
+            }, function(){
+                $scope.addPlaceButtonText = defaultButtonText;
+                $scope.addPlaceLoading = false;
+                alertActionResult(true);
+            });
+        };
+        var alertActionResult = function (error) {
+            if(error){
+                alertModalService.modalTemplateOptions.title = "Add Place Action Failed!!!";
+                alertModalService.modalTemplateOptions.message = "Action to add place : " + $scope.place.name + " failed";
+                alertModalService.showErrorAlert();
+            }
+            else{
+                alertModalService.modalTemplateOptions.title = "Add Place Action Success!!!";
+                alertModalService.modalTemplateOptions.message = "Action to add place : " + $scope.place.name + " succeeded";
+                alertModalService.showSuccessAlert();
+            }
+        }
+    })
+    .controller('ViewPlaceCtrl', function($stateParams, $scope, authService, userService){})
+    .controller('UpdatePlaceCtrl', function($stateParams, $scope, authService, userService, alertModalService, $state){});

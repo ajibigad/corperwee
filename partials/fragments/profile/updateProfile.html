@@ -149,7 +149,9 @@
                                             <option value="anambra">Anambra</option>
                                             </select>
                                                 <span class="help-block text-danger"
-                                                      ng-show="updateForm.state.$dirty && updateForm.state.$error.required">Please a state must be selected</span>
+                                                      ng-show="updateForm.state.$dirty && updateForm.state.$error.required">
+                                                    Please a state must be selected
+                                                </span>
                                         </div>
                                     </div>
                                     <div class="form-group has-feedback">
@@ -161,6 +163,10 @@
                                                 <option value="awka-south">Awka-South</option>
                                                 <option value="awka-north">Awka-North</option>
                                             </select>
+                                            <span class="help-block text-danger"
+                                                  ng-show="updateForm.lga.$dirty && updateForm.lga.$error.required">
+                                                    Please a lga must be selected
+                                                </span>
                                         </div>
                                     </div>
                                     <div class="form-group has-feedback">
@@ -172,6 +178,10 @@
                                                 <option value="amawbia">AMAWBIA</option>
                                                 <option value="unizik">UNIZIK</option>
                                             </select>
+                                            <span class="help-block text-danger"
+                                                  ng-show="updateForm.town.$dirty && updateForm.town.$error.required">
+                                                    Please a town must be selected
+                                                </span>
                                         </div>
                                     </div>
                                 </form>

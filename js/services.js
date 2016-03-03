@@ -16,7 +16,8 @@ angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
     this.SIGNUP_ENDPOINT = ENDPOINT + "/user";
     this.STATES_ENDPOINT = "http://states-cities.square-api.com/v1";
     this.USER_ENDPOINT = this.SIGNUP_ENDPOINT;
-    this.CATOGORY_ENDPOINT = ENDPOINT + "/category";
+    this.CATEGORY_ENDPOINT = ENDPOINT + "/category";
+    this.PLACE_ENDPOINT = ENDPOINT + "/place";
 });
 
 angular.module('myApp.services').factory('authService', ['appEndpoints', '$http', '$cookieStore', '$q', '$rootScope', 'userService',
@@ -42,7 +43,7 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
         };
         auth.login = function (username, password) {
             //var headers = {Authorization : "Basic " + btoa(username + ":" + password)}; //for now lets use the defaulr username and password for spring. I would implement a real user store later
-            var headers = {Authorization : "Basic " + btoa("user:password")};
+            var headers = {Authorization : "Basic " + btoa(username +":"+ password)};
             return $http.get(appEndpoints.LOGIN_ENDPOINT, {headers : headers}).then(function (response) {
                 auth.user = response.data.principal;
                 //auth.userDetails = auth.getUserDetails(username).then(function (data) {
@@ -61,13 +62,13 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
-                $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+                //$rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
             }, function (response) {//just temp hack till i fix logout on server or client side
                 auth.user = undefined;
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
-                $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+                //$rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
             });
         };
         return auth;
@@ -109,7 +110,7 @@ angular.module('myApp.services')
     .service('categoryService', function (appEndpoints, $http, $q, $rootScope) {
         var self =this;
         var getAllCategories = function () {
-            $http.get(appEndpoints.CATOGORY_ENDPOINT).then(function (response) {
+            $http.get(appEndpoints.CATEGORY_ENDPOINT).then(function (response) {
                 self.allCategories = response.data;
                 $rootScope.$broadcast('categoryService:changed', self.allCategories);
             }, function (response) {
@@ -118,6 +119,34 @@ angular.module('myApp.services')
             });
         };
         getAllCategories();
+    })
+    .service('placeService', function(appEndpoints, $http, $q){
+        this.addPlace = function(place){
+            return $http.post(appEndpoints.PLACE_ENDPOINT, place).then(function(response){
+                return response.data;
+            });
+        };
+
+        this.searchParams = {
+            state : "",
+            lga : "",
+            town : "",
+            pageNumber : "",
+            pageSize : "",
+            sortingProperty : "",
+            sortingOrder : ""
+        };
+
+        this.sortingOrders = {
+            ASC : "ASC",
+            DESC : "DESC"
+        };
+
+        this.getPagedPlaces = function(searchParams){
+            return $http.get(appEndpoints.PLACE_ENDPOINT + "/paged", searchParams).then(function(response){
+                return response.data;
+            });
+        }
     })
     .factory('nigStatesService',['$http', 'appEndpoints',
         function($http, appEndpoints){

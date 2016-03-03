@@ -61,13 +61,18 @@ angular.module('myApp', [
                 url: '/updateProfile/:username',
                 controller: 'UpdateProfileCtrl',
                 templateUrl: 'partials/fragments/profile/updateProfile.html'
+            })
+            .state('corperwee.addPlace',{
+                url: '/addPlace',
+                controller: 'AddPlaceCtrl',
+                templateUrl: 'partials/fragments/place/addPlace.html'
             });
         $urlRouterProvider.otherwise('/corperwee/home');
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
         $httpProvider.defaults.withCredentials = true;
 
     }]).
-    run(['$rootScope', '$state', '$cookieStore', 'authService', '$http', function ($rootScope, $state, $cookieStore, authService, $http) {
+    run(['$rootScope', '$state', '$cookieStore', 'authService', '$http', '$window', function ($rootScope, $state, $cookieStore, authService, $http, $window) {
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
             if (error.unAuthorized) {
                 $state.go('welcome');
@@ -77,9 +82,15 @@ angular.module('myApp', [
             }
         });
 
+        /*Am trying to fix the scrollBar issue with this code but its not solving*/
+        $rootScope.$on('$stateChangeSuccess', function () {
+            console.log("in changed state");
+            $window.scrollTo(0,0);
+            //$("html,body").animate({scrollTop:0}, 200);
+        });
+
         authService.user = $cookieStore.get('user'); //in case of a page refresh
         authService.userDetails = $cookieStore.get('userDetails');
-        //$http.defaults.headers.common.Authorization = "Basic " + btoa("user" + ":" + "password");
     }]
 );
 

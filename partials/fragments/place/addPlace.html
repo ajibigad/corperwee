@@ -1,0 +1,211 @@
+<div class="row">
+    <div class="col-xs-1 col-lg-2"></div>
+    <div class="col-xs-10 col-lg-8">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">Add new Place</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <a href="#" class="thumbnail">
+                            <img src="https://placeholdit.imgix.net/~text?txtsize=16&bg=118800&txt=171%C3%97171&w=171&h=171" alt="...">
+                        </a>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Place Details</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form name="addPlaceForm" class="form-horizontal" novalidate>
+                                    <div ng-show="failedAction" class="alert alert-danger fade in" id="addPlacefailurealert">
+                                        <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                                        <h4>{{errorMessage}}</h4>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : addPlaceForm.name.$dirty && addPlaceForm.name.$invalid, 'has-success' : addPlaceForm.name.$dirty && addPlaceForm.name.$valid}">
+                                        <label class="col-md-3 control-label">Name:</label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="name" ng-required="true" ng-minlength="2"
+                                                   ng-maxlength="20" class="form-control" id="addPlace.name"
+                                                   placeholder="Name" ng-model="place.name">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.name.$dirty && addPlaceForm.name.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.name.$dirty && addPlaceForm.name.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.name.$dirty && addPlaceForm.name.$error.required">Firstname cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.name.$dirty && addPlaceForm.name.$error.minlength">FirstName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.name.$dirty && addPlaceForm.name.$error.maxlength">Firstname must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : addPlaceForm.website.$dirty && addPlaceForm.website.$invalid, 'has-success' : addPlaceForm.website.$dirty && addPlaceForm.website.$valid}">
+                                        <label class="col-md-3 control-label">Website:</label>
+
+                                        <div class="col-md-9">
+                                            <input name="website" ng-required="true" ng-minlength="5" ng-maxlength="20"
+                                                   type="text" class="form-control" id="addPlace.website"
+                                                   placeholder="Website: eg kolawole.com" ng-model="place.website">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$error.required">LastName cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$error.minlength">LastName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$error.maxlength">Lasttname must not exceed 20 characters</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : addPlaceForm.email.$dirty && addPlaceForm.email.$invalid, 'has-success' : addPlaceForm.email.$dirty && addPlaceForm.email.$valid}">
+                                        <label class="col-md-3 control-label">Email:</label>
+
+                                        <div class="col-md-9">
+                                            <input name="email" type="email" ng-required="true" required="true"
+                                                   class="form-control" id="addPlace.email"
+                                                   placeholder="Email Address" ng-model="place.email">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.email.$dirty && addPlaceForm.email.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.email.$dirty && addPlaceForm.email.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.email.$dirty && addPlaceForm.email.$error.required">Email cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.email.$dirty && addPlaceForm.email.$error.email">Invalid Email</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : addPlaceForm.phoneNumber.$dirty && addPlaceForm.phoneNumber.$invalid, 'has-success' : addPlaceForm.phoneNumber.$dirty && addPlaceForm.phoneNumber.$valid}">
+                                        <label class="col-md-3 control-label"><span class="text-nowrap">Phone Number:</span></label>
+
+                                        <div class="col-md-9">
+                                            <input name="phoneNumber" type="tel" class="form-control"
+                                                   id="addPlace.phoneNumber" placeholder="Phone number here"
+                                                   ng-model="place.phoneNumber"
+                                                   ng-maxlength="11" ng-minlength="11"
+                                                   required="true" ng-required="true" ng-pattern="phoneNumberRegex">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.phoneNumber.$dirty && addPlaceForm.phoneNumber.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="addPlaceForm.phoneNumber.$dirty && addPlaceForm.phoneNumber.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.phoneNumber.$dirty && addPlaceForm.phoneNumber.$error.required">Phone number cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="addPlaceForm.phoneNumber.$dirty && addPlaceForm.phoneNumber.$invalid">Invalid Phone Number: Must be 11 digits</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label class="col-md-3 control-label">Category:</label>
+                                        <div class="col-md-9">
+                                            <select name="category" ng-model="place.category" ng-options="category as category.description for category in categories"
+                                                    id="addPlace.category" class="form-control"
+                                                    ng-required="true">
+                                                <option value="" selected>Please select a Category</option>
+                                            </select>
+                                            <span class="help-block text-danger"
+                                                  ng-show="addPlaceForm.category.$dirty && addPlaceForm.category.$error.required">
+                                                Please a category must be selected
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label class="col-md-3 control-label">State:</label>
+                                        <div class="col-md-9">
+                                            <select name="state" id="addPlace.state" class="form-control"
+                                                    ng-model="place.state"
+                                                    ng-required="true"><!--ng-options="state.name as state.name for state in states"-->
+                                                <option value="" selected>Please select a State</option>
+                                                <option value="lagos">Lagos</option>
+                                                <option value="anambra">Anambra</option>
+                                            </select>
+                                                <span class="help-block text-danger"
+                                                      ng-show="addPlaceForm.state.$dirty && addPlaceForm.state.$error.required">
+                                                    Please a state must be selected
+                                                </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label class="col-md-3 control-label">L.G.A:</label>
+                                        <div class="col-md-9">
+                                            <select name="lga" id="addPlace.lga" class="form-control"
+                                                    ng-model="place.lga" ng-required="true">
+                                                <option value="">Please select a LGA</option>
+                                                <option value="awka-south">Awka-South</option>
+                                                <option value="awka-north">Awka-North</option>
+                                            </select>
+                                            <span class="help-block text-danger"
+                                                  ng-show="addPlaceForm.lga.$dirty && addPlaceForm.lga.$error.required">
+                                                    Please a lga must be selected
+                                                </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label class="col-md-3 control-label">Town:</label>
+                                        <div class="col-md-9">
+                                            <select id="addPlace.town" class="form-control" ng-model="place.town"
+                                                    name="town" ng-required="true">
+                                                <option value="">Please select a Town</option>
+                                                <option value="amawbia">AMAWBIA</option>
+                                                <option value="unizik">UNIZIK</option>
+                                            </select>
+                                            <span class="help-block text-danger"
+                                                  ng-show="addPlaceForm.town.$dirty && addPlaceForm.town.$error.required">
+                                                    Please a town must be selected
+                                                </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback"
+                                         ng-class="{'has-error' : addPlaceForm.direction.$dirty && addPlaceForm.direction.$invalid, 'has-success' : addPlaceForm.direction.$dirty && addPlaceForm.direction.$valid}">
+                                        <label class="col-md-3 control-label">Directions:</label>
+
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" rows="3"
+                                                      id="addPlace.direction"
+                                                      placeholder="Pls Add directions (Optional)" ng-model="place.direction"
+                                                      name="direction">
+                                            </textarea>
+                                            <!--<span class="glyphicon glyphicon-ok form-control-feedback"-->
+                                                  <!--aria-hidden="true"-->
+                                                  <!--ng-show="addPlaceForm.direction.$dirty && addPlaceForm.direction.$valid"></span>-->
+                                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"-->
+                                                  <!--aria-hidden="true"-->
+                                                  <!--ng-show="addPlaceForm.direction.$dirty && addPlaceForm.direction.$invalid"></span>-->
+                                            <!--<span class="sr-only">(success)</span>-->
+                                            <!--<span class="help-block"-->
+                                                  <!--ng-show="addPlaceForm.direction.$dirty && addPlaceForm.direction.$error.required">State Code cannot be empty</span>-->
+                                            <!--<span class="help-block" ng-show="addPlaceForm.state.$dirty && addPlaceForm.state.$invalid">Invalid Phone Number: Must be 11 digits</span>-->
+                                        </div>
+                                    </div>
+                                </form>
+                                <pre>{{place | json}}</pre>
+                                <a class="btn btn-primary" ng-disabled="addPlaceForm.$invalid" id="addPlace-btn" ng-click="addPlace()"
+                                   ladda="addPlaceLoading" data-style="expand-right">
+                                    {{addPlaceButtonText}}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-1 col-lg-2"></div>
+</div>
