@@ -246,7 +246,7 @@ angular.module('myApp.controllers', []).
                 $scope.reset();
                 $scope.updateButtonText = buttonDefault;
                 $scope.updateLoading = false;
-                $scope.alertUpdateResult(false);
+                alertUpdateResult(false);
             }
             else{
                 userService.updateUserDetails($scope.user).then(function (data) {
