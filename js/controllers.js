@@ -38,12 +38,13 @@ angular.module('myApp.controllers', []).
         $rootScope.style = 'styles.css';
         $rootScope.navbar_url = 'partials/fragments/logout_navbar.html';
     }])
-    .controller('CorperWeeCtrl', ['$rootScope', '$scope', 'authService', 'userService', function ($rootScope, $scope, authService, userService) {
+    .controller('CorperWeeCtrl', function ($rootScope, $scope, authService, userService, $state) {
         $rootScope.title = "NYSC - Home";
         $rootScope.logged_in = true; //this should be set by the authService
         $rootScope.style = 'dashboard.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
-    }])
+        $state.go('corperwee.home.searchResults');
+    })
     .controller('HomeController', function ($scope, authService, categoryService, $state, placeService) {
         var defaultButtonTxt = "Search";
         var pageNumber = 0; // to be increased by load more results function
@@ -79,8 +80,8 @@ angular.module('myApp.controllers', []).
             $scope.searchParams.sortingOrder = placeService.sortingOrders.DESC;
             $scope.searchParams.pageNumber = pageNumber;
             $scope.searchParams.pageSize = pageSize;
-            console.log(JSON.stringify($scope.searchParams));
-            console.log("in reset baba!!!!!!!!!");
+            $scope.categories = categoryService.allCategories;
+            $scope.searchParams.category = $scope.categories[0];
             $scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
         };
 
@@ -104,7 +105,12 @@ angular.module('myApp.controllers', []).
             $scope.showSearchFilter = $scope.showSearchFilter ? false : true;
         };
 
-        $scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
+        $scope.$watch('searchParams', function(newVal, oldVal){
+            if(!angular.equals(newVal.category, oldVal.category)){
+                $scope.fetchResults();
+            }
+        }, true);
+
         $state.go('corperwee.home.searchResults');
     })
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService) {

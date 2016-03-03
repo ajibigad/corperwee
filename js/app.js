@@ -70,7 +70,6 @@ angular.module('myApp', [
         $urlRouterProvider.otherwise('/corperwee/home');
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
         $httpProvider.defaults.withCredentials = true;
-
     }]).
     run(['$rootScope', '$state', '$cookieStore', 'authService', '$http', '$window', function ($rootScope, $state, $cookieStore, authService, $http, $window) {
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
@@ -85,7 +84,7 @@ angular.module('myApp', [
         /*Am trying to fix the scrollBar issue with this code but its not solving*/
         $rootScope.$on('$stateChangeSuccess', function () {
             console.log("in changed state");
-            $window.scrollTo(0,0);
+            //$window.scrollTo(0,0);
             //$("html,body").animate({scrollTop:0}, 200);
         });
 

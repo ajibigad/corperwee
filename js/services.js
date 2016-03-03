@@ -12,7 +12,7 @@ angular.module('myApp.services', []).
 angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
     var ENDPOINT = HOST + API;
     this.LOGIN_ENDPOINT = ENDPOINT + "/login";
-    this.LOGOUT_ENDPOINT = ENDPOINT + "/signout";
+    this.LOGOUT_ENDPOINT = HOST + "/signout";
     this.SIGNUP_ENDPOINT = ENDPOINT + "/user";
     this.STATES_ENDPOINT = "http://states-cities.square-api.com/v1";
     this.USER_ENDPOINT = this.SIGNUP_ENDPOINT;
