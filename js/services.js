@@ -7,7 +7,10 @@
 angular.module('myApp.services', []).
     value('version', '0.1').
     value('HOST', "http://localhost:8086")
-    .value('API', '/corperwee/api');
+    .value('API', '/corperwee/api')
+    .value('REGEX_EXPs', {
+        phoneNumber: /\d{11}/
+    });
 
 angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
     var ENDPOINT = HOST + API;
@@ -76,7 +79,7 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
 
 angular.module('myApp.services')
     .factory('signUpService', ['appEndpoints', '$http', '$cookieStore', 'authService',
-        function (appEndpoints, $http, $cookieStore, authService){
+        function (appEndpoints, $http) {
             return {
                 signUp : function (newUser) {
                             return $http.post(appEndpoints.SIGNUP_ENDPOINT, newUser);
@@ -164,6 +167,8 @@ angular.module('myApp.services')
             }
         }])
     .service('alertModalService', function($uibModal){
+        var error = -1, info = 0, success = 1;
+        this.modalSize = 'sm';
         var show = function (alertType, modalTemplateOptions, size) {
             var options = {
                     templateUrl: 'partials/fragments/alertModal.html',
@@ -187,14 +192,14 @@ angular.module('myApp.services')
         };
 
         this.showErrorAlert = function (){
-            show(-1, this.modalTemplateOptions, 'sm');
+            show(error, this.modalTemplateOptions, this.modalSize);
         };
 
         this.showInfoAlert = function (){
-            show(0, this.modalTemplateOptions, 'sm');
+            show(info, this.modalTemplateOptions, this.modalSize);
         };
 
         this.showSuccessAlert = function (){
-            show(1, this.modalTemplateOptions, 'sm');
+            show(success, this.modalTemplateOptions, this.modalSize);
         };
     });

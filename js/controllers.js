@@ -11,28 +11,13 @@ angular.module('myApp.controllers', []).
             }, function () {
                 //show alert to say error occurred during logout
                 $state.go('welcome'); //just temp hack till i fix logout on server side
-            }, function () {
-                console.log('still trying to logout... pls endure');
             }); // this would logout you out and direct you to the home page
-        };
-        $scope.sayHello = function () {
-            userService.sayHello('').then(function (response) {
-                alert(response.data);
-            }, function (response) {
-                console.log(response.status);
-                alert(response.status);
-            });
         };
         $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
             $scope.currentUser = newUserDetails;
-            $rootScope.title = "NYSC - Home";
-            $rootScope.logged_in = true; //this should be set by the authService
-            $rootScope.style = 'dashboard.css';
-            $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
         }, true);
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
-        //var postID = scope.postInstance._id, savedPostInstance = {};
         $rootScope.title = 'NYSC';
         $rootScope.logged_in = false;
         $rootScope.style = 'styles.css';
@@ -48,16 +33,14 @@ angular.module('myApp.controllers', []).
     .controller('HomeController', function ($scope, authService, categoryService, $state, placeService) {
         var defaultButtonTxt = "Search";
         var pageNumber = 0; // to be increased by load more results function
-        var pageSize = 5;
+        var pageSize = 10;
         $scope.lastPage = false;
-        $scope.testing;
         $scope.reverseOrder = true; //this means by default, the results would be in desc order
         $scope.searchBtnText = defaultButtonTxt;
         $scope.searchLoading = false;
         $scope.showSearchFilter = false;
         $scope.searchResults = [];
         $scope.sortingProperties = ["name", "rating", "addedBy"];
-        $scope.categories = categoryService.allCategories;
         $scope.searchParams = angular.copy(placeService.searchParams);
         $scope.fetchResults = function () {
             $scope.searchBtnText = "Searching";
@@ -68,6 +51,7 @@ angular.module('myApp.controllers', []).
                 $scope.lastPage = data.last;
             }, function(){
                 //alert error that occurred
+                //the alert modal service should be used here
                 alert("Error in fetching places");
             }).finally(function () {
                 $scope.searchBtnText = defaultButtonTxt;
@@ -98,7 +82,6 @@ angular.module('myApp.controllers', []).
         }
 
         $scope.$on('categoryService:changed', function (event, categories) {
-            console.log("categoryService:changed");
             $scope.categories = categories;
             $scope.searchParams.category = $scope.categories[0];
         });
@@ -119,75 +102,57 @@ angular.module('myApp.controllers', []).
 
         $state.go('corperwee.home.searchResults');
     })
-    .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService) {
+    .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', 'REGEX_EXPs', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService, REGEX_EXPs) {
         $scope.newUser = {};
-        $scope.phoneNumberRegex = /\d{11}/;
+        $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
         $scope.signUp = function () {
-            var newUser = $scope.newUser;
             $scope.signUpLoading = true;
             //this should be called after a successful login
-            signUpService.signUp(newUser).then(function (response) {
-                authService.login(newUser.username, newUser.password).then(function (data) {
+            signUpService.signUp($scope.newUser).then(function (response) {//the response here contains a json of the details of the user that just signed in
+                authService.login($scope.newUser.username, $scope.newUser.password).then(function () {
                     //direct to home page
-                    $scope.signUpLoading = false;
                     $('#signUpModal').on('hide.bs.modal', function (e) {
-                        //userService.currentUser = newUser;
                         $state.go('corperwee.home');
                     }).modal('hide');
                 });
             }, function (response) {
-                var errorMessage;
-                $scope.signUpLoading = false;
                 switch (response.status){
                     case 400 :  $scope.errorMessage = response.data.message;
                         break;
                     default : $scope.errorMessage = "Failed to connect to server";
                 };
-                var modalTemplateOptions = {
-                    title : "Sign Up Error!!!",
-                    message : errorMessage
-                };
-                //errorMessage ? alertModalService.showErrorAlert(modalTemplateOptions) : '';
                 $scope.failedSignUp = true;
                 $('#signUpModal').animate({ scrollTop: 0 }, 'fast');
-                //$('#signupfailurealert').setAttribute('auto-focus');
+            }).finally(function () {
+                $scope.signUpLoading = false;
             });
         };
         var getStates = function () {
+            // when i get this api to work i would need to move this process into the $state resolve property
+            //this is because the states need to be fetched before the sign up controller comes in
+            //if the state loading fails, then the user would be required to refresh or check network connection
             nigStatesService.getAllStates().then(function (response) {
                 $scope.states = response.data;
-            }, function (response) {
-                var errorMessage = "Failed to fetch states";
-                //switch (response.status){
-                //    case 401 :  errorMessage = "Failed to ";
-                //        break;
-                //    default : errorMessage = "Failed to connect to server";
-                //};
+            }, function () {
                 alertModalService.modalTemplateOptions.title = "State Fetch Error";
-                alertModalService.modalTemplateOptions.message = errorMessage;
+                alertModalService.modalTemplateOptions.message = "Failed to fetch states";
                 alertModalService.showErrorAlert();
-                //alertModalService.showInfoAlert(modalTemplateOptions);
             });
         };
         //getStates();
     }])
     .controller('SignInController', ['$scope', 'authService', '$state', 'alertModalService', function ($scope, authService, $state, alertModalService) {
         $scope.user = {};
-        //$scope.signInLoading = false;
-        //$scope.invalidLogin = true;
         $scope.signIn = function () {
-            var user = $scope.user;
             $scope.signInLoading = true;
-            authService.login(user.username, user.password).then(function (data) {
+            authService.login($scope.user.username, $scope.user.password).then(function () {
                 //direct to home page
                 //this should be called after a successful login
-                $scope.signInLoading = false;
                 $('#signInModal').on('hide.bs.modal', function (e) {
                     $state.go('corperwee.home');
                 }).modal('hide');
             }, function (response) {
                 //show alert for invalid Username/Password
-                $scope.signInLoading = false;
                 var errorMessage;
                 switch (response.status){
                     case 401 :  errorMessage = "Wrong Username/Password Combination";
@@ -197,7 +162,9 @@ angular.module('myApp.controllers', []).
                 alertModalService.modalTemplateOptions.title = "Sign In Error!!!";
                 alertModalService.modalTemplateOptions.message = errorMessage;
                 alertModalService.showErrorAlert();
-                response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;
+                response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;// this helps to show the correct error incase of a no network issue
+            }).finally(function () {
+                $scope.signInLoading = false;
             });
         };
     }])
@@ -215,9 +182,10 @@ angular.module('myApp.controllers', []).
         //    $uibModalInstance.dismiss('cancel');
         //};
     })
-    .controller('ViewProfileCtrl', function ($stateParams, $scope, authService, userService) {
+    .controller('ViewProfileCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state) {
         var username = $stateParams.username;
         $scope.updateButton = false;
+        //issue with this approach is, if the app is opened in another it would fail to update over there too
         if(username === authService.userDetails.username){ //i can use the currentUser from the parent scope but this is safer
             $scope.user = authService.userDetails;
             $scope.updateButton = true;
@@ -226,26 +194,28 @@ angular.module('myApp.controllers', []).
             userService.getUserDetails(username).then(function (data) {
                 $scope.user = data;
             }, function (error) {
-                //alert error that the user was not found then return to previous state
+                //alert error that the user was not found then return to home state
+                alertModalService.modalTemplateOptions.title = "Username Not Found!!!";
+                alertModalService.modalTemplateOptions.message = error.message;
+                alertModalService.showErrorAlert();
+                $state.go('corperwee.home.searchResults');
             });
         }
     })
-    .controller('UpdateProfileCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state, $rootScope) {
+    .controller('UpdateProfileCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state, REGEX_EXPs, $rootScope) {
         var username = $stateParams.username;
         var buttonDefault = "Update Profile";
         var buttonLoading = "Updating.......";
         $scope.failedUpdate = false;
-        $scope.phoneNumberRegex = /\d{11}/;
+        $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
         $scope.updateButtonText = buttonDefault;
         if(username === authService.userDetails.username){
             $scope.user = angular.copy(authService.userDetails); //since am gonna edit the user object through the form, then we need to do a oopy
         }
         else{ //this means the account tried to update does not belong to the person logged in so.. no show
-            var modalTemplateOptions = {
-                title : "UnAuthorized Action!!!",
-                message : "Please you dont have permission to update user : " + username + "'" + "s Profile. Click <a ui-sref='corperwee.viewProfile({username : user.username})'>here</a> to view his/her profile"
-            };
-            //alertModalService.showErrorAlert(modalTemplateOptions);
+            alertModalService.modalTemplateOptions.title = "UnAuthorized Action!!!";
+            alertModalService.modalTemplateOptions.message = "Please you dont have permission to update user : " + username + "'" + "s Profile.";
+            alertModalService.showErrorAlert();
             $state.go('corperwee.viewProfile', {
                 username: authService.userDetails.username
             });
@@ -262,15 +232,14 @@ angular.module('myApp.controllers', []).
             }
             else{
                 userService.updateUserDetails($scope.user).then(function (data) {
-                    $scope.updateButtonText = buttonDefault;
-                    $scope.updateLoading = false;
                     authService.updateUserDetails(data);
                     $scope.user = data;
                     alertUpdateResult(false);
                 }, function (error) {
+                    alertUpdateResult(true);
+                }).finally(function () {
                     $scope.updateLoading = false;
                     $scope.updateButtonText = buttonDefault;
-                    alertUpdateResult(true);
                 });
             }
         };
@@ -290,12 +259,12 @@ angular.module('myApp.controllers', []).
             $scope.user = angular.copy(authService.userDetails);
         };
     })
-    .controller('AddPlaceCtrl', function ($scope, authService, alertModalService, $state, categoryService, placeService) {
+    .controller('AddPlaceCtrl', function ($scope, authService, alertModalService, $state, categoryService, placeService, REGEX_EXPs) {
         var defaultButtonText = 'Add Place';
         $scope.failedAction = false;
         $scope.place = {};
         $scope.addPlaceButtonText = defaultButtonText;
-        $scope.phoneNumberRegex = /\d{11}/;
+        $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
         $scope.categories = categoryService.allCategories;
         $scope.$on('categoryService:changed', function (event, categories) {
             $scope.categories = categories;
@@ -303,16 +272,14 @@ angular.module('myApp.controllers', []).
         $scope.addPlace = function () {
             $scope.addPlaceButtonText = "Adding .......";
             $scope.addPlaceLoading = true;
-            //$scope.place.addedBy = authService.userDetails;
             placeService.addPlace($scope.place).then(function(data){
                 $scope.place = data;
-                $scope.addPlaceButtonText = defaultButtonText;
-                $scope.addPlaceLoading = false;
                 alertActionResult(false);
             }, function(){
+                alertActionResult(true);
+            }).finally(function () {
                 $scope.addPlaceButtonText = defaultButtonText;
                 $scope.addPlaceLoading = false;
-                alertActionResult(true);
             });
         };
         var alertActionResult = function (error) {
