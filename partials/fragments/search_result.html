@@ -7,11 +7,8 @@
                 </div>
                 <div class="ratings">
                     <strong>Ratings :</strong>
-                    <span class="glyphicon glyphicon-star"></span>
-                    <span class="glyphicon glyphicon-star"></span>
-                    <span class="glyphicon glyphicon-star"></span>
-                    <span class="glyphicon glyphicon-star"></span>
-                    <span class="glyphicon glyphicon-star"></span>
+                    <span class="glyphicon glyphicon-star"
+                          ng-repeat="star in getRatingsArray(result.rating) track by $index"></span>
                 </div>
                 <span class="divider"></span>
             </div>
@@ -23,7 +20,7 @@
                 <div>
                     <a  class="btn btn-default btn-xs btn-info">Get Direction</a>
                     <span class="divider"></span>
-                    <a  class="btn btn-default btn-xs btn-info">View Reviewa</a>
+                    <a class="btn btn-default btn-xs btn-info">View Review</a>
                     <span class="divider"></span>
                     <a  class="btn btn-default btn-xs btn-info">Rate & Review</a>
                 </div>

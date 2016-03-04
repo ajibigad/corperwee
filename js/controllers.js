@@ -48,8 +48,10 @@ angular.module('myApp.controllers', []).
     .controller('HomeController', function ($scope, authService, categoryService, $state, placeService) {
         var defaultButtonTxt = "Search";
         var pageNumber = 0; // to be increased by load more results function
-        var pageSize = 2;
+        var pageSize = 5;
         $scope.lastPage = false;
+        $scope.testing;
+        $scope.reverseOrder = true; //this means by default, the results would be in desc order
         $scope.searchBtnText = defaultButtonTxt;
         $scope.searchLoading = false;
         $scope.showSearchFilter = false;
@@ -89,7 +91,6 @@ angular.module('myApp.controllers', []).
             if(newUserDetails){
                 resetSearchParams(newUserDetails);
             }
-
         }, true);
 
         if(authService.userDetails){// for cases of a page refresh
@@ -97,6 +98,7 @@ angular.module('myApp.controllers', []).
         }
 
         $scope.$on('categoryService:changed', function (event, categories) {
+            console.log("categoryService:changed");
             $scope.categories = categories;
             $scope.searchParams.category = $scope.categories[0];
         });
@@ -110,6 +112,10 @@ angular.module('myApp.controllers', []).
                 $scope.fetchResults();
             }
         }, true);
+
+        $scope.getRatingsArray = function (rating) {
+            return new Array(rating);
+        };
 
         $state.go('corperwee.home.searchResults');
     })

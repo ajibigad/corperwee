@@ -69,6 +69,14 @@
                         </li>
                     </ul>
                 </li>
+                <li role="presentation"><a class="btn btn-success btn-block" ng-click="reverseOrder = true"
+                                           ng-show="!reverseOrder">ASC<span
+                        class="glyphicon glyphicon-sort-by-attributes"></span></a></li>
+                <li role="presentation">
+                    <a class="btn btn-success" ng-click="reverseOrder = false" ng-show="reverseOrder">DESC
+                        <span class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -76,8 +84,9 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="input-group search-bar">
-            <input type="text" ng-model="search.query" ng-model-options="{ debounce: 800 }" onclick="select()" class="form-control" placeholder="Enter Place's name" autofocus />
-            <span class="input-group-addon bar-style"><i class="glyphicon glyphicon-search"></i></span>
+            <input type="text" ng-model="searchQuery" ng-model-options="{ debounce: 800 }" class="form-control"
+                   placeholder="Filter Results Here" autofocus/>
+            <span class="input-group-addon bar-style"><i class="glyphicon glyphicon-filter"></i></span>
         </div>
     </div>
 </div>
