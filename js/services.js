@@ -8,7 +8,7 @@ angular.module('myApp.services', []).
     value('version', '0.1').
     value('HOST', "http://localhost:8086")
     .value('API', '/corperwee/api')
-    .value('REGEX_EXPs', {
+    .value('REGEX_EXPs', { // add future regex objects here
         phoneNumber: /\d{11}/
     });
 
@@ -49,13 +49,8 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
             var headers = {Authorization : "Basic " + btoa(username +":"+ password)};
             return $http.get(appEndpoints.LOGIN_ENDPOINT, {headers : headers}).then(function (response) {
                 auth.user = response.data.principal;
-                //auth.userDetails = auth.getUserDetails(username).then(function (data) {
-                //    console.log(data);
-                //    return data;
-                //});
                 auth.getUserDetails(username);
                 $cookieStore.put('user', auth.user);
-                //$cookieStore.put('userDetails', auth.userDetails); // this allows us to make this call only once
                 return auth.user;
             }, function(response){ return $q.reject(response)});
         };
@@ -130,6 +125,30 @@ angular.module('myApp.services')
             });
         };
 
+        this.getPlace = function (placeId) {
+            return $http.get(appEndpoints.PLACE_ENDPOINT + "/" + placeId).then(function (response) {
+                return response.data;
+            }, function (response) {
+                return $q.reject(response.data);
+            });
+        };
+
+        this.updatePlace = function (placeId) {
+            return $http.put(appEndpoints.PLACE_ENDPOINT + "/" + placeId).then(function (response) {
+                return response.data;
+            }, function (response) {
+                return $q.reject(response.data);
+            });
+        };
+
+        this.getReviews = function (placeId) {
+            return $http.get(appEndpoints.PLACE_ENDPOINT + "/" + placeId + "/reviews").then(function (response) {
+                return response.data;
+            }, function (response) {
+                return $q.reject(response.data);
+            });
+        };
+
         this.searchParams = {
             state : "",
             lga : "",
@@ -168,7 +187,9 @@ angular.module('myApp.services')
         }])
     .service('alertModalService', function($uibModal){
         var error = -1, info = 0, success = 1;
+        var self = this; //so we can get the 'this' instance of this class inside any function
         this.modalSize = 'sm';
+        this.result; //this would hold the result (which is a promise) so any controller interested can get this result and perform actions when the modal is closed or dismissed
         var show = function (alertType, modalTemplateOptions, size) {
             var options = {
                     templateUrl: 'partials/fragments/alertModal.html',
@@ -182,7 +203,7 @@ angular.module('myApp.services')
                         alertType : alertType
                     }
                 };
-            $uibModal.open(options);
+            self.result = $uibModal.open(options);
         };
 
         this.modalTemplateOptions = {

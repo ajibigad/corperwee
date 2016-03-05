@@ -47,11 +47,6 @@ angular.module('myApp', [
                 controller: 'HomeController',
                 templateUrl: 'partials/fragments/home.html'
             })
-            .state('corperwee.home.searchResults',{
-                url: '/searchResults',
-                //controller: '',
-                templateUrl: 'partials/fragments/search_results.html'
-            })
             .state('corperwee.viewProfile', {
                 url: '/viewProfile/:username',
                 controller: 'ViewProfileCtrl',
@@ -66,6 +61,16 @@ angular.module('myApp', [
                 url: '/addPlace',
                 controller: 'AddPlaceCtrl',
                 templateUrl: 'partials/fragments/place/addPlace.html'
+            })
+            .state('corperwee.viewPlace', {
+                url: '/viewPlace/:id',
+                controller: 'ViewPlaceCtrl',
+                templateUrl: 'partials/fragments/profile/viewPlace.html'
+            })
+            .state('corperwee.updatePlace', {
+                url: '/updatePlace/:id',
+                controller: 'UpdatePlaceCtrl',
+                templateUrl: 'partials/fragments/updatePlace.html'
             });
         $urlRouterProvider.otherwise('/corperwee/home');
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';

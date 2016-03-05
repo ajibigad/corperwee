@@ -10,9 +10,10 @@ angular.module('myApp.directives', []).
     };
   }]);
 
-angular.module('myApp.directives').directive('searchResult', function() {
+angular.module('myApp.directives')
+    .directive('searchResult', function () {
       return {
-        restrict: 'AEC',
+        restrict: 'E',
         replace: true,
         templateUrl: 'partials/fragments/search_result.html',
         link: function(scope, elem, attrs) {
@@ -20,5 +21,17 @@ angular.module('myApp.directives').directive('searchResult', function() {
             elem.css('cursor', 'pointer');
           });
         }
+      };
+    })
+    .directive('review', function () {
+      return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/fragments/review/review.html'
+      };
+    })
+    .directive('backToTop', function () { //when added to an element, it would bind the element to the onclick event and then scrollTop to the top of the page
+      return {
+        restrict: 'A'
       };
     });

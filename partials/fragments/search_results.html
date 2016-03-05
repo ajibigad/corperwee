@@ -1,6 +1,7 @@
 <div ng-if="searchResults.length > 0">
     <search-result
-            ng-repeat="result in searchResults | filter : {name : searchQuery} | orderBy : searchParams.sortingProperty : reverseOrder"></search-result>
+            ng-repeat="result in searchResults | filter : {name : searchQuery} | orderBy : searchParams.sortingProperty : reverseOrder">
+    </search-result>
     <!-- there would be an ng-repeat of the search results here -->
 </div>
 <div class="well" ng-if = "searchResults.length > 0">

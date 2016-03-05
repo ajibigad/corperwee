@@ -95,7 +95,7 @@
         <div class="well text-center" ng-if="searchLoading">
             <button class="btn btn-warning btn-block" ladda="searchLoading" data-style="expand-right">Loading results...</button>
         </div>
-        <div ui-view></div>
+        <div ng-include="'partials/fragments/search_results.html'"></div>
         <div class="well text-center" ng-if="searchResults.length == 0 && !searchLoading">
             No results found.
         </div>

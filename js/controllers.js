@@ -28,7 +28,7 @@ angular.module('myApp.controllers', []).
         $rootScope.logged_in = true; //this should be set by the authService
         $rootScope.style = 'dashboard.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
-        $state.go('corperwee.home.searchResults');
+        $state.go('corperwee.home');
     })
     .controller('HomeController', function ($scope, authService, categoryService, $state, placeService) {
         var defaultButtonTxt = "Search";
@@ -99,8 +99,6 @@ angular.module('myApp.controllers', []).
         $scope.getRatingsArray = function (rating) {
             return new Array(rating);
         };
-
-        $state.go('corperwee.home.searchResults');
     })
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', 'REGEX_EXPs', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService, REGEX_EXPs) {
         $scope.newUser = {};
@@ -198,7 +196,7 @@ angular.module('myApp.controllers', []).
                 alertModalService.modalTemplateOptions.title = "Username Not Found!!!";
                 alertModalService.modalTemplateOptions.message = error.message;
                 alertModalService.showErrorAlert();
-                $state.go('corperwee.home.searchResults');
+                $state.go('corperwee.home');
             });
         }
     })
@@ -274,6 +272,7 @@ angular.module('myApp.controllers', []).
             $scope.addPlaceLoading = true;
             placeService.addPlace($scope.place).then(function(data){
                 $scope.place = data;
+                $scope.successfulUpdate = true;
                 alertActionResult(false);
             }, function(){
                 alertActionResult(true);
@@ -295,5 +294,77 @@ angular.module('myApp.controllers', []).
             }
         }
     })
-    .controller('ViewPlaceCtrl', function($stateParams, $scope, authService, userService){})
-    .controller('UpdatePlaceCtrl', function($stateParams, $scope, authService, userService, alertModalService, $state){});
+    .controller('ViewPlaceCtrl', function ($stateParams, $scope, authService, userService) {
+        placeService.getPlace($stateParams.id).then(function (data) {
+            $scope.place = data;
+        }, function (error) {
+            alertModalService.modalTemplateOptions.title = "Place Not Found";
+            alertModalService.modalTemplateOptions.message = error.message;
+            alertModalService.showErrorAlert();
+            $state.go('corperwee.home');
+        });
+    })
+    .controller('UpdatePlaceCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state) {
+        var placeId = $stateParams.id;
+        var oldPlace;
+        var defaultUpdateBtnTxt = "Update";
+        var loadingUpdateBtnTxt = "Updating ....";
+        var failedAction = false;
+        var updatePlaceLoading = false;
+        $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
+        var alertUpdateResult = function (error, reason) {
+            if (error) {
+                alertModalService.modalTemplateOptions.title = "Update Action Failed";
+                alertModalService.modalTemplateOptions.message = "Update operation was not successful. " + reason;
+                alertModalService.showErrorAlert();
+            }
+            else {
+                alertModalService.modalTemplateOptions.title = "Update Successful";
+                alertModalService.modalTemplateOptions.message = "Update operation was successful";
+                alertModalService.showSuccessAlert();
+            }
+
+        };
+        placeService.getPlace(placeId).then(function (data) {
+            $scope.place = data;
+            oldPlace = angular.copy(data); // local copy of place
+        }, function (error) {//we can check the status code with error.code
+            alertModalService.modalTemplateOptions.title = "Place Not Found";
+            alertModalService.modalTemplateOptions.message = error.message;
+            alertModalService.showErrorAlert();
+            $state.go('corperwee.home');
+        });
+
+        $scope.update = function () {
+            updatePlaceLoading = true;
+            $scope.updatePlaceButtonText = loadingUpdateBtnTxt;
+            if ($scope.place.user.username === authService.user.username) {
+                if (angular.equals($scope.place, oldPlace)) {
+                    $scope.reset();
+                    updatePlaceLoading = false;
+                    $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
+                }
+                else {
+                    placeService.updatePlace(placeId).then(function (data) {
+                        $scope.place = data;
+                        alertUpdateResult(false);
+                    }, function (error) {
+                        alertUpdateResult(true, error.message);
+                    }).finally(function () {
+                        updatePlaceLoading = false;
+                        $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
+                    });
+                }
+            }
+            else {
+                alertModalService.modalTemplateOptions.title = "UnAuthorized Action";
+                alertModalService.modalTemplateOptions.message = "You are not authorized to update this place";
+                alertModalService.showErrorAlert();
+                $state.go('corperwee.home');
+            }
+        };
+
+        $scope.reset = function () {
+            $scope.place = angular.copy(oldPlace);
+        };
+    });

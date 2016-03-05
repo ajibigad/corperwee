@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-xs-4">
+        <img src="" alt="reviewers picture"/>
+
+        <p>Reviewer's name</p>
+
+        <p>date review was made</p>
+    </div>
+    <div class="col-xs-8">
+        <div>
+            Rating : stars would be here . This would loop stars based on show many stars the place has
+        </div>
+        <div>
+            Rating : editable stars to show when edit button is clicked
+        </div>
+        <textarea class="form-control" rows="3"
+                  placeholder="Pls Add directions (Optional)" ng-model="reviewMessage"
+                  name="reviewMessage">
+        </textarea>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Reviewers name eg (ajibigad's review)</h3>
+    </div>
+    <div class="panel-body">
+        Panel content
+    </div>
+    <div class="panel-footer">Panel footer
+        // this would be hidden for a review that belongs to the logged in user
+        // reviews that dont belong to the looged in user would not have both the edit pencil and this footer
+        // this footer is to contain the update and and cancel button to toggle update and view state of the review
+    </div>
+</div>
