@@ -96,8 +96,12 @@ angular.module('myApp.controllers', []).
             }
         }, true);
 
-        $scope.getRatingsArray = function (rating) {
-            return new Array(rating);
+        //$scope.getRatingsArray = function (rating) {
+        //    return new Array(rating);
+        //};
+
+        $scope.viewPlace = function (placeId) {
+            $state.go('corperwee.viewPlace', {id: placeId});
         };
     })
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', 'REGEX_EXPs', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService, REGEX_EXPs) {
@@ -274,6 +278,9 @@ angular.module('myApp.controllers', []).
                 $scope.place = data;
                 $scope.successfulUpdate = true;
                 alertActionResult(false);
+                $state.go('corperwee.viewPlace', {
+                    id: data.id
+                });
             }, function(){
                 alertActionResult(true);
             }).finally(function () {
@@ -294,9 +301,52 @@ angular.module('myApp.controllers', []).
             }
         }
     })
-    .controller('ViewPlaceCtrl', function ($stateParams, $scope, authService, userService) {
+    .controller('ViewPlaceCtrl', function ($stateParams, $scope, authService, userService, reviewService, placeService, alertModalService) {
+        var getCurrentUserReview = function (username, placeId) {
+            reviewService.getReviewByUserAndPlace(username, placeId).then(function (data) {
+                $scope.currentUserReview = data;
+            }, function (error) {
+                //alert error
+            });
+        };
+
+        var getReviews = function (placeId) {
+            placeService.getReviews(placeId).then(function (data) {
+                $scope.reviews = data;
+            }, function (error) {
+                //alert error
+            });
+        };
+
+        $scope.updateReview = function (review) {
+            reviewService.updateReview(review).then(function (data) {
+                $scope.currentUserReview = data;
+                //alert success here
+                alertModalService.modalTemplateOptions.title = "Update Review Successful!!!";
+                alertModalService.modalTemplateOptions.message = "Action to Update a review by : " + $scope.currentUserReview.user.username + " succeeded";
+                alertModalService.showSuccessAlert();
+            }, function (error) {
+                //alert error
+            });
+        };
+
+        $scope.addReview = function (review) {
+            //review.user = authService.userDetails; the backend would take care of this
+            review.place = $scope.place;
+            reviewService.addReview(review).then(function (data) {
+                $scope.currentUserReview = data;
+                alertModalService.modalTemplateOptions.title = "Add Review Successful!!!";
+                alertModalService.modalTemplateOptions.message = "Action to Add a review by : " + $scope.currentUserReview.user.username + " succeeded";
+                alertModalService.showSuccessAlert();
+            }, function (error) {
+                //alert error
+            });
+        };
+
         placeService.getPlace($stateParams.id).then(function (data) {
             $scope.place = data;
+            getCurrentUserReview(authService.user.username, $scope.place.id);// get the current user's review of the place
+            getReviews($scope.place.id);
         }, function (error) {
             alertModalService.modalTemplateOptions.title = "Place Not Found";
             alertModalService.modalTemplateOptions.message = error.message;
@@ -309,7 +359,6 @@ angular.module('myApp.controllers', []).
         var oldPlace;
         var defaultUpdateBtnTxt = "Update";
         var loadingUpdateBtnTxt = "Updating ....";
-        var failedAction = false;
         var updatePlaceLoading = false;
         $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
         var alertUpdateResult = function (error, reason) {
@@ -328,6 +377,7 @@ angular.module('myApp.controllers', []).
         placeService.getPlace(placeId).then(function (data) {
             $scope.place = data;
             oldPlace = angular.copy(data); // local copy of place
+            $scope.place.user.username === authService.user.username ? $scope.updateButton = true : $scope.updateButton = false;
         }, function (error) {//we can check the status code with error.code
             alertModalService.modalTemplateOptions.title = "Place Not Found";
             alertModalService.modalTemplateOptions.message = error.message;

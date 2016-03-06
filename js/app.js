@@ -65,12 +65,12 @@ angular.module('myApp', [
             .state('corperwee.viewPlace', {
                 url: '/viewPlace/:id',
                 controller: 'ViewPlaceCtrl',
-                templateUrl: 'partials/fragments/profile/viewPlace.html'
+                templateUrl: 'partials/fragments/place/viewPlace.html'
             })
             .state('corperwee.updatePlace', {
                 url: '/updatePlace/:id',
                 controller: 'UpdatePlaceCtrl',
-                templateUrl: 'partials/fragments/updatePlace.html'
+                templateUrl: 'partials/fragments/place/updatePlace.html'
             });
         $urlRouterProvider.otherwise('/corperwee/home');
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';

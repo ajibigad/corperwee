@@ -2,34 +2,54 @@
     <div class="col-xs-4">
         <img src="" alt="reviewers picture"/>
 
-        <p>Reviewer's name</p>
+        <p>{{review.user.username || currentUser.username}}</p>
 
-        <p>date review was made</p>
+        <p ng-show="readOnlyMode">{{review.dateAdded | date : "medium"}}</p>
     </div>
     <div class="col-xs-8">
-        <div>
-            Rating : stars would be here . This would loop stars based on show many stars the place has
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{review.user.username || currentUser.username}}'s review</h3>
+                <span class="label label-default" ng-click="editMode = true; readOnlyMode = false" ng-hide="editMode"
+                      ng-show="!readOnlyMode"><span class="glyphicon glyphicon-pencil"></span>Edit</span>
+            </div>
+            <div class="panel-body">
+                <div>
+                    Rating :
+                    <uib-rating ng-model="review.rating" max="5" data-read-only="readOnlyMode"
+                                titles="['one star','two stars','three stars']"
+                                aria-labelledby="default-rating"></uib-rating>
+                </div>
+                <textarea class="form-control" rows="3"
+                          placeholder="Please write your review message (Important)" ng-model="review.reviewMessage"
+                          name="reviewMessage" ng-show="editMode">
+                </textarea>
+
+                <div class="form-group" ng-show="readOnlyMode">
+                    <label class="col-md-3 control-label">Message:</label>
+
+                    <div class="col-md-9">
+                        <p class="form-control-static lead">{{review.reviewMessage}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer" ng-show="editMode">
+                <!--this would be shown for a review that belongs to the logged in user when the user clicks edit-->
+                <!--reviews that don't belong to the logged in user would not have both the edit pencil and this footer-->
+                <!--this footer is to contain the update and and cancel button to toggle update and view state of the review-->
+                <button class="btn btn-default" ng-click="editMode = false; readOnlyMode = true">Cancel</button>
+                <!-- this returns user to readUserReviewMode state -->
+                <button class="btn btn-success" ng-disabled="!review.reviewMessage"
+                        ng-click="updateReview(review); readOnlyMode=true; editMode = false;" ng-hide="!review.place">
+                    Update Review
+                </button>
+                <!-- alert box shows and user returns to readUserReviewMode state -->
+                <button class="btn btn-primary" ng-disabled="!review.reviewMessage"
+                        ng-click="addReview(review); readOnlyMode=true; editMode = false;" ng-show="!review.place">Add
+                    Review
+                </button>
+            </div>
         </div>
-        <div>
-            Rating : editable stars to show when edit button is clicked
-        </div>
-        <textarea class="form-control" rows="3"
-                  placeholder="Pls Add directions (Optional)" ng-model="reviewMessage"
-                  name="reviewMessage">
-        </textarea>
     </div>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Reviewers name eg (ajibigad's review)</h3>
-    </div>
-    <div class="panel-body">
-        Panel content
-    </div>
-    <div class="panel-footer">Panel footer
-        // this would be hidden for a review that belongs to the logged in user
-        // reviews that dont belong to the looged in user would not have both the edit pencil and this footer
-        // this footer is to contain the update and and cancel button to toggle update and view state of the review
-    </div>
-</div>

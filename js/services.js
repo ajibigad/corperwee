@@ -21,6 +21,7 @@ angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
     this.USER_ENDPOINT = this.SIGNUP_ENDPOINT;
     this.CATEGORY_ENDPOINT = ENDPOINT + "/category";
     this.PLACE_ENDPOINT = ENDPOINT + "/place";
+    this.REVIEW_ENDPOINT = ENDPOINT + "/review";
 });
 
 angular.module('myApp.services').factory('authService', ['appEndpoints', '$http', '$cookieStore', '$q', '$rootScope', 'userService',
@@ -170,6 +171,38 @@ angular.module('myApp.services')
                 return response.data;
             });
         }
+    })
+    .service('reviewService', function ($http, $q, appEndpoints) {
+
+        this.addReview = function (review) {
+            return $http.post(appEndpoints.REVIEW_ENDPOINT, review).then(function (response) {
+                return response.data;
+            }, function (response) {
+                return $q.reject(response.data);
+            });
+        };
+
+        this.updateReview = function (review) {
+            return $http.put(appEndpoints.REVIEW_ENDPOINT, review).then(function (response) {
+                return response.data;
+            }, function (response) {
+                return $q.reject(response.data);
+            });
+        };
+
+        this.getReviewByUserAndPlace = function (username, placeId) {
+            return $http.get(appEndpoints.REVIEW_ENDPOINT + "/user/place", {
+                params: {
+                    username: username,
+                    placeId: placeId
+                }
+            })
+                .then(function (response) {
+                    return response.data;
+                }, function (response) {
+                    return $q.reject(response.data);
+                });
+        };
     })
     .factory('nigStatesService',['$http', 'appEndpoints',
         function($http, appEndpoints){

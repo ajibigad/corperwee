@@ -61,7 +61,7 @@
                                         <label class="col-md-3 control-label">Category:</label>
 
                                         <div class="col-md-9">
-                                            <p class="form-control-static">{{place.category}}</p>
+                                            <p class="form-control-static">{{place.category.description}}</p>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -94,7 +94,7 @@
                                     </div>
                                 </form>
                                 <pre>{{place | json}}</pre>
-                                <a class="btn btn-primary" ui-sref="corperwee.updatePlace({place : place.id})"
+                                <a class="btn btn-primary" ui-sref="corperwee.updatePlace({id : place.id})"
                                    ng-show="updateButton">Update Place</a>
                             </div>
                         </div>
@@ -103,11 +103,12 @@
             </div>
         </div>
         <div>
-            <review></review>
+            <review user-review="true"></review>
             <!-- if the logged in user has not reviewed this place, then show this -->
-            <review></review>
+            <!--<review></review>-->
             <!-- if the logged in user has a review for this place, then show it here -->
-            <review></review>
+            <review ng-repeat="review in reviews"></review>
+            <div class="well text-center" ng-show="reviews.length < 1"><h3>NO REVIEWS!!!!</h3></div>
             <!-- loop through all the reviews for this place -->
         </div>
         <!-- reviews -->
