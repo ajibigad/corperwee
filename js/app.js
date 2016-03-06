@@ -28,6 +28,7 @@ angular.module('myApp', [
             }
         })
             .state('corperwee', {
+                abstract: true,
                 url: '/corperwee',
                 controller: 'CorperWeeCtrl',
                 templateUrl: 'partials/corperwee.html',

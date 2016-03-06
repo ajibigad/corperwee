@@ -28,7 +28,7 @@ angular.module('myApp.controllers', []).
         $rootScope.logged_in = true; //this should be set by the authService
         $rootScope.style = 'dashboard.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
-        $state.go('corperwee.home');
+        //$state.go('corperwee.home');
     })
     .controller('HomeController', function ($scope, authService, categoryService, $state, placeService) {
         var defaultButtonTxt = "Search";
@@ -301,7 +301,7 @@ angular.module('myApp.controllers', []).
             }
         }
     })
-    .controller('ViewPlaceCtrl', function ($stateParams, $scope, authService, userService, reviewService, placeService, alertModalService) {
+    .controller('ViewPlaceCtrl', function ($stateParams, $scope, authService, userService, reviewService, placeService, alertModalService, $state, $filter) {
         var getCurrentUserReview = function (username, placeId) {
             reviewService.getReviewByUserAndPlace(username, placeId).then(function (data) {
                 $scope.currentUserReview = data;
@@ -312,13 +312,14 @@ angular.module('myApp.controllers', []).
 
         var getReviews = function (placeId) {
             placeService.getReviews(placeId).then(function (data) {
-                $scope.reviews = data;
+                $scope.reviews = $filter('filter')(data, {$: !authService.user.username}); //still need to work on this
             }, function (error) {
                 //alert error
             });
         };
 
         $scope.updateReview = function (review) {
+            $scope.updateReviewLoading = true;
             reviewService.updateReview(review).then(function (data) {
                 $scope.currentUserReview = data;
                 //alert success here
@@ -327,24 +328,32 @@ angular.module('myApp.controllers', []).
                 alertModalService.showSuccessAlert();
             }, function (error) {
                 //alert error
+            }).finally(function () {
+                $scope.updateReviewLoading = false;
             });
         };
 
         $scope.addReview = function (review) {
             //review.user = authService.userDetails; the backend would take care of this
             review.place = $scope.place;
+            $scope.addReviewLoading = true;
             reviewService.addReview(review).then(function (data) {
                 $scope.currentUserReview = data;
+                //getReviews($scope.place.id); wont be needed here since the reviews would be filtered to remove the user's review
                 alertModalService.modalTemplateOptions.title = "Add Review Successful!!!";
                 alertModalService.modalTemplateOptions.message = "Action to Add a review by : " + $scope.currentUserReview.user.username + " succeeded";
                 alertModalService.showSuccessAlert();
             }, function (error) {
                 //alert error
+            }).finally(function () {
+                $scope.addReviewLoading = false;
             });
         };
 
         placeService.getPlace($stateParams.id).then(function (data) {
             $scope.place = data;
+            console.log($scope.place.addedBy.username + authService.user.username);
+            $scope.place.addedBy.username === authService.user.username ? $scope.updateButton = true : $scope.updateButton = false;
             getCurrentUserReview(authService.user.username, $scope.place.id);// get the current user's review of the place
             getReviews($scope.place.id);
         }, function (error) {
@@ -354,7 +363,7 @@ angular.module('myApp.controllers', []).
             $state.go('corperwee.home');
         });
     })
-    .controller('UpdatePlaceCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state) {
+    .controller('UpdatePlaceCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state, placeService, categoryService) {
         var placeId = $stateParams.id;
         var oldPlace;
         var defaultUpdateBtnTxt = "Update";
@@ -372,12 +381,11 @@ angular.module('myApp.controllers', []).
                 alertModalService.modalTemplateOptions.message = "Update operation was successful";
                 alertModalService.showSuccessAlert();
             }
-
         };
         placeService.getPlace(placeId).then(function (data) {
+            $scope.categories = categoryService.allCategories;
             $scope.place = data;
             oldPlace = angular.copy(data); // local copy of place
-            $scope.place.user.username === authService.user.username ? $scope.updateButton = true : $scope.updateButton = false;
         }, function (error) {//we can check the status code with error.code
             alertModalService.modalTemplateOptions.title = "Place Not Found";
             alertModalService.modalTemplateOptions.message = error.message;
@@ -385,23 +393,25 @@ angular.module('myApp.controllers', []).
             $state.go('corperwee.home');
         });
 
-        $scope.update = function () {
-            updatePlaceLoading = true;
+        $scope.updatePlace = function () {
+            $scope.updatePlaceLoading = true;
             $scope.updatePlaceButtonText = loadingUpdateBtnTxt;
-            if ($scope.place.user.username === authService.user.username) {
+            if ($scope.place.addedBy.username === authService.user.username) {
                 if (angular.equals($scope.place, oldPlace)) {
                     $scope.reset();
-                    updatePlaceLoading = false;
+                    alertUpdateResult(false);
+                    $scope.updatePlaceLoading = false;
                     $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
                 }
                 else {
                     placeService.updatePlace(placeId).then(function (data) {
                         $scope.place = data;
+                        $scope.place = angular.copy(oldPlace);
                         alertUpdateResult(false);
                     }, function (error) {
                         alertUpdateResult(true, error.message);
                     }).finally(function () {
-                        updatePlaceLoading = false;
+                        $scope.updatePlaceLoading = false;
                         $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
                     });
                 }

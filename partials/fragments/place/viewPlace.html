@@ -107,7 +107,10 @@
             <!-- if the logged in user has not reviewed this place, then show this -->
             <!--<review></review>-->
             <!-- if the logged in user has a review for this place, then show it here -->
-            <review ng-repeat="review in reviews"></review>
+            <div ng-if="reviews.length > 0">
+                <review ng-repeat="review in reviews"></review>
+            </div>
+
             <div class="well text-center" ng-show="reviews.length < 1"><h3>NO REVIEWS!!!!</h3></div>
             <!-- loop through all the reviews for this place -->
         </div>

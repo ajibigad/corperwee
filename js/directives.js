@@ -30,32 +30,61 @@ angular.module('myApp.directives')
         scope: true,
         templateUrl: 'partials/fragments/review/review.html',
         link: function (scope, elem, attrs) {
+          scope.toggleUserReviewMode = function () {
+            var tempMode = scope.userReviewMode.viewMode;
+            scope.userReviewMode.viewMode = scope.userReviewMode.editMode;
+            scope.userReviewMode.editMode = tempMode;
+          };
           scope.$watch('currentUserReview', function (value) {
             //scope.review = angular.copy(scope.currentUserReview);
-            scope.review = angular.copy(value);
-            scope.editMode = false;
+            if (value && attrs.userReview) {
+              scope.review = angular.copy(value);
+              scope.userReviewMode = {};
+              scope.userReviewMode.viewMode = true;
+              scope.userReviewMode.editMode = false;
+              scope.viewReviewsMode = false;
+            }
+            else {
+              if (attrs.userReview) {
+                scope.userReviewMode = {};
+                scope.userReviewMode.viewMode = false;
+                scope.userReviewMode.editMode = true;
+                scope.viewReviewsMode = false;
+              }
+              else {
+                //means we are in the review without the userReview attr so we dont care about any change in currentUserReview
+                scope.userReviewMode = null;
+                scope.viewReviewsMode = true;
+              }
+            }
           });
           console.log(attrs.userReview);
           if (attrs.userReview) {//once in here it can never be readOnly
             console.log("user review set");
             // this means the directive should behave for the logged in user
             // this behaviour includes allowing him to edit his review or enter his review
-            if (scope.currentUserReview) {//incase the object is empty
+            if (scope.currentUserReview) {
               scope.review = angular.copy(scope.currentUserReview);
-              //show user both editable and readonly review
-              scope.readOnlyMode = true;
+              // show user both editable and readonly review
+              scope.userReviewMode = {};
+              scope.userReviewMode.viewMode = true;
+              scope.userReviewMode.editMode = false;
+              scope.viewReviewsMode = false;
             }
-            else {
+            else { // in case the object is empty
               console.log("user review edit first");
               // the logged in user has no review for the place so lets show him the editable review
-              scope.editMode = true;
+              scope.userReviewMode = {};
+              scope.userReviewMode.editMode = true;
+              scope.userReviewMode.viewMode = false;
+              scope.viewReviewsMode = false;
             }
           }
           else {
             //just show the readonly review features
             console.log("Just readonly");
-            scope.editMode = false;
-            scope.readOnlyMode = true;
+            scope.userReviewMode = null;
+            scope.viewReviewsMode = true;
           }
         }
       };
