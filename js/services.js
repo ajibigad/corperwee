@@ -6,7 +6,7 @@
 // Demonstrate how to register services
 angular.module('myApp.services', []).
     value('version', '0.1').
-    value('HOST', "http://192.168.43.209:8086")
+    value('HOST', "http://localhost:8086")
     .value('API', '/corperwee/api')
     .value('REGEX_EXPs', { // add future regex objects here
         phoneNumber: /\d{11}/

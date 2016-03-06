@@ -312,7 +312,12 @@ angular.module('myApp.controllers', []).
 
         var getReviews = function (placeId) {
             placeService.getReviews(placeId).then(function (data) {
-                $scope.reviews = $filter('filter')(data, {$: !authService.user.username}); //still need to work on this
+                $scope.reviews = $filter('filter')(data, function (value) {
+                    if (value.user.username == authService.user.username) {
+                        return false;
+                    }
+                    return true;
+                }, true); //still need to work on this
             }, function (error) {
                 //alert error
             });
@@ -368,7 +373,6 @@ angular.module('myApp.controllers', []).
         var oldPlace;
         var defaultUpdateBtnTxt = "Update";
         var loadingUpdateBtnTxt = "Updating ....";
-        var updatePlaceLoading = false;
         $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
         var alertUpdateResult = function (error, reason) {
             if (error) {
