@@ -251,8 +251,33 @@ angular.module('myApp.controllers', []).
             $scope.user = angular.copy(authService.userDetails);
         };
     })
-    .controller('ChangePasswordCtrl', function ($scope) {
-        //$scope.passwordChange;
+    .controller('ChangePasswordCtrl', function ($scope, userService, alertModalService) {
+        $scope.passwordChange = {};
+        $scope.changePassword = function () {
+            $scope.changePasswordLoading = true;
+            userService.changePassword($scope.passwordChange).then(function (data) {
+                //alertSuccessBox
+                alertChangeResult(false);
+            }, function () {
+                //alertFailureBox
+                alertChangeResult(true);
+            }).finally(function () {
+                //stop ladda spining
+                $scope.changePasswordLoading = false;
+            });
+        };
+        var alertChangeResult = function (error) {
+            if (error) {
+                alertModalService.modalTemplateOptions.title = "Change Password Action Failed!!!";
+                alertModalService.modalTemplateOptions.message = "Action to change user : " + $scope.currentUser.username + "'" + "s password failed";
+                alertModalService.showErrorAlert();
+            }
+            else {
+                alertModalService.modalTemplateOptions.title = "Change Password Action SuccessFull!!!";
+                alertModalService.modalTemplateOptions.message = "Action to change user : " + $scope.currentUser.username + "'" + "s password was successful";
+                alertModalService.showSuccessAlert();
+            }
+        };
     })
     .controller('AddPlaceCtrl', function ($scope, authService, alertModalService, $state, categoryService, placeService, REGEX_EXPs) {
         var defaultButtonText = 'Add Place';

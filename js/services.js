@@ -9,7 +9,8 @@ angular.module('myApp.services', []).
     value('HOST', "http://localhost:8086")
     .value('API', '/corperwee/api')
     .value('REGEX_EXPs', { // add future regex objects here
-        phoneNumber: /\d{11}/
+        phoneNumber: /\d{11}/,
+        password: /[a-zA-Z0-9]{8,20}/
     });
 
 angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
@@ -82,8 +83,8 @@ angular.module('myApp.services')
                          }
             };
         }])
-    .factory('userService', ['$http', 'HOST', 'appEndpoints', '$q',
-        function($http, HOST, appEndpoints, $q){
+    .factory('userService', ['$http', 'HOST', 'appEndpoints', '$q', '$injector',
+        function ($http, HOST, appEndpoints, $q, $injector) {
           return {
               //currentUser : {name : "damoooooo"},
               getUserDetails : function (username) {
@@ -103,6 +104,17 @@ angular.module('myApp.services')
               },
               sayHello : function (message){
                   return $http.get(HOST+'/hello', {params : {message : " Can i hit the morning!!!!"}});
+              },
+              changePassword: function (passwordChange) {
+                  //well i had to use an injector here because of this error : Circular dependency found: authService <- userService <- authService
+                  // this basically means when authService is injected it required userService which now has to be injected but... he too needs authService
+                  // so to fix this we leave the injection of authservice in this service to be within the changePassword function
+                  var authService = $injector.get('authService');
+                  return $http.put(appEndpoints.USER_ENDPOINT + "/" + authService.user.username + "/changePassword", passwordChange).then(function (response) {
+                      return response.data;
+                  }, function (response) {
+                      return $q.reject(response.data);
+                  });
               }
           }
         }])
