@@ -54,7 +54,7 @@ angular.module('myApp', [
                 templateUrl: 'partials/fragments/profile/viewProfile.html'
             })
             .state('corperwee.updateProfile', {
-                url: '/updateProfile/:username',
+                url: '/updateProfile',
                 controller: 'UpdateProfileCtrl',
                 templateUrl: 'partials/fragments/profile/updateProfile.html'
             })
@@ -72,6 +72,11 @@ angular.module('myApp', [
                 url: '/updatePlace/:id',
                 controller: 'UpdatePlaceCtrl',
                 templateUrl: 'partials/fragments/place/updatePlace.html'
+            })
+            .state('corperwee.changePassword', {
+                url: '/changePassword',
+                controller: 'ChangePasswordCtrl',
+                templateUrl: 'partials/fragments/profile/changePassword.html'
             });
         $urlRouterProvider.otherwise('/corperwee/home');
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';

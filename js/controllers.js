@@ -204,24 +204,14 @@ angular.module('myApp.controllers', []).
             });
         }
     })
-    .controller('UpdateProfileCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state, REGEX_EXPs, $rootScope) {
-        var username = $stateParams.username;
+    .controller('UpdateProfileCtrl', function ($scope, authService, userService, alertModalService, $state, REGEX_EXPs, $rootScope) {
+        var username = authService.user.username; //this is because you can only be here if its your profile you viewed. The update button shows only when the logged in user views his/her profile
         var buttonDefault = "Update Profile";
         var buttonLoading = "Updating.......";
         $scope.failedUpdate = false;
         $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
         $scope.updateButtonText = buttonDefault;
-        if(username === authService.userDetails.username){
-            $scope.user = angular.copy(authService.userDetails); //since am gonna edit the user object through the form, then we need to do a oopy
-        }
-        else{ //this means the account tried to update does not belong to the person logged in so.. no show
-            alertModalService.modalTemplateOptions.title = "UnAuthorized Action!!!";
-            alertModalService.modalTemplateOptions.message = "Please you dont have permission to update user : " + username + "'" + "s Profile.";
-            alertModalService.showErrorAlert();
-            $state.go('corperwee.viewProfile', {
-                username: authService.userDetails.username
-            });
-        }
+        $scope.user = angular.copy(authService.userDetails); //since am gonna edit the user object through the form, then we need to do a oopy
         $scope.update = function () {
             //send the user object to server and respond as usual
             $scope.updateButtonText = buttonLoading;
@@ -260,6 +250,9 @@ angular.module('myApp.controllers', []).
         $scope.reset = function () {
             $scope.user = angular.copy(authService.userDetails);
         };
+    })
+    .controller('ChangePasswordCtrl', function ($scope) {
+        //$scope.passwordChange;
     })
     .controller('AddPlaceCtrl', function ($scope, authService, alertModalService, $state, categoryService, placeService, REGEX_EXPs) {
         var defaultButtonText = 'Add Place';
@@ -340,6 +333,7 @@ angular.module('myApp.controllers', []).
             $scope.updateReviewLoading = true;
             reviewService.updateReview(review).then(function (data) {
                 $scope.currentUserReview = data;
+                $scope.reviewsExist = data.length > 0;
                 recalculateAverageRatings();
                 //alert success here
                 alertModalService.modalTemplateOptions.title = "Update Review Successful!!!";

@@ -225,6 +225,7 @@
                                                    ng-maxlength="20" type="password" class="form-control"
                                                    id="signup.confirmPassword" placeholder="Confirm Password"
                                                    ng-model="newUser.confirmPassword">
+                                            <!--ng-change="signUpForm.confirmPassword.$valid = newUser.confirmPassword == newUser.password">-->
                                             <span class="glyphicon glyphicon-ok form-control-feedback"
                                                   aria-hidden="true"
                                                   ng-show="signUpForm.confirmPassword.$dirty && signUpForm.confirmPassword.$valid && (newUser.confirmPassword == newUser.password)"></span>
@@ -241,6 +242,7 @@
                                             <span class="help-block"
                                                   ng-show="signUpForm.confirmPassword.$dirty && !signUpForm.confirmPassword.$error.required && !signUpForm.confirmPassword.$error.maxlength && !signUpForm.confirmPassword.$error.minlength && !(newUser.confirmPassword == newUser.password)">Password does not match</span>
                                         </div>
+                                        <pre>{{confirmChange}}</pre>
                                     </div>
                                     <div class="form-group has-feedback"
                                          ng-class="{'has-error' : signUpForm.email.$dirty && signUpForm.email.$invalid, 'has-success' : signUpForm.email.$dirty && signUpForm.email.$valid}">
