@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <pre>{{place | json}}</pre>
+                                <!--<pre>{{place | json}}</pre>-->
                                 <a class="btn btn-primary" ui-sref="corperwee.updatePlace({id : place.id})"
                                    ng-show="updateButton">Update Place</a>
                             </div>
@@ -103,6 +103,12 @@
             </div>
         </div>
         <div>
+            <div class="well">
+                <h3>AVERAGE RATING </h3>
+                <uib-rating ng-model="place.rating" data-readonly="true" max="5"
+                            titles="['one star','two stars','three stars','four stars','five stars']"
+                            aria-labelledby="default-rating"></uib-rating>
+            </div>
             <review user-review="true"></review>
             <!-- if the logged in user has not reviewed this place, then show this -->
             <!--<review></review>-->
@@ -111,8 +117,7 @@
                 <review ng-repeat="review in reviews"></review>
             </div>
 
-            <div class="well text-center" ng-show="reviews.length < 1"><h3>NO REVIEWS!!!!</h3></div>
-            <!-- loop through all the reviews for this place -->
+            <div class="well text-center" ng-show="!reviewsExist"><h3>NO REVIEWS!!!!</h3></div>
         </div>
         <!-- reviews -->
     </div>

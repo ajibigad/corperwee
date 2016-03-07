@@ -312,21 +312,35 @@ angular.module('myApp.controllers', []).
 
         var getReviews = function (placeId) {
             placeService.getReviews(placeId).then(function (data) {
+                $scope.reviewsExist = data.length > 0;
                 $scope.reviews = $filter('filter')(data, function (value) {
                     if (value.user.username == authService.user.username) {
                         return false;
                     }
                     return true;
-                }, true); //still need to work on this
+                }, true);
             }, function (error) {
                 //alert error
             });
+        };
+
+        var recalculateAverageRatings = function () {
+            var totalRatings = 0;
+            var reviews = angular.copy($scope.reviews);
+            if ($scope.currentUserReview) {
+                reviews.push(angular.copy($scope.currentUserReview));
+            }
+            for (var review in reviews) {
+                totalRatings += reviews[review].rating;
+            }
+            $scope.place.rating = totalRatings / reviews.length;
         };
 
         $scope.updateReview = function (review) {
             $scope.updateReviewLoading = true;
             reviewService.updateReview(review).then(function (data) {
                 $scope.currentUserReview = data;
+                recalculateAverageRatings();
                 //alert success here
                 alertModalService.modalTemplateOptions.title = "Update Review Successful!!!";
                 alertModalService.modalTemplateOptions.message = "Action to Update a review by : " + $scope.currentUserReview.user.username + " succeeded";
@@ -344,6 +358,7 @@ angular.module('myApp.controllers', []).
             $scope.addReviewLoading = true;
             reviewService.addReview(review).then(function (data) {
                 $scope.currentUserReview = data;
+                recalculateAverageRatings();
                 //getReviews($scope.place.id); wont be needed here since the reviews would be filtered to remove the user's review
                 alertModalService.modalTemplateOptions.title = "Add Review Successful!!!";
                 alertModalService.modalTemplateOptions.message = "Action to Add a review by : " + $scope.currentUserReview.user.username + " succeeded";
