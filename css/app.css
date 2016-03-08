@@ -1,9 +1,54 @@
 /* app css stylesheet */
 
-.alertModal {
-    height : 100%;
+body {
+    background: url("../img/bg-img.png");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
-.modal-header {
-    margin-bottom: 0px;
+.navbar-brand {
+    color:#276212;
+    text-shadow: 0px 0px #000;
+}
+
+
+.navbar {
+    background:#fff;
+}
+
+.navbar-nav li a {
+    color:#000;
+}
+
+
+
+.bg-white {
+    background-color: #fff;
+}
+
+.bg-grey {
+    background:rgba(150,150,150,.6);
+}
+
+.bg-black {
+    background:rgba(0,0,0,.8);
+}
+
+.text-white {
+    color:#fff;
+}
+.text-green {
+    color:#276212;
+}
+
+.padding-sm {
+    padding:5px;
+}
+
+.padding-md {
+    padding:8px;
+}
+
+.padding-lg {
+    padding:15px;
 }

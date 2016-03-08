@@ -1,39 +1,21 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-            <ul class="nav nav-sidebar">
-                <li class="active"><a href="#">Category <span class="sr-only">(current)</span></a>
-                    <ul class="nav">
-                        <li><a href="">State</a></li>
-                        <li><a href="">L.G.A</a></li>
-                        <li><a href="">Town</a></li>
-                    </ul>
-                </li>
-                <!--<li class="dropdown">-->
-                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Category <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a>-->
-                    <!--<ul class="dropdown-menu forAnimate" role="menu">-->
-                        <!--<li><a href="">Crear</a></li>-->
-                        <!--<li><a href="#">Modificar</a></li>-->
-                        <!--<li><a href="#">Reportar</a></li>-->
-                        <!--&lt;!&ndash;<li class="divider"></li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a href="#">Separated link</a></li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li class="divider"></li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a href="#">Informes</a></li>&ndash;&gt;-->
-                    <!--</ul>-->
-                <!--</li>-->
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">State</a></li>
-                <li><a href="">L.G.A</a></li>
-                <li><a href="">Town</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li class=""><a href="" ui-sref="corperwee.addPlace">Add New Place</a></li>
-            </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <div ui-view></div>
-        </div>
+    <div class="col-md-2 col-sm-3 sidebar">
+         <ul class="nav nav-sidebar ">
+            <li class="active"><a href="#">Category <span class="sr-only">(current)</span></a>
+                <ul class="nav">
+                    <li><a href="">State</a></li>
+                    <li><a href="">L.G.A</a></li>
+                    <li><a href="">Town</a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav nav-sidebar">
+            <li class=""><a href="" ui-sref="corperwee.addPlace">Add New Place</a></li>
+        </ul>
+    </div>
+    
+    
+    <div class="col-md-10 col-sm-9">
+        <div ui-view></div>
     </div>
 </div>
-

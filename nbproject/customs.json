@@ -1,0 +1,10 @@
+{
+    "elements": {
+        "ng-include": {}
+    },
+    "attributes": {
+        "ui-view": {
+            "context": "div"
+        }
+    }
+}

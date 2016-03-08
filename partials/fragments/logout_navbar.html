@@ -1,119 +1,115 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- i need to fix this nav brand and the toggle button to work and display as appropriate on a mobile view-->
-        <!-- Brand and toggle get grouped for better mobile display -->
+
+<nav class="navbar navbar-fixed-top">
+    <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar"
-                    aria-expanded="false">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><img src="img/logo.png" alt="Your Logo"></a>
+            <a class="navbar-brand fancy-text-1" href="#">Corperswee</a>
         </div>
 
         <!--<a class="navbar-brand" href="#"><img src="images/logo.png" alt="Your Logo"></a>-->
-        <div class="collapse navbar-collapse  navbar-responsive-collapse" id="main-navbar">
-            <form class="navbar-form navbar-right">
-                <div class="form-inline">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signInModal">SIGN
-                        IN
-                    </button>
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#signUpModal">
-                        SIGN UP
-                    </button>
-                    <button type="button" class="btn btn-warning" ng-click="sayHello()">Say Happy Hello</button>
+        <ul class="collapse nav navbar-nav navbar-right navbar-collapse  navbar-responsive-collapse" id="main-navbar">
+            <li><a href="#info">info</a></li>
+            <li><a href="#about">about</a></li>
+            <li><a href="" data-toggle="modal" data-target="#signInModal">sign in</a></li>
+            <li><a href="" data-toggle="modal" data-target="#signUpModal">sign up</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<!-- Login Modal -->
+ <!-- Sign In Modal -->
+<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" ng-controller="SignInController">
+            <div class="modal-header text-center bg-black text-white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="signInModalLabel">Login</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-show="invalidLogin" class="alert alert-danger fade in">
+                    <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                    <h4>Invalid Username/Password</h4>
                 </div>
-            </form>
+                <form name="signInForm" novalidate>
+                    <div class="form-horizontal">
+                        <div class="form-group has-feedback"
+                             ng-class="{'has-error' : signInForm.username.$dirty && signInForm.username.$invalid, 'has-success' : signInForm.username.$dirty && signInForm.username.$valid}">
+                            <label for="signin.username" class="col-xs-2">Username</label>
 
-            <!-- Sign In Modal -->
-            <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content" ng-controller="SignInController">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="signInModalLabel">LOGIN IN</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div ng-show="invalidLogin" class="alert alert-danger fade in">
-                                <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
-                                <h4>Invalid Username/Password</h4>
+                            <div class="col-xs-10">
+                                <input autocomplete="false" value="" name="username" ng-required="true"
+                                       ng-minlength="4" ng-maxlength="20" type="text" class="form-control"
+                                       id="signin.username" placeholder="Username" ng-model="user.username">
+                                <span class="glyphicon glyphicon-ok form-control-feedback"
+                                      aria-hidden="true"
+                                      ng-show="signInForm.username.$dirty && signInForm.username.$valid"></span>
+                                <span class="glyphicon glyphicon-remove form-control-feedback"
+                                      aria-hidden="true"
+                                      ng-show="signInForm.username.$dirty && signInForm.username.$invalid"></span>
+                                <span class="sr-only">(success)</span>
+                                <span class="help-block"
+                                      ng-show="signInForm.username.$dirty && signInForm.username.$error.required">UserName cannot be empty</span>
+                                <span class="help-block"
+                                      ng-show="signInForm.username.$dirty && signInForm.username.$error.minlength">UserName must be more than 5 characters</span>
+                                <span class="help-block"
+                                      ng-show="signInForm.username.$dirty && signInForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
                             </div>
-                            <form name="signInForm" novalidate>
-                                <div class="form-horizontal">
-                                    <div class="form-group has-feedback"
-                                         ng-class="{'has-error' : signInForm.username.$dirty && signInForm.username.$invalid, 'has-success' : signInForm.username.$dirty && signInForm.username.$valid}">
-                                        <label for="signin.username" class="col-xs-2">Username</label>
-
-                                        <div class="col-xs-10">
-                                            <input autocomplete="false" value="" name="username" ng-required="true"
-                                                   ng-minlength="4" ng-maxlength="20" type="text" class="form-control"
-                                                   id="signin.username" placeholder="Username" ng-model="user.username">
-                                            <span class="glyphicon glyphicon-ok form-control-feedback"
-                                                  aria-hidden="true"
-                                                  ng-show="signInForm.username.$dirty && signInForm.username.$valid"></span>
-                                            <span class="glyphicon glyphicon-remove form-control-feedback"
-                                                  aria-hidden="true"
-                                                  ng-show="signInForm.username.$dirty && signInForm.username.$invalid"></span>
-                                            <span class="sr-only">(success)</span>
-                                            <span class="help-block"
-                                                  ng-show="signInForm.username.$dirty && signInForm.username.$error.required">UserName cannot be empty</span>
-                                            <span class="help-block"
-                                                  ng-show="signInForm.username.$dirty && signInForm.username.$error.minlength">UserName must be more than 5 characters</span>
-                                            <span class="help-block"
-                                                  ng-show="signInForm.username.$dirty && signInForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group has-feedback"
-                                         ng-class="{'has-error' : signInForm.password.$dirty && signInForm.password.$invalid, 'has-success' : signInForm.password.$dirty && signInForm.password.$valid}">
-                                        <label for="signin.password" class="col-xs-2">Password</label>
-
-                                        <div class="col-xs-10">
-                                            <input autocomplete="false" value="" name="password" ng-required="true"
-                                                   ng-minlength="8" ng-maxlength="20" type="password"
-                                                   class="form-control" id="signin.password" placeholder="Password"
-                                                   ng-model="user.password">
-                                            <span class="glyphicon glyphicon-ok form-control-feedback"
-                                                  aria-hidden="true"
-                                                  ng-show="signInForm.password.$dirty && signInForm.password.$valid"></span>
-                                            <span class="glyphicon glyphicon-remove form-control-feedback"
-                                                  aria-hidden="true"
-                                                  ng-show="signInForm.password.$dirty && signInForm.password.$invalid"></span>
-                                            <span class="sr-only">(success)</span>
-                                            <span class="help-block"
-                                                  ng-show="signInForm.password.$dirty && signInForm.password.$error.required">Password cannot be empty</span>
-                                            <span class="help-block"
-                                                  ng-show="signInForm.password.$dirty && signInForm.password.$error.minlength">Password must be more than 5 characters</span>
-                                            <span class="help-block"
-                                                  ng-show="signInForm.password.$dirty && signInForm.password.$error.maxlength">Password must not exceed 20 characters</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <pre>{{user | json}}</pre>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
-                        <!-- end model body -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary btn-block" ng-disabled="signInForm.$invalid"
-                                    id="signIn-btn" ng-click="signIn()" ladda="signInLoading" data-style="expand-right">Sign In
-                            </button>
-                            <button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
+                        <div class="form-group has-feedback"
+                             ng-class="{'has-error' : signInForm.password.$dirty && signInForm.password.$invalid, 'has-success' : signInForm.password.$dirty && signInForm.password.$valid}">
+                            <label for="signin.password" class="col-xs-2">Password</label>
+
+                            <div class="col-xs-10">
+                                <input autocomplete="false" value="" name="password" ng-required="true"
+                                       ng-minlength="8" ng-maxlength="20" type="password"
+                                       class="form-control" id="signin.password" placeholder="Password"
+                                       ng-model="user.password">
+                                <span class="glyphicon glyphicon-ok form-control-feedback"
+                                      aria-hidden="true"
+                                      ng-show="signInForm.password.$dirty && signInForm.password.$valid"></span>
+                                <span class="glyphicon glyphicon-remove form-control-feedback"
+                                      aria-hidden="true"
+                                      ng-show="signInForm.password.$dirty && signInForm.password.$invalid"></span>
+                                <span class="sr-only">(success)</span>
+                                <span class="help-block"
+                                      ng-show="signInForm.password.$dirty && signInForm.password.$error.required">Password cannot be empty</span>
+                                <span class="help-block"
+                                      ng-show="signInForm.password.$dirty && signInForm.password.$error.minlength">Password must be more than 5 characters</span>
+                                <span class="help-block"
+                                      ng-show="signInForm.password.$dirty && signInForm.password.$error.maxlength">Password must not exceed 20 characters</span>
+                            </div>
                         </div>
                     </div>
+                </form>
+            </div>
+            <!-- end model body -->
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" ng-disabled="signInForm.$invalid"
+                            id="signIn-btn" ng-click="signIn()" ladda="signInLoading" data-style="expand-right">Sign In
+                    </button>
+                    <button type="button" class="btn btn-danger " data-dismiss="modal">Close</button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-            <!-- Sign Up Modal -->
+ 
+ <!-- Signup Modal -->
+ 
             <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content" ng-controller="SignUpController">
                         <!-- the sign up controller would stay here -->
-                        <div class="modal-header">
+                        <div class="modal-header text-center bg-black text-white">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                     aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="signUpModalLabel">Please Fill your Details</h4>
@@ -307,15 +303,12 @@
                                             <!--<span class="help-block" ng-show="signUpForm.state.$dirty && signUpForm.state.$invalid">Invalid Phone Number: Must be 11 digits</span>-->
                                         </div>
                                     </div>
-                                    <div class="form-inline" ng-form="locationDetails">
-                                        <div class="col-xs-4">
+                                    <div class="row padding-lg" ng-form="locationDetails">
+                                        <div class="col-md-4 col-xs-4">
                                             <div class="form-group">
                                                 <label for="signup.state">State</label>
                                                 <select name="state" id="signup.state" class="form-control"
-                                                        ng-model="newUser.state"
-                                                        <!--ng-options="state.name as state.name for state in states"-->
-                                                        <!--ng-required="true" -->
-                                                        required="true">
+                                                        ng-model="newUser.state" required="true">
                                                     <option value="" selected>Please select a State</option>
                                                     <option value="lagos">Lagos</option>
                                                     <option value="anambra">Anambra</option>
@@ -324,7 +317,7 @@
                                                       ng-show="signUpForm.state.$dirty && signUpForm.state.$error.required">Please a state must be selected</span>
                                             </div>
                                         </div>
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4  col-xs-4">
                                             <div class="form-group">
                                                 <label for="signup.lga">L.G.A</label>
                                                 <select name="lga" id="signup.lga" class="form-control"
@@ -335,7 +328,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4 col-xs-4">
                                             <div class="form-group">
                                                 <label for="signup.town">Town</label>
                                                 <select id="signup.town" class="form-control" ng-model="newUser.town"
@@ -352,31 +345,18 @@
                                                   ng-show="locationDetails.$dirty && locationDetails.$invalid">Please select all location options</span>
                                         </div>
                                     </div>
-                                    <!-- end form-inline -->
-                                    <div class="form-group">
-                                        <pre>{{newUser | json}}</pre>
-                                    </div>
-                                    <!--<div class="form-group col-xs-2">-->
-                                    <!--<button type="submit" class="btn btn-primary"  id="signup-btn">Sign Up</button>-->
-                                    <!--</div>-->
-                                    <!--<button type="submit" class="btn btn-primary btn-block"  ng-disabled="signUpForm.$invalid" id="signup-btn-footer">Sign Up</button>-->
                                 </div>
                             </form>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary btn-block" ng-disabled="signUpForm.$invalid"
-                                    id="signup-btn" ng-click="signUp()" ladda="signUpLoading" data-style="expand-right">Sign Up
-                            </button>
-                            <button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
-                            <!--<button type="button" class="btn btn-primary">Sign Up</button>-->
+                        <div class="modal-footer ">
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary " ng-disabled="signUpForm.$invalid"
+                                        id="signup-btn" ng-click="signUp()" ladda="signUpLoading" data-style="expand-right">Sign Up
+                                </button>
+                                <button type="button" class="btn btn-danger " data-dismiss="modal">Close</button>
+                            </div>
                         </div>
                     </div>
                     <!-- modal content and form controller end here-->
                 </div>
             </div>
-            <!-- End Sign Up Modal -->
-        </div>
-        <!-- end navbar collapse-->
-    </div>
-    <!-- nav fluid container -->
-</nav><!-- end navbar -->
