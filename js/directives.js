@@ -19,6 +19,7 @@ angular.module('myApp.directives')
         link: function(scope, elem, attrs) {
           elem.bind('mouseover', function() {
             elem.css('cursor', 'pointer');
+            elem.attr('title', 'click to view place');
           });
         }
       };

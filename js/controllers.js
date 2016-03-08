@@ -66,8 +66,8 @@ angular.module('myApp.controllers', []).
             $scope.searchParams.sortingOrder = placeService.sortingOrders.DESC;
             $scope.searchParams.pageNumber = pageNumber;
             $scope.searchParams.pageSize = pageSize;
-            $scope.categories = categoryService.allCategories;
-            $scope.searchParams.category = $scope.categories[0];
+            $scope.categories = categoryService.allCategories || "";
+            $scope.searchParams.category = $scope.categories[0] || "";
             $scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
         };
 
@@ -283,11 +283,19 @@ angular.module('myApp.controllers', []).
         var defaultButtonText = 'Add Place';
         $scope.failedAction = false;
         $scope.place = {};
+        $scope.place.state = authService.userDetails.state || "";
+        $scope.place.lga = authService.userDetails.lga || "";
+        $scope.place.town = authService.userDetails.town || "";
         $scope.addPlaceButtonText = defaultButtonText;
         $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
         $scope.categories = categoryService.allCategories;
         $scope.$on('categoryService:changed', function (event, categories) {
             $scope.categories = categories;
+        });
+        $scope.$on('authService:changed', function (event, user, userDetails) {
+            $scope.place.state = userDetails.state;
+            $scope.place.lga = userDetails.lga;
+            $scope.place.town = userDetails.town;
         });
         $scope.addPlace = function () {
             $scope.addPlaceButtonText = "Adding .......";
@@ -330,7 +338,7 @@ angular.module('myApp.controllers', []).
 
         var getReviews = function (placeId) {
             placeService.getReviews(placeId).then(function (data) {
-                $scope.reviewsExist = data.length > 0;
+                $scope.reviewsExist = data.length > 0; // its really dangerous having this here
                 $scope.reviews = $filter('filter')(data, function (value) {
                     if (value.user.username == authService.user.username) {
                         return false;
@@ -358,7 +366,7 @@ angular.module('myApp.controllers', []).
             $scope.updateReviewLoading = true;
             reviewService.updateReview(review).then(function (data) {
                 $scope.currentUserReview = data;
-                $scope.reviewsExist = data.length > 0;
+                $scope.reviewsExist = true;
                 recalculateAverageRatings();
                 //alert success here
                 alertModalService.modalTemplateOptions.title = "Update Review Successful!!!";
@@ -377,6 +385,7 @@ angular.module('myApp.controllers', []).
             $scope.addReviewLoading = true;
             reviewService.addReview(review).then(function (data) {
                 $scope.currentUserReview = data;
+                $scope.reviewsExist = true;
                 recalculateAverageRatings();
                 //getReviews($scope.place.id); wont be needed here since the reviews would be filtered to remove the user's review
                 alertModalService.modalTemplateOptions.title = "Add Review Successful!!!";
@@ -435,16 +444,16 @@ angular.module('myApp.controllers', []).
             $scope.updatePlaceLoading = true;
             $scope.updatePlaceButtonText = loadingUpdateBtnTxt;
             if ($scope.place.addedBy.username === authService.user.username) {
-                if (angular.equals($scope.place, oldPlace)) {
-                    $scope.reset();
-                    alertUpdateResult(false);
-                    $scope.updatePlaceLoading = false;
-                    $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
-                }
-                else {
-                    placeService.updatePlace(placeId).then(function (data) {
+                //if (angular.equals($scope.place, oldPlace)) {
+                //    $scope.reset();
+                //    alertUpdateResult(false);
+                //    $scope.updatePlaceLoading = false;
+                //    $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
+                //}
+                //else {
+                placeService.updatePlace($scope.place).then(function (data) {
                         $scope.place = data;
-                        $scope.place = angular.copy(oldPlace);
+                    oldPlace = angular.copy(data);
                         alertUpdateResult(false);
                     }, function (error) {
                         alertUpdateResult(true, error.message);
@@ -452,7 +461,7 @@ angular.module('myApp.controllers', []).
                         $scope.updatePlaceLoading = false;
                         $scope.updatePlaceButtonText = defaultUpdateBtnTxt;
                     });
-                }
+                //}
             }
             else {
                 alertModalService.modalTemplateOptions.title = "UnAuthorized Action";

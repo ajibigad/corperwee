@@ -146,8 +146,8 @@ angular.module('myApp.services')
             });
         };
 
-        this.updatePlace = function (placeId) {
-            return $http.put(appEndpoints.PLACE_ENDPOINT + "/" + placeId).then(function (response) {
+        this.updatePlace = function (place) {
+            return $http.put(appEndpoints.PLACE_ENDPOINT, place).then(function (response) {
                 return response.data;
             }, function (response) {
                 return $q.reject(response.data);
