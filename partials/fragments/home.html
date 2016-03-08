@@ -69,12 +69,10 @@
                         </li>
                     </ul>
                 </li>
-                <li role="presentation"><a class="btn btn-success btn-block" ng-click="reverseOrder = true"
-                                           ng-show="!reverseOrder">ASC<span
-                        class="glyphicon glyphicon-sort-by-attributes"></span></a></li>
                 <li role="presentation">
-                    <a class="btn btn-success" ng-click="reverseOrder = false" ng-show="reverseOrder">DESC
-                        <span class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                    <a class="btn btn-default" ng-click="reverseOrder = !reverseOrder">{{reverseOrder ? "DESC" : "ASC"}}
+                        <span class="glyphicon"
+                              ng-class="{'glyphicon-sort-by-attributes-alt' : reverseOrder, 'glyphicon-sort-by-attributes' : !reverseOrder}"></span>
                     </a>
                 </li>
             </ul>

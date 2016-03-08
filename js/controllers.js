@@ -42,12 +42,22 @@ angular.module('myApp.controllers', []).
         $scope.searchResults = [];
         $scope.sortingProperties = ["name", "rating", "addedBy"];
         $scope.searchParams = angular.copy(placeService.searchParams);
-        $scope.fetchResults = function () {
+        $scope.fetchResults = function (nextPage) {
             $scope.searchBtnText = "Searching";
             $scope.searchLoading = true;
+            if (nextPage) {
+                $scope.searchParams.pageNumber = ++pageNumber;
+            }
+            else {
+                $scope.searchParams.pageNumber = pageNumber = 0;
+            }
             placeService.getPagedPlaces($scope.searchParams).then(function (data) {
-                $scope.searchResults = data.content;
-                pageNumber++;
+                if (nextPage) {
+                    $scope.searchResults = $scope.searchResults.concat(data.content);
+                }
+                else {
+                    $scope.searchResults = data.content;
+                }
                 $scope.lastPage = data.last;
             }, function(){
                 //alert error that occurred
@@ -91,7 +101,9 @@ angular.module('myApp.controllers', []).
         };
 
         $scope.$watch('searchParams', function(newVal, oldVal){
+            console.log("serchParam changed");
             if(!angular.equals(newVal.category, oldVal.category)){
+                console.log("serchParam changed initiate fetching");
                 $scope.fetchResults();
             }
         }, true);
