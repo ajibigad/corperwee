@@ -1,8 +1,67 @@
 <div class="entry-img">
     <div class="container">
-        <div class="jumbotron text-center" style="background:none">
-            <h1 class="fancy-text">CorpersWee</h1>
-            <p>Uniting the corpers, uplifting the nation.</p>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="jumbotron center-on-resize no-padding" style="background:none">
+                    <h1 class="fancy-text">CorpersWee</h1>
+                    <p>Uniting the corpers, uplifting the nation.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-6 col-sm-6" ng-controller="SignInController">
+               <form name="signInForm" class="bg-white padding-lg" novalidate>
+                   <fieldset>
+                       <legend class="text-center">Login</legend>
+                        <div class="form-group has-feedback"
+                            ng-class="{'has-error' : signInForm.username.$dirty && signInForm.username.$invalid, 'has-success' : signInForm.username.$dirty && signInForm.username.$valid}">
+                           <label for="signin.username" >Username</label>
+                           <input autocomplete="false" value="" name="username" ng-required="true"
+                                  ng-minlength="4" ng-maxlength="20" type="text" class="form-control"
+                                  id="signin.username" placeholder="Username" ng-model="user.username">
+                           <span class="glyphicon glyphicon-ok form-control-feedback"
+                                 aria-hidden="true"
+                                 ng-show="signInForm.username.$dirty && signInForm.username.$valid"></span>
+                           <span class="glyphicon glyphicon-remove form-control-feedback"
+                                 aria-hidden="true"
+                                 ng-show="signInForm.username.$dirty && signInForm.username.$invalid"></span>
+                           <span class="sr-only">(success)</span>
+                           <span class="help-block"
+                                 ng-show="signInForm.username.$dirty && signInForm.username.$error.required">UserName cannot be empty</span>
+                           <span class="help-block"
+                                 ng-show="signInForm.username.$dirty && signInForm.username.$error.minlength">UserName must be more than 5 characters</span>
+                           <span class="help-block"
+                                 ng-show="signInForm.username.$dirty && signInForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
+                        </div>
+                        <div class="form-group has-feedback"
+                            ng-class="{'has-error' : signInForm.password.$dirty && signInForm.password.$invalid, 'has-success' : signInForm.password.$dirty && signInForm.password.$valid}">
+                           <label for="signin.password" class="">Password</label>
+
+                               <input autocomplete="false" value="" name="password" ng-required="true"
+                                      ng-minlength="8" ng-maxlength="20" type="password"
+                                      class="form-control" id="signin.password" placeholder="Password"
+                                      ng-model="user.password">
+                               <span class="glyphicon glyphicon-ok form-control-feedback"
+                                     aria-hidden="true"
+                                     ng-show="signInForm.password.$dirty && signInForm.password.$valid"></span>
+                               <span class="glyphicon glyphicon-remove form-control-feedback"
+                                     aria-hidden="true"
+                                     ng-show="signInForm.password.$dirty && signInForm.password.$invalid"></span>
+                               <span class="sr-only">(success)</span>
+                               <span class="help-block"
+                                     ng-show="signInForm.password.$dirty && signInForm.password.$error.required">Password cannot be empty</span>
+                               <span class="help-block"
+                                     ng-show="signInForm.password.$dirty && signInForm.password.$error.minlength">Password must be more than 5 characters</span>
+                               <span class="help-block"
+                                     ng-show="signInForm.password.$dirty && signInForm.password.$error.maxlength">Password must not exceed 20 characters</span>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary" ng-disabled="signInForm.$invalid"
+                                        id="signIn-btn" ng-click="signIn()" ladda="signInLoading" data-style="expand-right">Sign In
+                                </button>
+                                <button type="button" class="btn btn-danger " data-dismiss="modal">Close</button>
+                            </div>
+                    </fieldset>
+               </form>
+            </div>
         </div>
     </div>
 </div>

@@ -63,7 +63,7 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
                 $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
-            }, function (response) {//just temp hack till i fix logout on server or client side
+            }, function (response) { //just temp hack till i fix logout on server or client side
                 auth.user = undefined;
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
@@ -112,6 +112,7 @@ angular.module('myApp.services')
         var getAllCategories = function () {
             $http.get(appEndpoints.CATEGORY_ENDPOINT).then(function (response) {
                 self.allCategories = response.data;
+                console.log(response);
                 $rootScope.$broadcast('categoryService:changed', self.allCategories);
             }, function (response) {
                 alert("Error in Fetching Categories");

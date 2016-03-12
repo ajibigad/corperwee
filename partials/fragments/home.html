@@ -1,29 +1,18 @@
-<div class="well"><p class="lead">Showing Top Reports for your Town: {{currentUser.town | uppercase}}</p></div>
+<h2>Showing Top Results for Town: {{currentUser.town | uppercase}}</h2>
+<hr>
 <div class="row">
-    <div class="col-lg-12">
-        <div class="well">
-            <button class="btn btn-primary" ng-click="toggleFilterShow()">Toggle Search Filter</button>
-        </div>
-    </div>
-</div>
-<div class="row" ng-show="showSearchFilter">
-    <div class="col-lg-2">
-        <p>
-            <h4>Search Filter</h4>
-        </p>
-    </div>
-    <div class="col-lg-10">
-        <form class="form-inline" ng-submit="search()" name="searchForm">
+    <div class="col-md-12">
+        <form  class="form-inline">
             <div class="form-group">
                 <label for="search.state">State</label>
-                <select id="search.state" class="form-control" ng-model="searchParams.state"
+                 <select id="search.state" class="form-control" ng-model="searchParams.state"
                         name="state" ng-required="true">
                     <option value="" selected>Please select a State</option>
                     <option value="lagos">Lagos</option>
                     <option value="anambra">Anambra</option>
                 </select>
             </div>
-            <div class="form-group">
+             <div class="form-group">
                 <label for="search.lga">L.G.A</label>
                 <select id="search.lga" class="form-control" ng-model="searchParams.lga"
                         name="lga" ng-required="true">
@@ -42,17 +31,16 @@
                 </select>
             </div>
             <button type="submit" class="btn btn-primary" ng-disabled="searchForm.$invalid" ladda="searchLoading" data-style="expand-right">{{searchBtnText}}</button>
-        </form>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <ul class="nav nav-pills nav-justified">
+        </form> 
+        <br>
+        <ul class="nav nav-pills">
             <li role="presentation" ng-repeat="category in categories"><a href="#">{{category.description}}</a></li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    Sort By <span class="caret"></span>
-                </a>
+        
+            
+            <li class="pull-right">
+                <button class="dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    Sort By <span class="fa fa-caret-down"></span>
+                </button>
                 <ul class="dropdown-menu">
                     <li><a href="">Name</a></li>
                     <li><a href="">Ratings</a></li>
@@ -62,19 +50,21 @@
         </ul>
     </div>
 </div>
+
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-6 col-md-offset-3">
         <div class="input-group search-bar">
             <input type="text" ng-model="search.query" ng-model-options="{ debounce: 800 }" onclick="select()" class="form-control" placeholder="Enter Place's name" autofocus />
             <span class="input-group-addon bar-style"><i class="glyphicon glyphicon-search"></i></span>
         </div>
     </div>
 </div>
-<div class="row">
+
+<div class="row bg-white">
     <div class="col-lg-12">
-        <div class="well text-center" ng-if="!searchLoading">
-            Loading results...
-        </div>
+        <p class="text-center" ng-if="!searchLoading">
+           <i class="fa fa-spinner fa-spin"></i> Loading results ...
+        </p>
         <div ui-view></div>
         <div class="well text-center" ng-if="searchResults.size < 0">
             No results found.

@@ -26,6 +26,11 @@ body {
     background-color: #fff;
 }
 
+.bg-white-tr {
+    background: rgba(255,255,255,.8);
+}
+
+
 .bg-grey {
     background:rgba(150,150,150,.6);
 }
@@ -41,6 +46,9 @@ body {
     color:#276212;
 }
 
+.no-padding {
+    padding:0;
+}
 .padding-sm {
     padding:5px;
 }
