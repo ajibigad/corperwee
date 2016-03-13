@@ -20,13 +20,13 @@ angular.module('myApp.controllers', []).
     .controller('LandingController', ['$rootScope', function ($rootScope) {
         $rootScope.title = 'NYSC';
         $rootScope.logged_in = false;
-        $rootScope.style = 'styles.css';
+        $rootScope.style = 'landing.css';
         $rootScope.navbar_url = 'partials/fragments/logout_navbar.html';
     }])
     .controller('CorperWeeCtrl', function ($rootScope, $scope, authService, userService, $state) {
         $rootScope.title = "NYSC - Home";
         $rootScope.logged_in = true; //this should be set by the authService
-        $rootScope.style = 'dashboard.css';
+        $rootScope.style = 'home.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
         //$state.go('corperwee.home');
     })

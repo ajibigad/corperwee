@@ -8,12 +8,6 @@ ul.nav.navbar-nav a {
 	/*background-color: #E8E8E8;*/
 /*}*/
 
-a.navbar-brand {
-	background-color: #080808;
-	margin-right: 1px;
-	width: 104px;
-}
-
 /*End NavBar styling*/
 
 /*Global Styles*/
@@ -28,29 +22,13 @@ a.navbar-brand {
 	color: white;
 }
 
-.glyphicon {
-	margin-right: 5px;
-}
-
-
 /*li.active {*/
 	/*background-color: #D1D1D1;*/
 /*}*/
 
-#searchBar{
-	width: 200px;
-	margin: 0px;
-	display: inline;
-}
-
 /*End Global Style*/
 
 /* Typography */
-
-body{
-	-webkit-font-smoothing: antialiased;
-	text-rendering: optimizelegibility;
-}
 
 #myCarousel {
 	margin-top: 52px;
@@ -113,13 +91,6 @@ body{
 	padding: 10px;
 }
 
-footer {
-	background: #333;
-	color: #eee;
-	font-size: 11px;
-	padding: 20px;
-}
-
 /*End Layout*/
 
 /*UI styling*/
@@ -140,10 +111,6 @@ footer {
 
 #slide-3 {
 	background: url("../img/carousel-image%203.jpg") no-repeat top center;
-}
-
-.item {
-
 }
 
 /*End UI styling*/
@@ -221,14 +188,3 @@ footer {
 }
 
 /* End Media Queries*/
-
-.nojs {
-	padding: 2px;
-	padding-left: 6px;
-	margin-bottom: 5px;
-	background: #ff0000;
-	color: #ffffff;
-	font-size: 15px;
-	border: 1px solid #ff0000;
-	border-radius: 5px;
-}
