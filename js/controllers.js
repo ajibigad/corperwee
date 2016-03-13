@@ -129,7 +129,7 @@ angular.module('myApp.controllers', []).
             signUpService.signUp($scope.newUser).then(function (response) {//the response here contains a json of the details of the user that just signed in
                 authService.login($scope.newUser.username, $scope.newUser.password).then(function () {
                     //direct to home page
-                    $('#signUpModal').on('hide.bs.modal', function (e) {
+                    $('#signUpModal').on('hidden.bs.modal', function (e) {
                         $state.go('corperwee.home');
                     }).modal('hide');
                 });
