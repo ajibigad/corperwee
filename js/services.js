@@ -6,7 +6,7 @@
 // Demonstrate how to register services
 angular.module('myApp.services', []).
     value('version', '0.1').
-    value('HOST', "http://localhost:8086")
+    value('HOST', "http://corperwee-spring.herokuapp.com")
     .value('API', '/corperwee/api')
     .value('REGEX_EXPs', { // add future regex objects here
         phoneNumber: /\d{11}/,
