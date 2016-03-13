@@ -1,0 +1,7 @@
+{
+  "name": "corperwee",
+  "description": "A webapp for corpers",
+  "devDependencies": {
+    "phantomjs": "~1.9"
+  }
+}
