@@ -92,13 +92,6 @@ angular.module('myApp', [
             }
         });
 
-        /*Am trying to fix the scrollBar issue with this code but its not solving*/
-        $rootScope.$on('$stateChangeSuccess', function () {
-            console.log("in changed state");
-            //$window.scrollTo(0,0);
-            //$("html,body").animate({scrollTop:0}, 200);
-        });
-
         authService.user = $cookieStore.get('user'); //in case of a page refresh
         authService.userDetails = $cookieStore.get('userDetails');
         $rootScope.$broadcast('authService:changed', authService.user, authService.userDetails);

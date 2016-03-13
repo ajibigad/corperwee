@@ -41,7 +41,7 @@ angular.module('myApp.controllers', []).
         $scope.showSearchFilter = false;
         $scope.searchResults = [];
         $scope.sortingProperties = ["name", "rating", "addedBy"];
-        $scope.searchParams = angular.copy(placeService.searchParams);
+        $scope.searchParams = placeService.searchParams; // this should not scare you cause its just for this user angular.copy(placeService.searchParams);
         $scope.fetchResults = function (nextPage) {
             $scope.searchBtnText = "Searching";
             $scope.searchLoading = true;
@@ -69,6 +69,7 @@ angular.module('myApp.controllers', []).
             });
         };
         var resetSearchParams = function (userDetails) {
+            console.log("reset param called");
             $scope.searchParams.state = userDetails.state;
             $scope.searchParams.lga = userDetails.lga;
             $scope.searchParams.town = userDetails.town;
@@ -87,7 +88,7 @@ angular.module('myApp.controllers', []).
             }
         }, true);
 
-        if(authService.userDetails){// for cases of a page refresh
+        if (authService.userDetails) {// for cases of a page refresh, this part is not yet understood
             resetSearchParams(authService.userDetails);
         }
 
@@ -101,9 +102,9 @@ angular.module('myApp.controllers', []).
         };
 
         $scope.$watch('searchParams', function(newVal, oldVal){
-            console.log("serchParam changed");
-            if(!angular.equals(newVal.category, oldVal.category)){
-                console.log("serchParam changed initiate fetching");
+            console.log("searchParam changed");
+            if (!angular.equals(newVal.category, oldVal.category)) {//this makes it specific to only tabs(categories nav) clicks
+                console.log("searchParam changed initiate fetching");
                 $scope.fetchResults();
             }
         }, true);
@@ -119,6 +120,9 @@ angular.module('myApp.controllers', []).
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', 'REGEX_EXPs', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService, REGEX_EXPs) {
         $scope.newUser = {};
         $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
+        $scope.$watch('newUser.password', function (newVal, oldVal, scope) {
+            $scope.newUser.confirmPassword = "";
+        });
         $scope.signUp = function () {
             $scope.signUpLoading = true;
             //this should be called after a successful login
@@ -143,8 +147,8 @@ angular.module('myApp.controllers', []).
         };
         var getStates = function () {
             // when i get this api to work i would need to move this process into the $state resolve property
-            //this is because the states need to be fetched before the sign up controller comes in
-            //if the state loading fails, then the user would be required to refresh or check network connection
+            // this is because the states need to be fetched before the sign up controller comes in
+            // if the state loading fails, then the user would be required to refresh or check network connection
             nigStatesService.getAllStates().then(function (response) {
                 $scope.states = response.data;
             }, function () {
@@ -162,7 +166,7 @@ angular.module('myApp.controllers', []).
             authService.login($scope.user.username, $scope.user.password).then(function () {
                 //direct to home page
                 //this should be called after a successful login
-                $('#signInModal').on('hide.bs.modal', function (e) {
+                $('#signInModal').on('hidden.bs.modal', function (e) {
                     $state.go('corperwee.home');
                 }).modal('hide');
             }, function (response) {
