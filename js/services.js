@@ -146,6 +146,22 @@ angular.module('myApp.services')
             });
         };
 
+        this.getAllPlaces = function () {
+            return $http.get(appEndpoints.PLACE_ENDPOINT).then(function (response) {
+                return response.data;
+            }, function () {
+                alert("error fetching places");
+            });
+        };
+
+        this.getPlacesByName = function (searchQuery) {
+            return $http.get(appEndpoints.PLACE_ENDPOINT + "/searchPlacesByName/" + searchQuery).then(function (response) {
+                return response.data;
+            }, function () {
+                alert("error fetching places by name");
+            });
+        }
+
         this.updatePlace = function (place) {
             return $http.put(appEndpoints.PLACE_ENDPOINT, place).then(function (response) {
                 return response.data;
@@ -178,7 +194,7 @@ angular.module('myApp.services')
             DESC : "DESC"
         };
 
-        this.getPagedPlaces = function(searchParams){
+        this.getPagedPlacesByTown = function (searchParams) {
             return $http.post(appEndpoints.PLACE_ENDPOINT + "/town/paged", searchParams).then(function(response){
                 return response.data;
             });

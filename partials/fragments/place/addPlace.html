@@ -51,21 +51,27 @@
 
                                         <div class="col-md-9">
                                             <input name="website" ng-required="true" ng-minlength="5" ng-maxlength="20"
-                                                   type="text" class="form-control" id="addPlace.website"
+                                                   type="url" class="form-control" id="addPlace.website"
                                                    placeholder="Website: eg kolawole.com" ng-model="place.website">
-                                            <span class="glyphicon glyphicon-ok form-control-feedback"
-                                                  aria-hidden="true"
-                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$valid"></span>
-                                            <span class="glyphicon glyphicon-remove form-control-feedback"
-                                                  aria-hidden="true"
-                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$invalid"></span>
-                                            <span class="sr-only">(success)</span>
-                                            <span class="help-block"
-                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$error.required">LastName cannot be empty</span>
-                                            <span class="help-block"
-                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$error.minlength">LastName must be more than 5 characters</span>
-                                            <span class="help-block"
-                                                  ng-show="addPlaceForm.website.$dirty && addPlaceForm.website.$error.maxlength">Lasttname must not exceed 20 characters</span>
+
+                                            <div ng-show="addPlaceForm.website.$dirty">
+                                                <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                      aria-hidden="true"
+                                                      ng-show="addPlaceForm.website.$valid"></span>
+                                                <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                      aria-hidden="true"
+                                                      ng-show="addPlaceForm.website.$invalid"></span>
+                                                <span class="sr-only">(success)</span>
+                                                <span class="help-block"
+                                                      ng-show="addPlaceForm.website.$error.required">LastName cannot be empty</span>
+                                                <span class="help-block"
+                                                      ng-show="addPlaceForm.website.$error.minlength">LastName must be more than 5 characters</span>
+                                                <span class="help-block"
+                                                      ng-show="addPlaceForm.website.$error.maxlength">Lastname must not exceed 20 characters</span>
+                                                <span class="help-block"
+                                                      ng-show="addPlaceForm.website.$error.url">URL not valid</span>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="form-group has-feedback"

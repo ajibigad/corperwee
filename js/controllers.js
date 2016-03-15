@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-    controller('MainController', ['authService', '$rootScope', '$scope', '$state', 'userService', 'categoryService', function (authService, $rootScope, $scope, $state, userService, categoryService) {
+    controller('MainController', ['authService', '$rootScope', '$scope', '$state', 'userService', 'categoryService', 'placeService', function (authService, $rootScope, $scope, $state, userService, categoryService, placeService) {
         $scope.currentUser = authService.userDetails;
         $scope.logout = function () {
             authService.logout().then(function () {
@@ -16,6 +16,22 @@ angular.module('myApp.controllers', []).
         $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
             $scope.currentUser = newUserDetails;
         }, true);
+        $scope.getPlacesByName = function (searchQuery) {
+            return placeService.getPlacesByName(searchQuery).then(function (data) {
+                return data;
+            });
+        };
+        $scope.viewPlace = function ($item, $model, $label, $event) {
+            //console.log("syugdawidwnidoas");
+            //console.log($model);
+            $state.go('corperwee.viewPlace', {id: $model.id});
+        }
+        $scope.states = ['Alabama', 'Alaska', 'Arizona',
+            'Arkansas', 'California', 'Colorado', 'Connecticut',
+            'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
+            'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+            'Louisiana', 'Maine', 'Maryland', 'Massachusetts'];
+
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
         $rootScope.title = 'NYSC';
@@ -51,7 +67,7 @@ angular.module('myApp.controllers', []).
             else {
                 $scope.searchParams.pageNumber = pageNumber = 0;
             }
-            placeService.getPagedPlaces($scope.searchParams).then(function (data) {
+            placeService.getPagedPlacesByTown($scope.searchParams).then(function (data) {
                 if (nextPage) {
                     $scope.searchResults = $scope.searchResults.concat(data.content);
                 }
