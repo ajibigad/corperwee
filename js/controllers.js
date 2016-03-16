@@ -13,7 +13,7 @@ angular.module('myApp.controllers', []).
                 $state.go('welcome'); //just temp hack till i fix logout on server side
             }); // this would logout you out and direct you to the home page
         };
-        $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
+        $scope.$on('authService:changed', function (event, newUserDetails) {
             $scope.currentUser = newUserDetails;
         }, true);
         $scope.getPlacesByName = function (searchQuery) {
@@ -22,16 +22,13 @@ angular.module('myApp.controllers', []).
             });
         };
         $scope.viewPlace = function ($item, $model, $label, $event) {
-            //console.log("syugdawidwnidoas");
-            //console.log($model);
             $state.go('corperwee.viewPlace', {id: $model.id});
         }
-        $scope.states = ['Alabama', 'Alaska', 'Arizona',
-            'Arkansas', 'California', 'Colorado', 'Connecticut',
-            'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
-            'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-            'Louisiana', 'Maine', 'Maryland', 'Massachusetts'];
 
+        $scope.$on('event:auth-loginRequired', function (event) {
+            $rootScope.retryFailed401Requests = true;
+            $('#signInModal').modal('show');
+        })
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
         $rootScope.title = 'NYSC';
@@ -98,7 +95,7 @@ angular.module('myApp.controllers', []).
             $scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
         };
 
-        $scope.$on('authService:changed', function (event, newUser, newUserDetails) {
+        $scope.$on('authService:changed', function (event, newUserDetails) {
             if(newUserDetails){
                 resetSearchParams(newUserDetails);
             }
@@ -175,7 +172,7 @@ angular.module('myApp.controllers', []).
         };
         //getStates();
     }])
-    .controller('SignInController', ['$scope', 'authService', '$state', 'alertModalService', function ($scope, authService, $state, alertModalService) {
+    .controller('SignInController', ['$scope', 'authService', '$state', 'alertModalService', '$rootScope', function ($scope, authService, $state, alertModalService, $rootScope) {
         $scope.user = {};
         $scope.signIn = function () {
             $scope.signInLoading = true;
@@ -183,7 +180,8 @@ angular.module('myApp.controllers', []).
                 //direct to home page
                 //this should be called after a successful login
                 $('#signInModal').on('hidden.bs.modal', function (e) {
-                    $state.go('corperwee.home');
+                    $rootScope.retryFailed401Requests ? authService.loginConfirmed() : $state.go('corperwee.home');
+                    $rootScope.retryFailed401Requests = false; // to make sure this change only be set to true by the auth-loginRequired event
                 }).modal('hide');
             }, function (response) {
                 //show alert for invalid Username/Password
@@ -193,10 +191,10 @@ angular.module('myApp.controllers', []).
                         break;
                     default : errorMessage = "Failed to connect to server";
                 };
-                alertModalService.modalTemplateOptions.title = "Sign In Error!!!";
-                alertModalService.modalTemplateOptions.message = errorMessage;
-                alertModalService.showErrorAlert();
-                response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;// this helps to show the correct error incase of a no network issue
+                //alertModalService.modalTemplateOptions.title = "Sign In Error!!!";
+                //alertModalService.modalTemplateOptions.message = errorMessage;
+                //alertModalService.showErrorAlert();
+                //response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;// this helps to show the correct error incase of a no network issue
             }).finally(function () {
                 $scope.signInLoading = false;
             });
@@ -324,7 +322,7 @@ angular.module('myApp.controllers', []).
         $scope.$on('categoryService:changed', function (event, categories) {
             $scope.categories = categories;
         });
-        $scope.$on('authService:changed', function (event, user, userDetails) {
+        $scope.$on('authService:changed', function (event, userDetails) {
             $scope.place.state = userDetails.state;
             $scope.place.lga = userDetails.lga;
             $scope.place.town = userDetails.town;

@@ -15,7 +15,7 @@
                 <form class="navbar-form navbar-left" role="search">
                     <div class="form-inline">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search this site...."
+                            <input type="text" class="form-control" placeholder="Search for place by name ...."
                                    ng-model="searchQuery"
                                    uib-typeahead="place as place.name for place in getPlacesByName($viewValue)"
                                    typeahead-on-select="viewPlace($item, $model, $label, $event)"

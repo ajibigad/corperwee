@@ -26,13 +26,42 @@ angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
 });
 
 angular.module('myApp.services').factory('authService', ['appEndpoints', '$http', '$cookieStore', '$q', '$rootScope', 'userService',
-    function (appEndpoints, $http, $cookieStore, $q, $rootScope, userService) {
+    function (appEndpoints, $http, $cookieStore, $q, $rootScope, userService, httpBuffer) {
         var auth = {};
+
+        /**
+         * Call this function to indicate that authentication was successfull and trigger a
+         * retry of all deferred requests.
+         * @param data an optional argument to pass on to $broadcast which may be useful for
+         * example if you need to pass through details of the user that was logged in
+         * @param configUpdater an optional transformation function that can modify the
+         * requests that are retried after having logged in.  This can be used for example
+         * to add an authentication token.  It must return the request.
+         */
+        auth.loginConfirmed = function (data, configUpdater) {
+            var updater = configUpdater || function (config) {
+                    return config;
+                };
+            $rootScope.$broadcast('event:auth-loginConfirmed', data);
+            httpBuffer.retryAll(updater);
+        };
+
+        /**
+         * Call this function to indicate that authentication should not proceed.
+         * All deferred requests will be abandoned or rejected (if reason is provided).
+         * @param data an optional argument to pass on to $broadcast.
+         * @param reason if provided, the requests are rejected; abandoned otherwise.
+         */
+        auth.loginCancelled = function (data, reason) {
+            httpBuffer.rejectAll(reason);
+            $rootScope.$broadcast('event:auth-loginCancelled', data);
+        };
+
         auth.getUserDetails = function (username) {
             userService.getUserDetails(username).then(function (userDetails) {
                 auth.userDetails = userDetails;
                 $cookieStore.put('userDetails', auth.userDetails);
-                $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+                $rootScope.$broadcast('authService:changed', auth.userDetails);
                 return userDetails;
             }, function (error) {
                 //this should must likely not happen since we were able to login, then the user exist
@@ -44,7 +73,7 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
         auth.updateUserDetails = function (user) {
             auth.userDetails = angular.copy(user);
             $cookieStore.put('userDetails', auth.userDetails);
-            $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+            $rootScope.$broadcast('authService:changed', auth.userDetails);
         };
         auth.login = function (username, password) {
             //var headers = {Authorization : "Basic " + btoa(username + ":" + password)}; //for now lets use the defaulr username and password for spring. I would implement a real user store later
@@ -62,13 +91,13 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
-                $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+                $rootScope.$broadcast('authService:changed', auth.userDetails);
             }, function (response) {//just temp hack till i fix logout on server or client side
                 auth.user = undefined;
                 auth.userDetails = undefined;
                 $cookieStore.remove('user');
                 $cookieStore.remove('userDetails');
-                $rootScope.$broadcast('authService:changed', auth.user, auth.userDetails);
+                $rootScope.$broadcast('authService:changed', auth.userDetails);
             });
         };
         return auth;
@@ -285,3 +314,12 @@ angular.module('myApp.services')
             show(success, this.modalTemplateOptions, this.modalSize);
         };
     });
+
+//INTERCEPTORS
+angular.module('myApp.services').factory('sessionTimeOutInterceptor', ['$state', function ($state) {
+    return {
+        responseError: function (rejectionReason) {
+
+        }
+    };
+}])
