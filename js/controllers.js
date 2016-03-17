@@ -32,6 +32,13 @@ angular.module('myApp.controllers', []).
             $rootScope.retryFailed401Requests = true;
             //we should inject the modal html here before showing it
             var signInModalHolder = $('#injectSignInModalHere');
+            console.log(signInModalHolder);
+            if (!signInModalHolder.get(0)) { //painful hack!!!
+                console.log("not found");
+                $('body').append('<div id="injectSignInModalHere"></div>');
+                signInModalHolder = $('#injectSignInModalHere');
+            }
+            //well i tot i would need to remove the html loaded into this div so we dont have several signin modals on the page each time this action occurs but it turns out the load function replaces anything in the div so we ok
             signInModalHolder.load('partials/fragments/signInModal.html', function () {
                 $compile(signInModalHolder.contents())($scope); //bind the new html to the scope of the ctrl. we need to do this because angular has bootstrapped the page already b4 this occurs so we need to do it manually
                 $('#signInModal').modal({
@@ -458,8 +465,9 @@ angular.module('myApp.controllers', []).
             $state.go('corperwee.home');
         });
     })
-    .controller('UpdatePlaceCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state, placeService, categoryService) {
+    .controller('UpdatePlaceCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state, placeService, categoryService, place) {
         var placeId = $stateParams.id;
+        console.log(place);
         var oldPlace;
         var defaultUpdateBtnTxt = "Update";
         var loadingUpdateBtnTxt = "Updating ....";

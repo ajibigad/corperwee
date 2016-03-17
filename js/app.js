@@ -72,7 +72,25 @@ angular.module('myApp', [
             .state('corperwee.updatePlace', {
                 url: '/updatePlace/:id',
                 controller: 'UpdatePlaceCtrl',
-                templateUrl: 'partials/fragments/place/updatePlace.html'
+                templateUrl: 'partials/fragments/place/updatePlace.html',
+                resolve: {
+                    place: function (authService, placeService, alertModalService, $stateParams, $state) {
+                        return placeService.getPlace($stateParams.id).then(function (data) {
+                            if (data.addedBy.username !== authService.user.username) {
+                                alertModalService.modalTemplateOptions.title = "UnAuthorized Action";
+                                alertModalService.modalTemplateOptions.message = "You are not authorized to update this place";
+                                alertModalService.showErrorAlert();
+                                $state.go('corperwee.viewPlace', {id: $stateParams.id});
+                            }
+                            return data;
+                        }, function (error) {//we can check the status code with error.code
+                            alertModalService.modalTemplateOptions.title = "Place Not Found";
+                            alertModalService.modalTemplateOptions.message = error.message;
+                            alertModalService.showErrorAlert();
+                            $state.go('corperwee.home');
+                        });
+                    }
+                }
             })
             .state('corperwee.changePassword', {
                 url: '/changePassword',
