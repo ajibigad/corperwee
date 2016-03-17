@@ -3,8 +3,9 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-    controller('MainController', ['authService', '$rootScope', '$scope', '$state', 'userService', 'categoryService', 'placeService', function (authService, $rootScope, $scope, $state, userService, categoryService, placeService) {
+    controller('MainController', ['authService', '$rootScope', '$scope', '$state', 'userService', 'categoryService', 'placeService', '$compile', function (authService, $rootScope, $scope, $state, userService, categoryService, placeService, $compile) {
         $scope.currentUser = authService.userDetails;
+        $rootScope.retryFailed401Requests = false;
         $scope.logout = function () {
             authService.logout().then(function () {
                 $state.go('welcome');
@@ -23,12 +24,23 @@ angular.module('myApp.controllers', []).
         };
         $scope.viewPlace = function ($item, $model, $label, $event) {
             $state.go('corperwee.viewPlace', {id: $model.id});
-        }
+        };
 
         $scope.$on('event:auth-loginRequired', function (event) {
+            //we can clear the current authService so in any case if the user bypasses the sign in modal(which i have made lil hard except for developers), movement to any state would redirect him to the welcome state
+            authService.clearAuthUser();
             $rootScope.retryFailed401Requests = true;
-            $('#signInModal').modal('show');
-        })
+            //we should inject the modal html here before showing it
+            var signInModalHolder = $('#injectSignInModalHere');
+            signInModalHolder.load('partials/fragments/signInModal.html', function () {
+                $compile(signInModalHolder.contents())($scope); //bind the new html to the scope of the ctrl. we need to do this because angular has bootstrapped the page already b4 this occurs so we need to do it manually
+                $('#signInModal').modal({
+                    backdrop: 'static',
+                    show: 'true',
+                    keyboard: false
+                });
+            });
+        });
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
         $rootScope.title = 'NYSC';
@@ -151,7 +163,7 @@ angular.module('myApp.controllers', []).
                     case 400 :  $scope.errorMessage = response.data.message;
                         break;
                     default : $scope.errorMessage = "Failed to connect to server";
-                };
+                }
                 $scope.failedSignUp = true;
                 $('#signUpModal').animate({ scrollTop: 0 }, 'fast');
             }).finally(function () {
@@ -174,6 +186,10 @@ angular.module('myApp.controllers', []).
     }])
     .controller('SignInController', ['$scope', 'authService', '$state', 'alertModalService', '$rootScope', function ($scope, authService, $state, alertModalService, $rootScope) {
         $scope.user = {};
+        if ($rootScope.retryFailed401Requests) {
+            $scope.invalidLogin = true;
+            $scope.errorMessage = "Your session has expired! Pls re-login";
+        }
         $scope.signIn = function () {
             $scope.signInLoading = true;
             authService.login($scope.user.username, $scope.user.password).then(function () {
@@ -190,11 +206,12 @@ angular.module('myApp.controllers', []).
                     case 401 :  errorMessage = "Wrong Username/Password Combination";
                         break;
                     default : errorMessage = "Failed to connect to server";
-                };
+                }
                 //alertModalService.modalTemplateOptions.title = "Sign In Error!!!";
                 //alertModalService.modalTemplateOptions.message = errorMessage;
                 //alertModalService.showErrorAlert();
-                //response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;// this helps to show the correct error incase of a no network issue
+                $scope.errorMessage = errorMessage;
+                response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;// this helps to show the correct error incase of a no network issue
             }).finally(function () {
                 $scope.signInLoading = false;
             });

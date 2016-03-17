@@ -1,0 +1,86 @@
+<!-- Sign In Modal -->
+<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" ng-controller="SignInController">
+            <div class="modal-header">
+                <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+                <!--aria-hidden="true">&times;</span></button>-->
+                <h4 class="modal-title" id="signInModalLabel">LOGIN IN</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-show="invalidLogin" class="alert alert-danger fade in">
+                    <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                    <h4>{{errorMessage}}</h4>
+                </div>
+                <form name="signInForm" novalidate>
+                    <div class="form-horizontal">
+                        <div class="form-group has-feedback"
+                             ng-class="{'has-error' : signInForm.username.$touched && signInForm.username.$invalid, 'has-success' : signInForm.username.$touched && signInForm.username.$valid}">
+                            <label for="signin.username" class="col-xs-2">Username</label>
+
+                            <div class="col-xs-10">
+                                <input autocomplete="false" value="" name="username" ng-required="true"
+                                       ng-minlength="4" ng-maxlength="20" type="text" class="form-control"
+                                       id="signin.username" placeholder="Username" ng-model="user.username">
+
+                                <div ng-show="signInForm.username.$touched">
+                                                <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                      aria-hidden="true"
+                                                      ng-show="signInForm.username.$valid"></span>
+                                                <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                      aria-hidden="true"
+                                                      ng-show="signInForm.username.$invalid"></span>
+                                    <span class="sr-only">(success)</span>
+                                                <span class="help-block"
+                                                      ng-show="signInForm.username.$error.required">UserName cannot be empty</span>
+                                                <span class="help-block"
+                                                      ng-show="signInForm.username.$error.minlength">UserName must be more than 5 characters</span>
+                                                <span class="help-block"
+                                                      ng-show="signInForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback"
+                             ng-class="{'has-error' : signInForm.password.$touched && signInForm.password.$invalid, 'has-success' : signInForm.password.$touched && signInForm.password.$valid}">
+                            <label for="signin.password" class="col-xs-2">Password</label>
+
+                            <div class="col-xs-10">
+                                <input autocomplete="false" value="" name="password" ng-required="true"
+                                       ng-minlength="8" ng-maxlength="20" type="password"
+                                       class="form-control" id="signin.password" placeholder="Password"
+                                       ng-model="user.password">
+
+                                <div ng-show="signInForm.password.$touched">
+                                                <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                      aria-hidden="true"
+                                                      ng-show="signInForm.password.$valid"></span>
+                                                <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                      aria-hidden="true"
+                                                      ng-show="signInForm.password.$invalid"></span>
+                                    <span class="sr-only">(success)</span>
+                                                <span class="help-block"
+                                                      ng-show="signInForm.password.$error.required">Password cannot be empty</span>
+                                                <span class="help-block"
+                                                      ng-show="signInForm.password.$error.minlength">Password must be more than 5 characters</span>
+                                                <span class="help-block"
+                                                      ng-show="signInForm.password.$error.maxlength">Password must not exceed 20 characters</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- end model body -->
+            <div class="modal-footer">
+                <a type="button" class="btn btn-primary btn-block" ng-disabled="signInForm.$invalid"
+                   id="signIn-btn" ng-click="signIn()" ladda="signInLoading" data-style="expand-right">Sign In
+                </a>
+                <button type="button" class="btn btn-danger btn-block" data-dismiss="modal"
+                        ng-if="!retryFailed401Requests">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

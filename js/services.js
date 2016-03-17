@@ -25,7 +25,7 @@ angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
     this.REVIEW_ENDPOINT = ENDPOINT + "/review";
 });
 
-angular.module('myApp.services').factory('authService', ['appEndpoints', '$http', '$cookieStore', '$q', '$rootScope', 'userService',
+angular.module('myApp.services').factory('authService', ['appEndpoints', '$http', '$cookieStore', '$q', '$rootScope', 'userService', 'httpBuffer',
     function (appEndpoints, $http, $cookieStore, $q, $rootScope, userService, httpBuffer) {
         var auth = {};
 
@@ -87,19 +87,20 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
         };
         auth.logout = function () {
             return $http.get(appEndpoints.LOGOUT_ENDPOINT).then(function (response) {
-                auth.user = undefined;
-                auth.userDetails = undefined;
-                $cookieStore.remove('user');
-                $cookieStore.remove('userDetails');
-                $rootScope.$broadcast('authService:changed', auth.userDetails);
+                auth.clearAuthUser();
             }, function (response) {//just temp hack till i fix logout on server or client side
-                auth.user = undefined;
-                auth.userDetails = undefined;
-                $cookieStore.remove('user');
-                $cookieStore.remove('userDetails');
-                $rootScope.$broadcast('authService:changed', auth.userDetails);
+                auth.clearAuthUser();
             });
         };
+
+        auth.clearAuthUser = function () {
+            auth.user = undefined;
+            auth.userDetails = undefined;
+            $cookieStore.remove('user');
+            $cookieStore.remove('userDetails');
+            $rootScope.$broadcast('authService:changed', auth.userDetails);
+        };
+
         return auth;
     }]);
 
