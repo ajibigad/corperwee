@@ -107,12 +107,13 @@ angular.module('myApp.directives')
           confirmPassword: '='
         },
         link: function (scope, elm, attrs, ctrl) {
-          ctrl.$validators.confirmPassword = function (modelValue, viewValue) {
-            if (viewValue == scope.confirmPassword) {
-              return true;
-            }
-            return false;
+          ctrl.$validators.confirmPassword = function (modelValue) {
+            return modelValue == scope.confirmPassword;
           }
+
+          scope.$watch("confirmPassword", function() {
+            ctrl.$validate();
+          });
         }
       };
     })

@@ -152,9 +152,6 @@ angular.module('myApp.controllers', []).
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', 'REGEX_EXPs', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService, REGEX_EXPs) {
         $scope.newUser = {};
         $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
-        $scope.$watch('newUser.password', function (newVal, oldVal, scope) {
-            $scope.newUser.confirmPassword = "";
-        });
         $scope.signUp = function () {
             $scope.signUpLoading = true;
             //this should be called after a successful login
