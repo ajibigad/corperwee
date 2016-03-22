@@ -220,6 +220,11 @@ angular.module('myApp.controllers', []).
                 $scope.signInLoading = false;
             });
         };
+        $scope.forgotPassword = function () {
+            $('#signInModal').on('hidden.bs.modal', function (e) {
+                $state.go('welcome.resetPassword');
+            }).modal('hide');
+        };
     }])
     .controller('alertModalInstanceCtrl', function ($scope, $uibModalInstance, modalTemplateOptions, alertType) {
         $scope.alertTitle = modalTemplateOptions.title;
