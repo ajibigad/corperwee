@@ -76,9 +76,11 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
             $rootScope.$broadcast('authService:changed', auth.userDetails);
         };
         auth.login = function (username, password) {
-            //var headers = {Authorization : "Basic " + btoa(username + ":" + password)}; //for now lets use the defaulr username and password for spring. I would implement a real user store later
             var headers = {Authorization : "Basic " + btoa(username +":"+ password)};
-            return $http.get(appEndpoints.LOGIN_ENDPOINT, {headers : headers}).then(function (response) {
+            return $http.get(appEndpoints.LOGIN_ENDPOINT, {
+                headers: headers,
+                ignoreAuthModule: true
+            }).then(function (response) {
                 auth.user = response.data.principal;
                 auth.getUserDetails(username);
                 $cookieStore.put('user', auth.user);
@@ -135,16 +137,31 @@ angular.module('myApp.services')
               sayHello : function (message){
                   return $http.get(HOST+'/hello', {params : {message : " Can i hit the morning!!!!"}});
               },
-              changePassword: function (passwordChange) {
+              changePassword: function (passwordChange, reset) {
+                  //reset = typeof reset !== 'undefined' ? reset : false; // sets default to false
                   //well i had to use an injector here because of this error : Circular dependency found: authService <- userService <- authService
                   // this basically means when authService is injected it required userService which now has to be injected but... he too needs authService
                   // so to fix this we leave the injection of authservice in this service to be within the changePassword function
-                  var authService = $injector.get('authService');
-                  return $http.put(appEndpoints.USER_ENDPOINT + "/" + authService.user.username + "/changePassword", passwordChange).then(function (response) {
-                      return response.data;
-                  }, function (response) {
-                      return $q.reject(response.data);
-                  });
+                  // the reset arg is to indicate whether the password change is a complete reset or an update
+                  //diff is reset is when the person has forgotten is password while update is if the person just wants to update his password(here he has to provide the old password)
+                  if (reset) {
+                      return $http.post(appEndpoints.USER_ENDPOINT + "/changePassword", passwordChange);
+                  }
+                  else {
+                      var authService = $injector.get('authService');
+                      return $http.put(appEndpoints.USER_ENDPOINT + "/" + authService.user.username + "/changePassword", passwordChange).then(function (response) {
+                          return response.data;
+                      }, function (response) {
+                          return $q.reject(response.data);
+                      });
+                  }
+
+              },
+              resetPassword: function (username) {
+                  return $http.post(appEndpoints.USER_ENDPOINT + "/resetPassword?username=" + username);
+              },
+              updatePassword: function (passwordUpdate) {
+                  return this.changePassword(passwordUpdate, false);
               }
           }
         }])

@@ -9,6 +9,14 @@
     height : 100%;
 }
 
+.alert {
+    display: none;
+}
+
+.alert.unhide {
+    display: block;
+}
+
 .modal-header {
     margin-bottom: 0px;
 }
@@ -72,8 +80,7 @@ body {
 }
 
 .nojs {
-    padding: 2px;
-    padding-left: 6px;
+    padding: 2px 2px 2px 6px;
     margin-bottom: 5px;
     background: #ff0000;
     color: #ffffff;
@@ -91,4 +98,8 @@ footer {
     color: #eee;
     font-size: 11px;
     padding: 20px;
+}
+
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
 }

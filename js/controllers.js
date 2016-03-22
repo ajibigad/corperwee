@@ -8,10 +8,10 @@ angular.module('myApp.controllers', []).
         $rootScope.retryFailed401Requests = false;
         $scope.logout = function () {
             authService.logout().then(function () {
-                $state.go('welcome');
+                $state.go('welcome.landing');
             }, function () {
                 //show alert to say error occurred during logout
-                $state.go('welcome'); //just temp hack till i fix logout on server side
+                $state.go('welcome.landing'); //just temp hack till i fix logout on server side
             }); // this would logout you out and direct you to the home page
         };
         $scope.$on('authService:changed', function (event, newUserDetails) {
@@ -50,10 +50,8 @@ angular.module('myApp.controllers', []).
         });
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
-        $rootScope.title = 'NYSC';
-        $rootScope.logged_in = false;
+        $rootScope.title = 'NYSC-welcome';
         $rootScope.style = 'landing.css';
-        $rootScope.navbar_url = 'partials/fragments/logout_navbar.html';
     }])
     .controller('CorperWeeCtrl', function ($rootScope, $scope, authService, userService, $state) {
         $rootScope.title = "NYSC - Home";
@@ -215,7 +213,9 @@ angular.module('myApp.controllers', []).
                 //alertModalService.modalTemplateOptions.message = errorMessage;
                 //alertModalService.showErrorAlert();
                 $scope.errorMessage = errorMessage;
-                response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;// this helps to show the correct error incase of a no network issue
+                $scope.invalidLogin = true;
+                $('#signInAlert').slideDown();
+                //response.status == 401 ? $scope.invalidLogin = true : $scope.invalidLogin = false;// this helps to show the correct error incase of a no network issue
             }).finally(function () {
                 $scope.signInLoading = false;
             });
@@ -302,11 +302,11 @@ angular.module('myApp.controllers', []).
             $scope.user = angular.copy(authService.userDetails);
         };
     })
-    .controller('ChangePasswordCtrl', function ($scope, userService, alertModalService) {
-        $scope.passwordChange = {};
-        $scope.changePassword = function () {
-            $scope.changePasswordLoading = true;
-            userService.changePassword($scope.passwordChange).then(function (data) {
+    .controller('UpdatePasswordCtrl', function ($scope, userService, alertModalService) {
+        $scope.passwordUpdate = {};
+        $scope.updatePassword = function () {
+            $scope.updatePasswordLoading = true;
+            userService.updatePassword($scope.passwordUpdate).then(function (data) {
                 //alertSuccessBox
                 alertChangeResult(false);
             }, function () {
@@ -314,18 +314,18 @@ angular.module('myApp.controllers', []).
                 alertChangeResult(true);
             }).finally(function () {
                 //stop ladda spining
-                $scope.changePasswordLoading = false;
+                $scope.updatePasswordLoading = false;
             });
         };
         var alertChangeResult = function (error) {
             if (error) {
-                alertModalService.modalTemplateOptions.title = "Change Password Action Failed!!!";
-                alertModalService.modalTemplateOptions.message = "Action to change user : " + $scope.currentUser.username + "'" + "s password failed";
+                alertModalService.modalTemplateOptions.title = "Update Password Action Failed!!!";
+                alertModalService.modalTemplateOptions.message = "Action to update user : " + $scope.currentUser.username + "'" + "s password failed";
                 alertModalService.showErrorAlert();
             }
             else {
-                alertModalService.modalTemplateOptions.title = "Change Password Action SuccessFull!!!";
-                alertModalService.modalTemplateOptions.message = "Action to change user : " + $scope.currentUser.username + "'" + "s password was successful";
+                alertModalService.modalTemplateOptions.title = "Update Password Action SuccessFull!!!";
+                alertModalService.modalTemplateOptions.message = "Action to update user : " + $scope.currentUser.username + "'" + "s password was successful";
                 alertModalService.showSuccessAlert();
             }
         };
@@ -500,5 +500,48 @@ angular.module('myApp.controllers', []).
 
         $scope.reset = function () {
             $scope.place = angular.copy(oldPlace);
+        };
+    })
+    .controller('ResetPasswordCtrl', function ($rootScope, $scope, userService, alertModalService) {
+        // $rootScope.navbar_url = 'partials/fragments/logout_navbar.html';
+        $rootScope.title = 'NYSC-resetPassword';
+        $scope.formVisible = true;
+        $scope.resetPassword = function () {
+            $scope.resetPasswordLoading = true;
+            userService.resetPassword($scope.reset.password.username).then(function () {
+                $('#emailAlert').slideDown();
+                $scope.formVisible = false;
+            }, function (error) {
+                //alert failure
+                alertModalService.modalTemplateOptions.title = "Reset Password Action Failed!!!";
+                alertModalService.modalTemplateOptions.message = error.data.message;
+                alertModalService.showErrorAlert();
+            }).finally(function () {
+                $scope.resetPasswordLoading = false;
+            });
+
+        }
+    })
+    .controller('ChangePasswordCtrl', function ($stateParams, userService, $scope, $rootScope, alertModalService) {
+        $rootScope.title = 'NYSC-changePassword';
+        $scope.formVisible = true;
+        var passwordReset = {
+            userId: $stateParams.id,
+            token: $stateParams.token
+        };
+        $scope.changePassword = function () {
+            $scope.changePasswordLoading = true;
+            passwordReset.password = $scope.password;
+            userService.changePassword(passwordReset, true).then(function () {
+                $('#changePasswordAlert').slideDown();
+                $scope.formVisible = false;
+            }, function (error) {
+                //alert failure
+                alertModalService.modalTemplateOptions.title = "Change Password Action Failed!!!";
+                alertModalService.modalTemplateOptions.message = error.data.message;
+                alertModalService.showErrorAlert();
+            }).finally(function () {
+                $scope.changePasswordLoading = false;
+            });
         };
     });

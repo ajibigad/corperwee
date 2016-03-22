@@ -18,8 +18,12 @@ angular.module('myApp', [
     config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$routeProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $routeProvider, $httpProvider) {
         $stateProvider.state('welcome', {
             url: '/welcome',
-            controller: 'LandingController',
-            templateUrl: 'partials/landing_page.html',
+            abstract: true,
+            controller: function ($rootScope) {
+                $rootScope.logged_in = false;
+                $rootScope.navbar_url = 'partials/fragments/logout_navbar.html';
+            },
+            templateUrl: 'partials/welcomePage.html',
             resolve: {
                 user: ['authService', '$q', function (authService, $q) {
                     if (authService.user) {
@@ -28,6 +32,21 @@ angular.module('myApp', [
                 }]
             }
         })
+            .state('welcome.landing', {
+                url: '/landing',
+                controller: 'LandingController',
+                templateUrl: 'partials/landing_page.html'
+            })
+            .state('welcome.resetPassword', {
+                url: '/resetPassword',
+                controller: 'ResetPasswordCtrl',
+                templateUrl: 'partials/resetPassword.html'
+            })
+            .state('welcome.changePassword', {
+                url: '/changePassword?id&token',
+                controller: 'ChangePasswordCtrl',
+                templateUrl: 'partials/changePassword.html'
+            })
             .state('corperwee', {
                 abstract: true,
                 url: '/corperwee',
@@ -92,10 +111,10 @@ angular.module('myApp', [
                     }
                 }
             })
-            .state('corperwee.changePassword', {
-                url: '/changePassword',
-                controller: 'ChangePasswordCtrl',
-                templateUrl: 'partials/fragments/profile/changePassword.html'
+            .state('corperwee.updatePassword', {
+                url: '/updatePassword',
+                controller: 'UpdatePasswordCtrl',
+                templateUrl: 'partials/fragments/profile/updatePassword.html'
             });
         $urlRouterProvider.otherwise('/corperwee/home');
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
@@ -104,7 +123,7 @@ angular.module('myApp', [
     run(['$rootScope', '$state', '$cookieStore', 'authService', '$http', '$window', function ($rootScope, $state, $cookieStore, authService, $http, $window) {
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
             if (error.unAuthorized) {
-                $state.go('welcome');
+                $state.go('welcome.landing');
             }
             else if (error.authorized) {
                 $state.go('corperwee.home');

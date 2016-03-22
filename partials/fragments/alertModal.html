@@ -7,7 +7,8 @@
     <!--</div>-->
 <!--</div>-->
 
-<div class="modal-header alert alert-block" ng-class="{ 'alert-danger' : alertType < 0, 'alert-info' : alertType == 0, 'alert-success' : alertType > 0 }">
+<div class="modal-header alert alert-block unhide"
+     ng-class="{ 'alert-danger' : alertType < 0, 'alert-info' : alertType == 0, 'alert-success' : alertType > 0 }">
     <h4 class="modal-title"><span ng-class="{ 'glyphicon-warning-sign' : alertType < 0, 'glyphicon-info-sign' : alertType == 0, 'glyphicon-ok-sign' : alertType > 0}" class="glyphicon"></span>{{alertTitle}}</h4>
 </div>
 <div class="modal-body">
