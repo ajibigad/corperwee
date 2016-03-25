@@ -15,12 +15,13 @@
                 <form class="navbar-form navbar-left" role="search">
                     <div class="form-inline">
                         <div class="form-group">
-                            <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search this site...." id="searchBar">
-                            <span class="input-group-btn">
-                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                            </span>
-                            </div>
+                            <input type="text" class="form-control" placeholder="Search for place by name ...."
+                                   ng-model="searchQuery"
+                                   uib-typeahead="place as place.name for place in getPlacesByName($viewValue)"
+                                   typeahead-on-select="viewPlace($item, $model, $label, $event)"
+                                   id="searchBar">
+                            <button type="submit" class="btn btn-default"><span
+                                    class="glyphicon glyphicon-search"></span></button>
                         </div>
                     </div>
                 </form>
@@ -29,7 +30,8 @@
                 <!--<li class="text-center"><a href="#">Account</a></li>-->
                 <li class="dropdown text-center">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-user"></span> {{currentUser.username}} <strong class="caret"></strong></a>
+                        <span class="glyphicon glyphicon-user"></span> {{currentUser.username}} <strong
+                            class="caret"></strong></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a ui-sref="corperwee.viewProfile({username : currentUser.username})"><i class="fa fa-eye"></i> View Profile</a>
@@ -38,7 +40,7 @@
                             <a ui-sref="corperwee.updateProfile({username : currentUser.username})"><i class="fa fa-user-plus"></i> Update Profile</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-user-secret"></i> Change Password</a>
+                            <a ui-sref="corperwee.updatePassword"><i class="fa fa-user-secret"></i> Change Password</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -46,7 +48,10 @@
                         </li>
                     </ul>
                 </li>
-                <li class="text-center"><a href="#"><i class="fa fa-question-circle"></i> Help</a></li>
+                <li class="text-center"><a href="#"><i class="fa fa-question-circle"></i>Help</a></li>
+                <p class="navbar-text">Signed in as <a
+                        ui-sref="corperwee.viewProfile({username : currentUser.username})" class="navbar-link">{{currentUser.username}}</a>
+                </p>
             </ul>
         </div>
     </div>

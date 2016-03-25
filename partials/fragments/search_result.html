@@ -1,27 +1,30 @@
-
-<div class="tile bg-grey">
-    <div>
-        <h4>Kolawole and Sons</h4>
-        <div class="tile-img">
-            <img src="http://placehold.it/82x82&text=N/A" alt="" class="thumbnail"/>
-        </div>
-        <div><strong>Ratings :</strong> Stars would stay here then a border next</div>
+<div id="main-info" class="well" ng-click="viewPlace(result.id)">
+    <div> <!--ng-if="searchResults.size > 0-->
         <div class="row">
-            <div class="col-md-4 col-sm-4 col-xs-4">
-                <a href="" ui-sref="corperwee.viewProfile({username : ajibigad})"></a><i class="fa fa-user"></i> ajibigad</div>
+            <div class="col-xs-4">
+                <div>
+                    <img src="http://placehold.it/82x82&text=N/A" alt="" class="thumbnail"/>
+                </div>
+                <div class="ratings">
+                    <strong>Ratings :</strong>
+                    <uib-rating ng-model="result.rating" data-readonly="true" max="5"
+                                titles="['one star','two stars','three stars','four stars','five stars']"
+                                aria-labelledby="default-rating"></uib-rating>
+                </div>
+                <span class="divider"></span>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
-                Date
-            </div>
-        <div class="row text-center">
-            <div class="col-md-4 col-sm-4 col-xs-4">
-                <a ng-href="" class="btn btn-xs btn-default btn-xs btn-info">Get Direction</a>
-            </div>
-             <div class="col-md-4 col-sm-4 col-xs-4">
-                <a ng-href="" class="btn btn-default btn-xs btn-info">View Reviews</a>
-            </div>
-             <div class="col-md-4 col-sm-4 col-xs-4">
-                <a ng-href="" class="btn btn-default btn-xs btn-info">Rate & Review</a>
+            <div class="col-xs-8">
+                <div><strong>Name : </strong>{{result.name}}</div>
+                <div><strong>Added by : </strong><a href="" ui-sref="corperwee.viewProfile({username : result.addedBy.username})">{{result.addedBy.username}}</a></div>
+                <div><strong>Added on : </strong>{{result.dateAdded | date : 'medium'}}</div>
+                <div><strong>Category : </strong>{{result.category.description}}</div>
+                <div>
+                    <!--<a  class="btn btn-default btn-xs btn-info">Get Direction</a>-->
+                    <!--<span class="divider"></span>-->
+                    <!--<a class="btn btn-default btn-xs btn-info">View Review</a>-->
+                    <!--<span class="divider"></span>-->
+                    <!--<a  class="btn btn-default btn-xs btn-info">Rate & Review</a>-->
+                </div>
             </div>
         </div>
     </div>

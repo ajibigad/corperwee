@@ -8,58 +8,79 @@
                 </div>
             </div>
             <div class="col-md-4 col-xs-6 col-sm-6" ng-controller="SignInController">
-               <form name="signInForm" class="bg-white padding-lg" novalidate>
-                   <fieldset>
-                       <legend class="text-center">Login</legend>
-                        <div class="form-group has-feedback"
-                            ng-class="{'has-error' : signInForm.username.$dirty && signInForm.username.$invalid, 'has-success' : signInForm.username.$dirty && signInForm.username.$valid}">
-                           <label for="signin.username" >Username</label>
-                           <input autocomplete="false" value="" name="username" ng-required="true"
-                                  ng-minlength="4" ng-maxlength="20" type="text" class="form-control"
-                                  id="signin.username" placeholder="Username" ng-model="user.username">
-                           <span class="glyphicon glyphicon-ok form-control-feedback"
-                                 aria-hidden="true"
-                                 ng-show="signInForm.username.$dirty && signInForm.username.$valid"></span>
-                           <span class="glyphicon glyphicon-remove form-control-feedback"
-                                 aria-hidden="true"
-                                 ng-show="signInForm.username.$dirty && signInForm.username.$invalid"></span>
-                           <span class="sr-only">(success)</span>
-                           <span class="help-block"
-                                 ng-show="signInForm.username.$dirty && signInForm.username.$error.required">UserName cannot be empty</span>
-                           <span class="help-block"
-                                 ng-show="signInForm.username.$dirty && signInForm.username.$error.minlength">UserName must be more than 5 characters</span>
-                           <span class="help-block"
-                                 ng-show="signInForm.username.$dirty && signInForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
-                        </div>
-                        <div class="form-group has-feedback"
-                            ng-class="{'has-error' : signInForm.password.$dirty && signInForm.password.$invalid, 'has-success' : signInForm.password.$dirty && signInForm.password.$valid}">
-                           <label for="signin.password" class="">Password</label>
+               <form name="signInForm" class="padding-lg" novalidate>
+                       <h3 class="text-center">Login</h3>
+                       <div ng-show="invalidLogin" class="alert unhide alert-danger fade in" id="signInAlert">
+                           <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                           <h4>{{errorMessage}}</h4>
+                       </div>
+                       <div class="form-horizontal">
+                           <div class="form-group has-feedback"
+                                ng-class="{'has-error' : signInForm.username.$touched && signInForm.username.$invalid, 'has-success' : signInForm.username.$touched && signInForm.username.$valid}">
+                               <label for="signin.username" class="col-sm-3">Username</label>
 
-                               <input autocomplete="false" value="" name="password" ng-required="true"
-                                      ng-minlength="8" ng-maxlength="20" type="password"
-                                      class="form-control" id="signin.password" placeholder="Password"
-                                      ng-model="user.password">
-                               <span class="glyphicon glyphicon-ok form-control-feedback"
-                                     aria-hidden="true"
-                                     ng-show="signInForm.password.$dirty && signInForm.password.$valid"></span>
-                               <span class="glyphicon glyphicon-remove form-control-feedback"
-                                     aria-hidden="true"
-                                     ng-show="signInForm.password.$dirty && signInForm.password.$invalid"></span>
-                               <span class="sr-only">(success)</span>
-                               <span class="help-block"
-                                     ng-show="signInForm.password.$dirty && signInForm.password.$error.required">Password cannot be empty</span>
-                               <span class="help-block"
-                                     ng-show="signInForm.password.$dirty && signInForm.password.$error.minlength">Password must be more than 5 characters</span>
-                               <span class="help-block"
-                                     ng-show="signInForm.password.$dirty && signInForm.password.$error.maxlength">Password must not exceed 20 characters</span>
-                            </div>
-                            <div class="text-center">
-                                <button type="button" class="btn btn-primary" ng-disabled="signInForm.$invalid"
-                                        id="signIn-btn" ng-click="signIn()" ladda="signInLoading" data-style="expand-right">Sign In
-                                </button>
-                                <button type="button" class="btn btn-danger " data-dismiss="modal">Close</button>
-                            </div>
-                    </fieldset>
+                               <div class="col-sm-9">
+                                   <input autocomplete="false" value="" name="username" ng-required="true"
+                                          ng-minlength="4" ng-maxlength="20" type="text" class="form-control"
+                                          id="signin.username" placeholder="Username" ng-model="user.username">
+
+                                   <div ng-show="signInForm.username.$touched">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.username.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.username.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.username.$error.required">UserName cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.username.$error.minlength">UserName must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.username.$error.maxlength">UserName must not exceed 20 characters</span>
+                                   </div>
+
+                               </div>
+                           </div>
+                           <div class="form-group has-feedback"
+                                ng-class="{'has-error' : signInForm.password.$touched && signInForm.password.$invalid, 'has-success' : signInForm.password.$touched && signInForm.password.$valid}">
+                               <label for="signin.password" class="col-sm-3">Password</label>
+
+                               <div class="col-sm-9">
+                                   <input autocomplete="false" value="" name="password" ng-required="true"
+                                          ng-minlength="8" ng-maxlength="20" type="password"
+                                          class="form-control" id="signin.password" placeholder="Password"
+                                          ng-model="user.password">
+
+                                   <div ng-show="signInForm.password.$touched">
+                                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.password.$valid"></span>
+                                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                                  aria-hidden="true"
+                                                  ng-show="signInForm.password.$invalid"></span>
+                                            <span class="sr-only">(success)</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.password.$error.required">Password cannot be empty</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.password.$error.minlength">Password must be more than 5 characters</span>
+                                            <span class="help-block"
+                                                  ng-show="signInForm.password.$error.maxlength">Password must not exceed 20 characters</span>
+                                   </div>
+
+                               </div>
+                           </div>
+                       </div>
+                       <div>Forgot your password? Click <a href="" ng-click="forgotPassword(true)">Here</a></div>
+                       <div class="text-center">
+                            <a type="button" class="btn btn-primary btn-block" ng-disabled="signInForm.$invalid"
+                               id="signIn-btn" ng-click="signIn(true)" ladda="signInLoading" data-style="expand-right">Sign In
+                            </a>
+                            <!--would not be needed for the main time since the sign up is on the landing page now-->
+                            <!--<button type="button" class="btn btn-danger btn-block" data-dismiss="modal"-->
+                            <!--ng-if="!retryFailed401Requests">Close-->
+                            <!--</button>-->
+                       </div>
                </form>
             </div>
         </div>
@@ -100,7 +121,7 @@
                         <i class="fa fa-connectdevelop fa-5x"></i>
                     </div>
                      <p class="">
-                        Connect with other corpers. Find corpers in your 
+                        Connect with other corpers. Find corpers in your
                         area and meet up!
                     </p>
                 </div>
@@ -112,7 +133,7 @@
 <div class="bg-grey">
     <div class="container">
         <div class="row">
-            <div class="col-md-4 text-white text-justify padding-lg"> 
+            <div class="col-md-4 text-white text-justify padding-lg">
                 <h4 class="text-center text-white"><i class="fa fa-star"></i> Place Review</h4>
                 <p class="text-center">
                     Do you have any cool place at your PPA?, Have you had a bad
@@ -120,7 +141,7 @@
                     places and make review of such!
                 </p>
                 <p>
-                    Are you a corper in a new environment and you need to find the best 
+                    Are you a corper in a new environment and you need to find the best
                     places around? Search here to get the best places in your environment.
                 </p>
             </div>
@@ -133,11 +154,11 @@
                 </p>
                 <p>
                     On the other hand, incoming corpers have to get stuff needed for their
-                    service year but the challenge is buying items which you might not be able to 
+                    service year but the challenge is buying items which you might not be able to
                     take back home.
                 </p>
                 <p>
-                    Outgoing corpers can connect with incoming corpers and plan transfer of items and 
+                    Outgoing corpers can connect with incoming corpers and plan transfer of items and
                     accommodation. Everyone is happy!
                 </p>
             </div>
@@ -145,7 +166,7 @@
                   <h4 class="text-center text-white"><i class="fa fa-connectdevelop"></i> Connect</h4>
                 <p class="text-center">
                     Corpers posted to certain places often happen to be lonely
-                    and without other corpers around.Meanwhile, there are other corpers around 
+                    and without other corpers around.Meanwhile, there are other corpers around
                     experiencing similar challenge. You can find corpers around here.
                 </p>
                 <p>

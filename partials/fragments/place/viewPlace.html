@@ -1,0 +1,125 @@
+<div class="row">
+    <div class="col-xs-1 col-lg-2"></div>
+    <div class="col-xs-10 col-lg-8">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{place.name}} Profile</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <a href="#" class="thumbnail">
+                            <img src="https://placeholdit.imgix.net/~text?txtsize=16&bg=118800&txt=171%C3%97171&w=171&h=171"
+                                 alt="...">
+                        </a>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{place.name}} Details</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Name:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.name}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Website:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static"><a ng-href="'http://' + place.website"
+                                                                              target="_blank"></a>{{place.website}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Email:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.email}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Phone Number:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.phoneNumber}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><span
+                                                class="text-nowrap">Phone Number:</span></label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.phoneNumber}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Category:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.category.description}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">State:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.state | uppercase}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">L.G.A:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.lga | uppercase}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Town:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.town | uppercase}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Direction:</label>
+
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{place.direction | uppercase}}</p>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!--<pre>{{place | json}}</pre>-->
+                                <a class="btn btn-primary" ui-sref="corperwee.updatePlace({id : place.id})"
+                                   ng-show="updateButton">Update Place</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="well">
+                <h3>AVERAGE RATING </h3>
+                <uib-rating ng-model="place.rating" data-readonly="true" max="5"
+                            titles="['one star','two stars','three stars','four stars','five stars']"
+                            aria-labelledby="default-rating"></uib-rating>
+            </div>
+            <review user-review="true"></review>
+            <!-- if the logged in user has not reviewed this place, then show this -->
+            <!--<review></review>-->
+            <!-- if the logged in user has a review for this place, then show it here -->
+            <div ng-if="reviews.length > 0">
+                <review ng-repeat="review in reviews"></review>
+            </div>
+
+            <div class="well text-center" ng-show="!reviewsExist"><h3>NO REVIEWS!!!!</h3></div>
+        </div>
+        <!-- reviews -->
+    </div>
+    <div class="col-xs-1 col-lg-2"></div>
+</div>
