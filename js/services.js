@@ -134,6 +134,26 @@ angular.module('myApp.services')
                       return $q.reject(response.data); // this should be an error object, error.message should return the error message
                   });
               },
+              uploadProfilePicture : function (rawImageData, imageType) {
+                  //send to user/uploadProfilePicture
+                  //this should return the name to the image
+                  return $http.post(appEndpoints.USER_ENDPOINT + "/uploadProfilePicture?type=" + imageType, rawImageData,
+                      {
+                          transformResponse: [function (data) { return data; }] , // prevents it from converting the response to json
+                          headers : {
+                              'Content-Type' : undefined
+                          }
+                      }
+                      ).then(
+                      function(response){
+                          return response.data; // this contains the new url for the just uploaded image
+                      },
+                      function(response){
+                          return $q.reject(response.data); // error obj
+                      }
+                  );
+              },
+              ProfilePictureEndpoint : appEndpoints.USER_ENDPOINT + "/profilePicture",
               sayHello : function (message){
                   return $http.get(HOST+'/hello', {params : {message : " Can i hit the morning!!!!"}});
               },

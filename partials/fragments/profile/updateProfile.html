@@ -9,8 +9,30 @@
                 <div class="row">
                     <div class="col-xs-3">
                         <a href="#" class="thumbnail">
-                            <img src="https://placeholdit.imgix.net/~text?txtsize=16&bg=118800&txt=171%C3%97171&w=171&h=171" alt="...">
+                            <img id="profilePicture" src="" alt="Profile Picture here">
                         </a>
+                        <input id="profileUpload" type="file" accept="image/*" style="visibility:hidden" />
+                        <button class="btn btn-default" ng-show="showUploadBtn" ng-click="uploadPhoto()" ladda="uploading" data-style="extend-right"><span class="glyphicon glyphicon-upload"></span>Upload Photo</button>
+                        <button class="btn btn-default" ng-click="viewCamera()"><span class="glyphicon glyphicon-camera"></span>Take a photo</button>
+                        <button class="btn btn-default" onclick="$('#profileUpload').click();"><span class="glyphicon glyphicon-file"></span>Pick from system</button>
+                        <button class="btn btn-default" ng-click="resetProfilePicture()"><span class="glyphicon glyphicon-refresh"></span>Reset Photo</button>
+
+                        <!-- Camera modal -->
+                        <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>-->
+
+                        <div class="modal fade" id="cameraViewerModal" tabindex="-1" role="dialog" aria-labelledby="cameraViewerModalLabel">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div id="cameraViewer" class="center-block"></div>
+                                    <div id="cameraPreview"></div>
+                                    <button class="btn btn-block btn-primary" ng-click="freezeImageCtrl(!freezeImage)">{{freezeImage ? "UnFreeze" : "Freeze"}} Image</button>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="closeCamera()">Close</button>
+                                        <button type="button" class="btn btn-primary" ng-click="takePhoto()">Save Photo</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-xs-9">
                         <div class="panel panel-success">

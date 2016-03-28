@@ -242,6 +242,7 @@ angular.module('myApp.controllers', []).
     })
     .controller('ViewProfileCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state) {
         var username = $stateParams.username;
+        $('#profilePicture').attr("src", userService.ProfilePictureEndpoint + "/" + username); //sets the profile picture
         $scope.updateButton = false;
         //issue with this approach is, if the app is opened in another it would fail to update over there too
         if(username === authService.userDetails.username){ //i can use the currentUser from the parent scope but this is safer
@@ -264,10 +265,25 @@ angular.module('myApp.controllers', []).
         var username = authService.user.username; //this is because you can only be here if its your profile you viewed. The update button shows only when the logged in user views his/her profile
         var buttonDefault = "Update Profile";
         var buttonLoading = "Updating.......";
+        var profilePicURI;
+        var profilePicture = $('#profilePicture');
+        var setProfilePictureURL = function (imageURL) { // default for state
+            profilePicture.attr("src", imageURL);
+        };
+
+        var setUsernameProfilePicture = function () {
+            setProfilePictureURL(userService.ProfilePictureEndpoint + "/" + username);
+        };
+
+        var setProfilePictureURI = function (imageURI) { // used during uploading operations
+            profilePicURI = imageURI;
+            setProfilePictureURL(imageURI);
+        };
         $scope.failedUpdate = false;
         $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
         $scope.updateButtonText = buttonDefault;
         $scope.user = angular.copy(authService.userDetails); //since am gonna edit the user object through the form, then we need to do a oopy
+        setUsernameProfilePicture();
         $scope.update = function () {
             //send the user object to server and respond as usual
             $scope.updateButtonText = buttonLoading;
@@ -306,6 +322,97 @@ angular.module('myApp.controllers', []).
         $scope.reset = function () {
             $scope.user = angular.copy(authService.userDetails);
         };
+
+        $scope.uploading = false;
+        $scope.showUploadBtn = false;
+        $scope.resetProfilePicture = function(){
+            setUsernameProfilePicture();
+            $scope.showUploadBtn = false;
+        };
+
+        var handleImageSelect = function(evt){
+            var files = event.target.files, pic;
+            if (files && files.length > 0) {
+                pic = files[0];
+            }
+            //var pic = evt.target.files[0];
+            var reader = new FileReader();
+            if(!pic.type.match('image.*')){
+                //alert wrong file extension
+                return;
+            }
+            reader.onload = function(e) {
+                setProfilePictureURI(e.target.result);
+                $scope.$apply(function () {
+                    $scope.showUploadBtn = true;
+                });
+            };
+            reader.readAsDataURL(pic);
+        };
+
+        $scope.uploadPhoto = function () {
+            $scope.uploading = true;
+            var URIinfoRegex = /^data\:image\/(\w+)\;base64\,/;
+            var rawImageData = profilePicURI.replace(URIinfoRegex, '');
+            var matches = URIinfoRegex.exec(profilePicURI);
+            var imageType = matches[1]; //contains image type info
+            userService.uploadProfilePicture(rawImageData, imageType).then(function(imageName){
+                authService.userDetails.profilePicture = imageName; // update the logged in details
+                $scope.user.profilePicture = imageName;
+                setUsernameProfilePicture(); //returns the url for the just uploaded image
+                $scope.showUploadBtn = false;
+                alertModalService.modalTemplateOptions.title = "Upload Image SuccessFull!!!";
+                alertModalService.modalTemplateOptions.message = "Action to upload user : " + username + "'" + "s Profile Picture was successful";
+                alertModalService.showSuccessAlert();
+            }, function(error){
+                alertModalService.modalTemplateOptions.title = "Upload Image Action Failed!!!";
+                alertModalService.modalTemplateOptions.message = error.message;
+                alertModalService.showErrorAlert();
+            }).finally(function () {
+                $scope.uploading = false;
+            });
+        };
+        /*
+        * Flow here is : a modal would pop up with the camera
+        * user then takes picture and decides to save it or dismiss
+        * after taking it, we then present it as the profile picture
+        */
+
+        $scope.freezeImage = false;
+        $scope.freezeImageCtrl = function(freeze){
+            freeze ? Webcam.freeze() : Webcam.unfreeze();
+            $scope.freezeImage = freeze;
+        };
+        $scope.viewCamera = function () {
+            $('#cameraViewerModal').modal({
+                backdrop: 'static',
+                show: 'true',
+                keyboard: false
+            });
+            Webcam.set({
+                width: 320,
+                height: 240,
+                crop_width: 240,
+                crop_height: 240
+            });
+            Webcam.attach( '#cameraViewer' );
+        };
+        $scope.takePhoto = function () {
+            Webcam.snap(function(data_uri){
+                setProfilePictureURI(data_uri);
+                profilePicture.attr("src", profilePicURI);
+                $scope.showUploadBtn = true;
+            });
+            Webcam.reset();
+            $('#cameraViewerModal').on('hide.bs.modal', function (e) {
+                $scope.freezeImage = false;
+            }).modal('hide');
+        };
+        $scope.closeCamera = function () {
+            Webcam.reset();
+            $scope.freezeImage = false;
+        };
+        $('#profileUpload').change(handleImageSelect);
     })
     .controller('UpdatePasswordCtrl', function ($scope, userService, alertModalService) {
         $scope.passwordUpdate = {};
