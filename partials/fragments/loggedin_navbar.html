@@ -28,8 +28,9 @@
                 <!--href="#"-->
                 <li class="text-center" ui-sref-active="active"><a ui-sref="corperwee.home">Home</a></li>
                 <li class="dropdown text-center">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-user"></span> {{currentUser.username}} <strong
+                    <a href="" class="dropdown-toggle user-account-dropdown" data-toggle="dropdown">
+                        <!--<span class="glyphicon glyphicon-user"></span> -->
+                        <img class="user-image-thumbnail img-circle" id="smallProfilePicture" ng-src="{{smallProfilePicture}}" alt="user picture thumbnail"/> {{currentUser.username}} <strong
                             class="caret"></strong></a>
                     <ul class="dropdown-menu">
                         <li>
@@ -51,9 +52,9 @@
                     </ul>
                 </li>
                 <li class="text-center"><a href="#">Help</a></li>
-                <p class="navbar-text">Signed in as <a
-                        ui-sref="corperwee.viewProfile({username : currentUser.username})" class="navbar-link">{{currentUser.username}}</a>
-                </p>
+                <!--<p class="navbar-text">Signed in as <a-->
+                        <!--ui-sref="corperwee.viewProfile({username : currentUser.username})" class="navbar-link">{{currentUser.username}}</a>-->
+                <!--</p>-->
             </ul>
         </div>
     </div>

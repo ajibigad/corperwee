@@ -103,3 +103,13 @@ footer {
 .nav, .pagination, .carousel, .panel-title a {
     cursor: pointer;
 }
+
+.user-image-thumbnail{
+    width: 40px;
+    height: 40px;
+}
+
+.dropdown-toggle.user-account-dropdown{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

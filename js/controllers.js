@@ -33,8 +33,8 @@ angular.module('myApp.controllers', []).
             //we should inject the modal html here before showing it
             var signInModalHolder = $('#injectSignInModalHere');
             console.log(signInModalHolder);
-            if (!signInModalHolder.get(0)) { //painful hack!!!
-                console.log("not found");
+            if (!signInModalHolder.get(0)) { //painful hack!!! for page refresh case
+                console.log("sign in modal not found");
                 $('body').append('<div id="injectSignInModalHere"></div>');
                 signInModalHolder = $('#injectSignInModalHere');
             }
@@ -53,14 +53,15 @@ angular.module('myApp.controllers', []).
         $rootScope.title = 'NYSC-welcome';
         $rootScope.style = 'landing.css';
     }])
-    .controller('CorperWeeCtrl', function ($rootScope, $scope, authService, userService, $state) {
+    .controller('CorperWeeCtrl', function ($rootScope, $scope, authService, userService) {
         $rootScope.title = "NYSC - Home";
         $rootScope.logged_in = true; //this should be set by the authService
         $rootScope.style = 'home.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
-        //$state.go('corperwee.home');
+        $rootScope.smallProfilePicture = userService.profilePictureEndpoint + "/" + authService.user.username;
     })
-    .controller('HomeController', function ($scope, authService, categoryService, $state, placeService) {
+    .controller('HomeController', function ($scope, authService, categoryService, $state, placeService, $q) {
+        //$('#smallProfilePicture').attr('src', userService.profilePictureEndpoint + "/" + authService.user.username);
         var defaultButtonTxt = "Search";
         var pageNumber = 0; // to be increased by load more results function
         var pageSize = 10;
@@ -73,6 +74,8 @@ angular.module('myApp.controllers', []).
         $scope.sortingProperties = ["name", "rating", "addedBy"];
         $scope.searchParams = placeService.searchParams; // this should not scare you cause its just for this user angular.copy(placeService.searchParams);
         $scope.fetchResults = function (nextPage) {
+            //console.log("stupid category sent!! ");
+            console.log($scope.searchParams.category);
             $scope.searchBtnText = "Searching";
             $scope.searchLoading = true;
             if (nextPage) {
@@ -98,6 +101,26 @@ angular.module('myApp.controllers', []).
                 $scope.searchLoading = false;
             });
         };
+
+        function getCategoryPromise () {
+            var deferred = $q.defer();
+            //after a login, non of these events would be broadcast again since category is fetched in the welcome state
+            //to make sure we still get our categories here --> code below
+            if(categoryService.allCategories){
+                console.log("category service fetched already");
+                deferred.resolve(categoryService.allCategories);
+            }
+            $scope.$on('categoryService:changed', function (event, categories) {
+                console.log("category service success event");
+                deferred.resolve(categories);
+            });
+            $scope.$on('categoryService:failed', function (event, message) {
+                console.log("category service error event");
+                deferred.reject(message);
+            });
+            return deferred.promise;
+        }
+        var categoryPromise = getCategoryPromise(); // to setup the listeners
         var resetSearchParams = function (userDetails) {
             console.log("reset param called");
             $scope.searchParams.state = userDetails.state;
@@ -107,12 +130,20 @@ angular.module('myApp.controllers', []).
             $scope.searchParams.sortingOrder = placeService.sortingOrders.DESC;
             $scope.searchParams.pageNumber = pageNumber;
             $scope.searchParams.pageSize = pageSize;
-            $scope.categories = categoryService.allCategories || "";
-            $scope.searchParams.category = $scope.categories[0] || "";
-            $scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
+            categoryPromise.then(function (categories) {
+                console.log("where do you play in all this mess");
+                $scope.categories = categories;
+                $scope.searchParams.category = $scope.categories[0];
+                // the above changes would trigger the stateParams watcher so dont bother fetchingResults here
+                //$scope.fetchResults();// for page refresh or first time on home state, this would fetch based on the person's details
+            }, function (message) {
+                //alert with the message to tell the user to reload the page or check network connection
+                alert("failed to receive any alert from category service");
+            });
         };
 
         $scope.$on('authService:changed', function (event, newUserDetails) {
+            console.log("active authService listener");
             if(newUserDetails){
                 resetSearchParams(newUserDetails);
             }
@@ -122,18 +153,18 @@ angular.module('myApp.controllers', []).
             resetSearchParams(authService.userDetails);
         }
 
-        $scope.$on('categoryService:changed', function (event, categories) {
-            $scope.categories = categories;
-            $scope.searchParams.category = $scope.categories[0];
-        });
-
         $scope.toggleFilterShow = function () {
-            $scope.showSearchFilter = $scope.showSearchFilter ? false : true;
+            $scope.showSearchFilter = !$scope.showSearchFilter;
         };
 
         $scope.$watch('searchParams', function(newVal, oldVal){
             console.log("searchParam changed");
-            if (!angular.equals(newVal.category, oldVal.category)) {//this makes it specific to only tabs(categories nav) clicks
+            if(newVal == oldVal && newVal.category){ // the extra condition is to make sure we don't send an empty category with the request
+                console.log("called due to initialization");
+                // we still need to fetch here for result to display during state load
+                $scope.fetchResults();
+            }
+            if (!angular.equals(newVal.category, oldVal.category)) {// this makes it specific to only tabs(categories nav) clicks
                 console.log("searchParam changed initiate fetching");
                 $scope.fetchResults();
             }
@@ -224,6 +255,11 @@ angular.module('myApp.controllers', []).
             });
         };
         $scope.forgotPassword = function () {
+        //this function should stop all held down request if retryFailed401Requests is true
+            if($rootScope.retryFailed401Requests){
+                authService.loginCancelled({}, "user forgot his password");
+                $rootScope.retryFailed401Requests = false;
+            }
             $('#signInModal').on('hidden.bs.modal', function (e) {
                 $state.go('welcome.resetPassword');
             }).modal('hide');
@@ -257,7 +293,7 @@ angular.module('myApp.controllers', []).
     })
     .controller('ViewProfileCtrl', function ($stateParams, $scope, authService, userService, alertModalService, $state) {
         var username = $stateParams.username;
-        $('#profilePicture').attr("src", userService.ProfilePictureEndpoint + "/" + username); //sets the profile picture
+        $('#profilePicture').attr("src", userService.profilePictureEndpoint + "/" + username); //sets the profile picture
         $scope.updateButton = false;
         //issue with this approach is, if the app is opened in another it would fail to update over there too
         if(username === authService.userDetails.username){ //i can use the currentUser from the parent scope but this is safer
@@ -287,7 +323,7 @@ angular.module('myApp.controllers', []).
         };
 
         var setUsernameProfilePicture = function () {
-            setProfilePictureURL(userService.ProfilePictureEndpoint + "/" + username);
+            setProfilePictureURL(userService.profilePictureEndpoint + "/" + username);
         };
 
         var setProfilePictureURI = function (imageURI) { // used during uploading operations

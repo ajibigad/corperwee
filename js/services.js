@@ -153,7 +153,7 @@ angular.module('myApp.services')
                       }
                   );
               },
-              ProfilePictureEndpoint : appEndpoints.USER_ENDPOINT + "/profilePicture",
+              profilePictureEndpoint : appEndpoints.USER_ENDPOINT + "/profilePicture",
               sayHello : function (message){
                   return $http.get(HOST+'/hello', {params : {message : " Can i hit the morning!!!!"}});
               },
@@ -186,12 +186,13 @@ angular.module('myApp.services')
           }
         }])
     .service('categoryService', function (appEndpoints, $http, $q, $rootScope) {
-        var self =this;
+        var self = this;
         var getAllCategories = function () {
             $http.get(appEndpoints.CATEGORY_ENDPOINT).then(function (response) {
                 self.allCategories = response.data;
                 $rootScope.$broadcast('categoryService:changed', self.allCategories);
             }, function (response) {
+                $rootScope.$broadcast('categoryService:failed', "categories fetching failed");
                 alert("Error in Fetching Categories");
                 //return $q.reject(response);
             });
