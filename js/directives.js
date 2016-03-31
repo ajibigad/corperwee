@@ -24,13 +24,15 @@ angular.module('myApp.directives')
         }
       };
     })
-    .directive('review', function () {
+    .directive('review', function (userService) {
       return {
         restrict: 'E',
         replace: true,
         scope: true,
         templateUrl: 'partials/fragments/review/review.html',
         link: function (scope, elem, attrs) {
+          //$('#reviewersImage').attr("src", userService.ProfilePictureEndpoint + '/' + "ajibigad");
+          scope.profilePictureEndpoint = userService.ProfilePictureEndpoint;
           scope.toggleUserReviewMode = function () {
             var tempMode = scope.userReviewMode.viewMode;
             scope.userReviewMode.viewMode = scope.userReviewMode.editMode;
@@ -73,6 +75,10 @@ angular.module('myApp.directives')
             console.log("user review set");
             // this means the directive should behave for the logged in user
             // this behaviour includes allowing him to edit his review or enter his review
+            // this belongs to the logged in user
+            // ok plan to achieve the right reviewers image beside the review
+            // we need to make the id of the image dynamic based on the index of the review in the loop, if not we would have conflicting ids
+            $('#reviewersImage').attr("src", userService.ProfilePictureEndpoint + '/' + scope.currentUser.username);
             if (scope.currentUserReview) {
               scope.review = angular.copy(scope.currentUserReview);
               // show user both editable and readonly review

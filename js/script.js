@@ -1,4 +1,5 @@
 
+// $(document).ready(function() {
 $(function(){
 
     $('#alertMe').click(function(e){

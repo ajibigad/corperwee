@@ -185,6 +185,9 @@ angular.module('myApp.controllers', []).
             });
         };
         //getStates();
+        $scope.$on('$destroy', function(){
+            $('#signUpModal').off('hidden.bs.modal');
+        });
     }])
     .controller('SignInController', ['$scope', 'authService', '$state', 'alertModalService', '$rootScope', function ($scope, authService, $state, alertModalService, $rootScope) {
         $scope.user = {};
@@ -225,6 +228,18 @@ angular.module('myApp.controllers', []).
                 $state.go('welcome.resetPassword');
             }).modal('hide');
         };
+        $('#signInModal').find('input').keypress(function (evt) {
+            //var key = String.fromCharCode();
+            var enterBtnCode = 13; // for readability
+            if(evt.which == enterBtnCode){
+                // fire sign in
+                $scope.signIn();
+            }
+        });
+        $scope.$on('$destroy',function(){
+            //cancel all timers, watchers and custom listeners for efficiency
+            $('#signInModal').find('input').off('keypress').off('hidden.bs.modal'); //this chaining should not be necessary
+        });
     }])
     .controller('alertModalInstanceCtrl', function ($scope, $uibModalInstance, modalTemplateOptions, alertType) {
         $scope.alertTitle = modalTemplateOptions.title;
@@ -339,6 +354,9 @@ angular.module('myApp.controllers', []).
             var reader = new FileReader();
             if(!pic.type.match('image.*')){
                 //alert wrong file extension
+                alertModalService.modalTemplateOptions.title = "Wrong File Extension!!!";
+                alertModalService.modalTemplateOptions.message = "Please select an image file. Thank you";
+                alertModalService.showErrorAlert();
                 return;
             }
             reader.onload = function(e) {
@@ -413,6 +431,9 @@ angular.module('myApp.controllers', []).
             $scope.freezeImage = false;
         };
         $('#profileUpload').change(handleImageSelect);
+        $scope.$on('$destroy',function(){
+            $('#cameraViewerModal').off('hide.bs.modal');
+        });
     })
     .controller('UpdatePasswordCtrl', function ($scope, userService, alertModalService) {
         $scope.passwordUpdate = {};
