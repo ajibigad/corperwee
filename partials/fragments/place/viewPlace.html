@@ -109,10 +109,9 @@
                             titles="['one star','two stars','three stars','four stars','five stars']"
                             aria-labelledby="default-rating"></uib-rating>
             </div>
+            <!-- show review by logged in user or if no review, a review box for him to make review -->
             <review user-review="true"></review>
-            <!-- if the logged in user has not reviewed this place, then show this -->
-            <!--<review></review>-->
-            <!-- if the logged in user has a review for this place, then show it here -->
+            <!-- reviews by others -->
             <div ng-if="reviews.length > 0">
                 <review ng-repeat="review in reviews"></review>
             </div>
