@@ -48,6 +48,21 @@ angular.module('myApp.controllers', []).
                 });
             });
         });
+
+        function reverseArray (data){
+            //var temp;
+            console.log(data.length/2);
+            for(var i = 0, k = data.length - 1; i <= data.length/2; i++, k--){
+                var temp = data[i];
+                data[i] = data[k];
+                data[k] = temp;
+                console.log("loading");
+            }
+            return data;
+        }
+
+        console.log(reverseArray([1,2,3,4,5,6]));
+        console.log("eye".split('').reverse().join());
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
         $rootScope.title = 'NYSC-welcome';

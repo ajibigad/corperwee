@@ -119,6 +119,7 @@ angular.module('myApp', [
         $urlRouterProvider.otherwise('/corperwee/home');
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
         $httpProvider.defaults.withCredentials = true;
+        $httpProvider.interceptors.push('CorperweeEnvelopeResponseInterceptor');
     }]).
     run(['$rootScope', '$state', '$cookieStore', 'authService', '$http', '$window', function ($rootScope, $state, $cookieStore, authService, $http, $window) {
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
