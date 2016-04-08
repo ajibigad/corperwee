@@ -58,7 +58,9 @@
         </button>
         <div class="collapse navbar-collapse" id="categoriesNav">
             <ul class="nav nav-pills nav-justified navbar-default">
-                <li role="presentation" ng-class="{'active' : category.id === searchParams.category.id}" ng-repeat="category in categories"><a ng-click="searchParams.category = category">{{category.description}}</a></li>
+                <li role="presentation" ng-class="{'active' : category.id === searchParams.category.id}" ng-repeat="category in categories">
+                    <a ng-click="searchParams.category = category">{{category.description}}</a>
+                </li>
                 <li role="presentation" class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">
                         Sort By <span class="caret"></span>

@@ -50,10 +50,12 @@
                                         <label class="col-md-3 control-label">Website:</label>
 
                                         <div class="col-md-9">
-                                            <input name="website" ng-required="true" ng-minlength="5" ng-maxlength="20"
-                                                   type="url" class="form-control" id="addPlace.website"
-                                                   placeholder="Website: eg kolawole.com" ng-model="place.website">
-
+                                            <div class="input-group">
+                                                <div class="input-group-addon">http://</div>
+                                                <input name="website" ng-required="true" ng-minlength="5" ng-maxlength="20"
+                                                       type="url" class="form-control" id="addPlace.website"
+                                                       placeholder="Website: eg kolawole.com" ng-model="place.website">
+                                            </div>
                                             <div ng-show="addPlaceForm.website.$dirty">
                                                 <span class="glyphicon glyphicon-ok form-control-feedback"
                                                       aria-hidden="true"
@@ -121,11 +123,12 @@
                                     <div class="form-group has-feedback">
                                         <label class="col-md-3 control-label">Category:</label>
                                         <div class="col-md-9">
-                                            <select name="category" ng-model="place.category" ng-options="category as category.description for category in categories"
+                                            <select name="category" ng-model="place.category" ng-options="category.description for category in categories"
                                                     id="addPlace.category" class="form-control"
                                                     ng-required="true">
                                                 <option value="" selected>Please select a Category</option>
                                             </select>
+                                            <pre>{{place.category}}</pre>
                                             <span class="help-block text-danger"
                                                   ng-show="addPlaceForm.category.$dirty && addPlaceForm.category.$error.required">
                                                 Please a category must be selected

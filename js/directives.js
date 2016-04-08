@@ -112,7 +112,7 @@ angular.module('myApp.directives')
         link: function (scope, elm, attrs, ctrl) {
           ctrl.$validators.confirmPassword = function (modelValue) {
             return modelValue == scope.confirmPassword;
-          }
+          };
 
           scope.$watch("confirmPassword", function() {
             ctrl.$validate();
@@ -121,7 +121,7 @@ angular.module('myApp.directives')
       };
     })
     .directive('password', function (REGEX_EXPs) {
-      // i know udd be thinking Dammy why this directive when i can just use ng-pattern on my password field
+      // i know ud be thinking Dammy why this directive when i can just use ng-pattern on my password field
       // well i tot bout dat also before doin this but men look at this scenario
       // if we had like several fields in the app dat requires a password pattern then we would have to hard-code this patterns(with ng-pattern) in every single one of them
       // then when you wake up one morning and say, men!! i have to change this regex for password on the app. Pele!! ud have to go look for all your password fields and change them one after the other
@@ -137,6 +137,35 @@ angular.module('myApp.directives')
           ctrl.$validators.password = function (modelValue, viewValue) {
             return REGEX_EXPs.password.test(viewValue)
           }
+        }
+      };
+    })
+    .directive('nigStates', function(nigStatesService, $rootScope){
+      return {
+        restrict: 'A',
+        scope: {
+          nigState: '='
+        },
+        link: function(scope, elm, atrrs){
+
+          // this might not be needed at the end of the day because we can get this info from the nigStatesService.states or from listening to events or from the local storage
+
+          function getStatesLGAs(state){
+            nigStatesService.getStateLGAs(state).then(function(response){
+              $rootScope.$broadcast(nigStatesService.events.lgasFetched, response.data);
+            }, function(response){
+              // we can determine errors by broadcasting them with the response details
+              $rootScope.$broadcast(nigStatesService.events.lgasFetchFailed, response.data.data);
+            });
+          }
+
+          scope.$watch('nigState', function(newVal, oldVal){
+            if(angular.equals(newVal, oldVal)){
+              //just getting initialized, do nothing
+              return;
+            }
+            getStatesLGAs(newVal);
+          });
         }
       };
     });

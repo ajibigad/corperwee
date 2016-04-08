@@ -120,11 +120,11 @@
 
                                         <div class="col-md-9">
                                             <select name="category" ng-model="place.category"
-                                                    ng-options="category as category.description for category in categories"
+                                                    ng-options="category.description for category in categories track by category.id"
                                                     id="updatePlace.category" class="form-control"
                                                     ng-required="true">
-                                                <option value="">Please select a Category</option>
                                             </select>
+                                            <pre>{{place.category}}</pre>
                                             <span class="help-block text-danger"
                                                   ng-show="updatePlaceForm.category.$dirty && updatePlaceForm.category.$error.required">
                                                 Please a category must be selected

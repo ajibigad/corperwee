@@ -41,8 +41,9 @@
                             <form name="signUpForm" novalidate>
                                 <div ng-show="failedSignUp" class="alert alert-danger fade in unhide"
                                      id="signupfailurealert">
-                                    <!--<button type="button" class="close" data-dismiss="alert">&times;</button>-->
-                                    <h4>{{errorMessage}}</h4>
+                                    <button type="button" class="close" ng-click="failedSignUp=false">&times;</button>
+                                    <h4>{{errorHeader}}</h4>
+                                    <p>{{errorMessage}}</p>
                                 </div>
                                 <div class="form-horizontal">
                                     <div class="form-group has-feedback"
@@ -267,13 +268,12 @@
                                             <div class="form-group">
                                                 <label for="signup.state">State</label>
                                                 <select name="state" id="signup.state" class="form-control"
-                                                        ng-model="newUser.state">
-                                                        <!--ng-options="state.name as state.name for state in states"-->
-                                                        <!--ng-required="true" -->
-                                                        required="true">
+                                                        ng-model="newUser.state"
+                                                        ng-options="state.name as state.name for state in states"
+                                                        ng-required="true"
+                                                        nig-states
+                                                        nig-state="newUser.state">
                                                     <option value="" selected>Please select a State</option>
-                                                    <option value="lagos">Lagos</option>
-                                                    <option value="anambra">Anambra</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -281,19 +281,22 @@
                                             <div class="form-group">
                                                 <label for="signup.lga">L.G.A</label>
                                                 <select name="lga" id="signup.lga" class="form-control"
-                                                        ng-model="newUser.lga" ng-required="true">
+                                                        ng-model="newUser.lga"
+                                                        ng-options="lga.name as lga.name for lga in lgas"
+                                                        ng-required="true">
                                                     <option value="">Please select a LGA</option>
-                                                    <option value="awka-south">Awka-South</option>
-                                                    <option value="awka-north">Awka-North</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-xs-4">
                                             <div class="form-group">
                                                 <label for="signup.town">Town</label>
-                                                <select id="signup.town" class="form-control" ng-model="newUser.town"
-                                                        name="town" ng-required="true">
+                                                <select id="signup.town" class="form-control"
+                                                        ng-model="newUser.town"
+                                                        name="town"
+                                                        ng-required="true">
                                                     <option value="">Please select a Town</option>
+                                                    <!--still need to find an api for getting towns in an lga-->
                                                     <option value="amawbia">AMAWBIA</option>
                                                     <option value="unizik">UNIZIK</option>
                                                 </select>

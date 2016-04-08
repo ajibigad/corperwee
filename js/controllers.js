@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-    controller('MainController', ['authService', '$rootScope', '$scope', '$state', 'userService', 'categoryService', 'placeService', '$compile', function (authService, $rootScope, $scope, $state, userService, categoryService, placeService, $compile) {
+    controller('MainController', ['authService', '$rootScope', '$scope', '$state', 'userService', 'categoryService', 'placeService', '$compile', 'nigStatesService', function (authService, $rootScope, $scope, $state, userService, categoryService, placeService, $compile, nigStatesService) {
         $scope.currentUser = authService.userDetails;
         $rootScope.retryFailed401Requests = false;
         $scope.logout = function () {
@@ -14,7 +14,7 @@ angular.module('myApp.controllers', []).
                 $state.go('welcome.landing'); //just temp hack till i fix logout on server side
             }); // this would logout you out and direct you to the home page
         };
-        $scope.$on('authService:changed', function (event, newUserDetails) {
+        $scope.$on('event:authService:changed', function (event, newUserDetails) {
             $scope.currentUser = newUserDetails;
         }, true);
         $scope.getPlacesByName = function (searchQuery) {
@@ -49,20 +49,13 @@ angular.module('myApp.controllers', []).
             });
         });
 
-        function reverseArray (data){
-            //var temp;
-            console.log(data.length/2);
-            for(var i = 0, k = data.length - 1; i <= data.length/2; i++, k--){
-                var temp = data[i];
-                data[i] = data[k];
-                data[k] = temp;
-                console.log("loading");
-            }
-            return data;
-        }
-
-        console.log(reverseArray([1,2,3,4,5,6]));
-        console.log("eye".split('').reverse().join());
+        nigStatesService.getAllStates().then(function(response){
+            nigStatesService.states = response.data;
+            $rootScope.$broadcast(nigStatesService.events.statesFetched, response.data);
+        }, function(response){
+            $rootScope.$broadcast(nigStatesService.events.stateFetchFailed, response.data.data);
+            alert("failed to fetch states: "+ response.data.data.message);
+        });
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
         $rootScope.title = 'NYSC-welcome';
@@ -74,6 +67,9 @@ angular.module('myApp.controllers', []).
         $rootScope.style = 'home.css';
         $rootScope.navbar_url = 'partials/fragments/loggedin_navbar.html';
         $rootScope.smallProfilePicture = userService.profilePictureEndpoint + "/" + authService.user.username;
+        $scope.$on('event:userService:profilePictureUpdated', function(event, newProfilePicture){
+            $rootScope.smallProfilePicture = userService.profilePictureEndpoint + "/" + authService.user.username;
+        });
     })
     .controller('HomeController', function ($scope, authService, categoryService, $state, placeService, $q) {
         //$('#smallProfilePicture').attr('src', userService.profilePictureEndpoint + "/" + authService.user.username);
@@ -125,11 +121,11 @@ angular.module('myApp.controllers', []).
                 console.log("category service fetched already");
                 deferred.resolve(categoryService.allCategories);
             }
-            $scope.$on('categoryService:changed', function (event, categories) {
+            $scope.$on('event:categoryService:changed', function (event, categories) {
                 console.log("category service success event");
                 deferred.resolve(categories);
             });
-            $scope.$on('categoryService:failed', function (event, message) {
+            $scope.$on('event:categoryService:failed', function (event, message) {
                 console.log("category service error event");
                 deferred.reject(message);
             });
@@ -157,7 +153,7 @@ angular.module('myApp.controllers', []).
             });
         };
 
-        $scope.$on('authService:changed', function (event, newUserDetails) {
+        $scope.$on('event:authService:changed', function (event, newUserDetails) {
             console.log("active authService listener");
             if(newUserDetails){
                 resetSearchParams(newUserDetails);
@@ -196,6 +192,20 @@ angular.module('myApp.controllers', []).
     .controller('SignUpController', ['$scope', 'authService', 'signUpService', '$state', 'nigStatesService', 'userService', 'alertModalService', 'REGEX_EXPs', function ($scope, authService, signUpService, $state, nigStatesService, userService, alertModalService, REGEX_EXPs) {
         $scope.newUser = {};
         $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
+        var showError = function(response){
+            switch (response.status){
+                case 400 :
+                case 404 :  $scope.errorMessage = response.data.data.message; // this is madness, cant remain this way
+                    break;
+                case 500 :
+                    $scope.errorHeader = "Failed due to internal issue in the server";
+                    $scope.errorMessage = "Pls bear with us. Our IT team are on it, but pls do feel free to contact us about this error if it persist. Thank you";
+                    break;
+                default : $scope.errorMessage = "Failed to connect to server";
+            }
+            $scope.failedSignUp = true;
+            $('#signUpModal').animate({ scrollTop: 0 }, 'fast');
+        };
         $scope.signUp = function () {
             $scope.signUpLoading = true;
             //this should be called after a successful login
@@ -207,30 +217,47 @@ angular.module('myApp.controllers', []).
                     }).modal('hide');
                 });
             }, function (response) {
-                switch (response.status){
-                    case 400 :  $scope.errorMessage = response.data.message;
-                        break;
-                    default : $scope.errorMessage = "Failed to connect to server";
-                }
-                $scope.failedSignUp = true;
-                $('#signUpModal').animate({ scrollTop: 0 }, 'fast');
+                showError(response);
             }).finally(function () {
                 $scope.signUpLoading = false;
             });
         };
         var getStates = function () {
-            // when i get this api to work i would need to move this process into the $state resolve property
-            // this is because the states need to be fetched before the sign up controller comes in
             // if the state loading fails, then the user would be required to refresh or check network connection
-            nigStatesService.getAllStates().then(function (response) {
-                $scope.states = response.data;
-            }, function () {
-                alertModalService.modalTemplateOptions.title = "State Fetch Error";
-                alertModalService.modalTemplateOptions.message = "Failed to fetch states";
-                alertModalService.showErrorAlert();
-            });
+            // well might not need to do the above again. i can just use a ladda btn to indicate when states are being fetched on the form
+            // and disable the select field that is being fetched. The form would not still be submittable bcos the field in question would not have gotten any selection
         };
-        //getStates();
+
+        //listen to nig-state events and get the data from them or fetch the states from the service itself but check first if it is available
+
+        var setStates = function (event, states) {
+            $scope.states = states;
+        };
+
+        var setStatesLGAs = function (event, lgas) {
+            $scope.lgas = lgas;
+        };
+
+        var handleFailedOperation = function (event, error) {
+            showError(error.message);
+        };
+
+        $scope.$on(nigStatesService.events.statesFetched, setStates);
+        $scope.$on(nigStatesService.events.lgasFetched, setStatesLGAs);
+        $scope.$on(nigStatesService.events.stateFetchFailed, handleFailedOperation);// for failed states fetch which might not be needed
+        $scope.$on(nigStatesService.events.lgasFetchFailed, handleFailedOperation);// for failed lgas fetch
+
+        if(nigStatesService.states){
+            $scope.states = nigStatesService.state;
+        }
+        //var getStateCities = function(state){
+        //    nigStatesService.getStateCities(state).then(function(response){
+        //        $scope.cities = response.data;
+        //    }, function(response){
+        //        showError(response);
+        //    });
+        //};
+
         $scope.$on('$destroy', function(){
             $('#signUpModal').off('hidden.bs.modal');
         });
@@ -396,7 +423,7 @@ angular.module('myApp.controllers', []).
             $scope.showUploadBtn = false;
         };
 
-        var handleImageSelect = function(evt){
+        var handleImageSelect = function(event){
             var files = event.target.files, pic;
             if (files && files.length > 0) {
                 pic = files[0];
@@ -484,6 +511,7 @@ angular.module('myApp.controllers', []).
         $('#profileUpload').change(handleImageSelect);
         $scope.$on('$destroy',function(){
             $('#cameraViewerModal').off('hide.bs.modal');
+            $('#profileUpload').off('change');
         });
     })
     .controller('UpdatePasswordCtrl', function ($scope, userService, alertModalService) {
@@ -492,10 +520,10 @@ angular.module('myApp.controllers', []).
             $scope.updatePasswordLoading = true;
             userService.updatePassword($scope.passwordUpdate).then(function (data) {
                 //alertSuccessBox
-                alertChangeResult(false);
-            }, function () {
+                alertChangeResult();
+            }, function (data) {
                 //alertFailureBox
-                alertChangeResult(true);
+                alertChangeResult(data);
             }).finally(function () {
                 //stop ladda spining
                 $scope.updatePasswordLoading = false;
@@ -504,7 +532,8 @@ angular.module('myApp.controllers', []).
         var alertChangeResult = function (error) {
             if (error) {
                 alertModalService.modalTemplateOptions.title = "Update Password Action Failed!!!";
-                alertModalService.modalTemplateOptions.message = "Action to update user : " + $scope.currentUser.username + "'" + "s password failed";
+                alertModalService.modalTemplateOptions.message = "Action to update user : " + $scope.currentUser.username + "'" + "s password failed due to : " + error.data.message;
+                alertModalService.modalSize = 'lg';
                 alertModalService.showErrorAlert();
             }
             else {
@@ -524,10 +553,10 @@ angular.module('myApp.controllers', []).
         $scope.addPlaceButtonText = defaultButtonText;
         $scope.phoneNumberRegex = REGEX_EXPs.phoneNumber;
         $scope.categories = categoryService.allCategories;
-        $scope.$on('categoryService:changed', function (event, categories) {
+        $scope.$on('event:categoryService:changed', function (event, categories) {
             $scope.categories = categories;
         });
-        $scope.$on('authService:changed', function (event, userDetails) {
+        $scope.$on('event:authService:changed', function (event, userDetails) {
             $scope.place.state = userDetails.state;
             $scope.place.lga = userDetails.lga;
             $scope.place.town = userDetails.town;

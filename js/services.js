@@ -18,7 +18,8 @@ angular.module('myApp.services').service('appEndpoints', function (HOST, API) {
     this.LOGIN_ENDPOINT = ENDPOINT + "/login";
     this.LOGOUT_ENDPOINT = HOST + "/signout";
     this.SIGNUP_ENDPOINT = ENDPOINT + "/user";
-    this.STATES_ENDPOINT = "http://states-cities.square-api.com/v1";
+    //this.STATES_ENDPOINT = "http://states-cities.square-api.com/v1"; // not supported on client side
+    this.STATES_ENDPOINT = ENDPOINT + "/state";
     this.USER_ENDPOINT = this.SIGNUP_ENDPOINT;
     this.CATEGORY_ENDPOINT = ENDPOINT + "/category";
     this.PLACE_ENDPOINT = ENDPOINT + "/place";
@@ -61,7 +62,7 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
             userService.getUserDetails(username).then(function (userDetails) {
                 auth.userDetails = userDetails;
                 $cookieStore.put('userDetails', auth.userDetails);
-                $rootScope.$broadcast('authService:changed', auth.userDetails);
+                $rootScope.$broadcast('event:authService:changed', auth.userDetails);
                 return userDetails;
             }, function (error) {
                 //this should must likely not happen since we were able to login, then the user exist
@@ -73,7 +74,7 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
         auth.updateUserDetails = function (user) {
             auth.userDetails = angular.copy(user);
             $cookieStore.put('userDetails', auth.userDetails);
-            $rootScope.$broadcast('authService:changed', auth.userDetails);
+            $rootScope.$broadcast('event:authService:changed', auth.userDetails);
         };
         auth.login = function (username, password) {
             var headers = {Authorization : "Basic " + btoa(username +":"+ password)};
@@ -100,7 +101,7 @@ angular.module('myApp.services').factory('authService', ['appEndpoints', '$http'
             auth.userDetails = undefined;
             $cookieStore.remove('user');
             $cookieStore.remove('userDetails');
-            $rootScope.$broadcast('authService:changed', auth.userDetails);
+            $rootScope.$broadcast('event:authService:changed', auth.userDetails);
         };
 
         return auth;
@@ -115,8 +116,8 @@ angular.module('myApp.services')
                          }
             };
         }])
-    .factory('userService', ['$http', 'HOST', 'appEndpoints', '$q', '$injector',
-        function ($http, HOST, appEndpoints, $q, $injector) {
+    .factory('userService', ['$http', 'HOST', 'appEndpoints', '$q', '$injector', '$rootScope',
+        function ($http, HOST, appEndpoints, $q, $injector, $rootScope) {
           return {
               //currentUser : {name : "damoooooo"},
               getUserDetails : function (username) {
@@ -146,7 +147,8 @@ angular.module('myApp.services')
                       }
                       ).then(
                       function(response){
-                          return response.data; // this contains the new url for the just uploaded image
+                          $rootScope.$broadcast('event:userService:profilePictureUpdated', response.data);
+                          return response.data; // this contains the name for the just uploaded image
                       },
                       function(response){
                           return $q.reject(response.data); // error obj
@@ -190,9 +192,9 @@ angular.module('myApp.services')
         var getAllCategories = function () {
             $http.get(appEndpoints.CATEGORY_ENDPOINT).then(function (response) {
                 self.allCategories = response.data;
-                $rootScope.$broadcast('categoryService:changed', self.allCategories);
+                $rootScope.$broadcast('event:categoryService:changed', self.allCategories);
             }, function (response) {
-                $rootScope.$broadcast('categoryService:failed', "categories fetching failed");
+                $rootScope.$broadcast('event:categoryService:failed', "categories fetching failed");
                 alert("Error in Fetching Categories");
                 //return $q.reject(response);
             });
@@ -302,22 +304,29 @@ angular.module('myApp.services')
     })
     .factory('nigStatesService',['$http', 'appEndpoints',
         function($http, appEndpoints){
+            var config = {cache : true};
             return {
                 getAllStates : function () {
-                    return $http.get(appEndpoints.STATES_ENDPOINT + '/states');
+                    return $http.get(appEndpoints.STATES_ENDPOINT + '/states', config);
                 },
                 getStateLGAs : function (state) {
-                    return $http.get(appEndpoints.STATES_ENDPOINT + '/state/' + state + '/lgas');
+                    return $http.get(appEndpoints.STATES_ENDPOINT + '/' + state + '/lgas', config);
                 },
-                getStateTowns : function (state) {
-                    return $http.get(appEndpoints.STATES_ENDPOINT + '/state' + state + '/cities');
+                getStateCities : function (state) {
+                    return $http.get(appEndpoints.STATES_ENDPOINT + '/' + state + '/cities', config);
+                },
+                events : {
+                    statesFetched : 'event:nigStatesService:statesFetched',
+                    stateFetchFailed : 'event:nigStatesService:stateFetchFailed',
+                    lgasFetched : 'event:nigStatesService:lgasFetched',
+                    lgasFetchFailed : 'event:nigStatesService:lgasFetchFailed'
                 }
             }
         }])
     .service('alertModalService', function($uibModal){
         var error = -1, info = 0, success = 1;
         var self = this; //so we can get the 'this' instance of this class inside any function
-        this.modalSize = 'sm';
+        this.modalSize = 'sm'; // can be set to lg for a larger modal for long error messages
         this.result; //this would hold the result (which is a promise) so any controller interested can get this result and perform actions when the modal is closed or dismissed
         var show = function (alertType, modalTemplateOptions, size) {
             var options = {
