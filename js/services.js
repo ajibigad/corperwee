@@ -364,26 +364,34 @@ angular.module('myApp.services')
     });
 
 //INTERCEPTORS
-angular.module('myApp.services').factory('CorperweeEnvelopeResponseInterceptor', ['$log' , 'HOST', function ($log, HOST) {
+angular.module('myApp.services').factory('CorperweeEnvelopeResponseInterceptor', ['$log' , 'HOST', '$q', function ($log, HOST, $q) {
     // it helps to extract the actual data from the response data property
     // eg actual response.data = { data : "dammy", success : "true"} or {data : ["dammy", "dara"] , success : "true"}
      // what our services really expects response.data = {requested object} or  [array of requested objects]. This is in the data property response.data i.e response.data.data
     // this only needs to be performed on request made to corperwee backend and must be json response
+    var checkIfJsonAndHost = function(response){
+        var apiEndpoint = response.config.url;
+        var contentType = response.headers("content-type");
+        return apiEndpoint.search(HOST) != -1 && contentType.search("application/json") != -1;
+    };
     return {
         response : function(response){
             //the things we need here are the accept type or the media type of the data sent
             // we need the url of the api from the response config.url
             // we need the to extract the data property from the response
-            var apiEndpoint = response.config.url;
-            var contentType = response.headers("content-type");
-            if(apiEndpoint.search(HOST) != -1 && contentType.search("application/json") != -1){
+
+            if(checkIfJsonAndHost(response)){
                 response.data = response.data.data;
             }
             return response;
+        },
+        responseError: function (rejectionReason) {
+            //console.log(JSON.stringify(rejectionReason));
+            if(checkIfJsonAndHost(rejectionReason)){
+                rejectionReason.data = rejectionReason.data.data;
+                console.log(rejectionReason.data);
+            }
+            return $q.reject(rejectionReason);
         }
-        // ,
-        //responseError: function (rejectionReason) {
-        //
-        //}
     };
 }]);

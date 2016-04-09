@@ -155,7 +155,7 @@ angular.module('myApp.directives')
               $rootScope.$broadcast(nigStatesService.events.lgasFetched, response.data);
             }, function(response){
               // we can determine errors by broadcasting them with the response details
-              $rootScope.$broadcast(nigStatesService.events.lgasFetchFailed, response.data.data);
+              $rootScope.$broadcast(nigStatesService.events.lgasFetchFailed, response.data);
             });
           }
 

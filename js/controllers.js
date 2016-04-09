@@ -53,8 +53,8 @@ angular.module('myApp.controllers', []).
             nigStatesService.states = response.data;
             $rootScope.$broadcast(nigStatesService.events.statesFetched, response.data);
         }, function(response){
-            $rootScope.$broadcast(nigStatesService.events.stateFetchFailed, response.data.data);
-            alert("failed to fetch states: "+ response.data.data.message);
+            $rootScope.$broadcast(nigStatesService.events.stateFetchFailed, response.data);
+            alert("failed to fetch states: "+ response.data.message);
         });
     }])
     .controller('LandingController', ['$rootScope', function ($rootScope) {
@@ -195,7 +195,7 @@ angular.module('myApp.controllers', []).
         var showError = function(response){
             switch (response.status){
                 case 400 :
-                case 404 :  $scope.errorMessage = response.data.data.message; // this is madness, cant remain this way
+                case 404 :  $scope.errorMessage = response.data.message; // this is madness, cant remain this way
                     break;
                 case 500 :
                     $scope.errorHeader = "Failed due to internal issue in the server";
@@ -532,7 +532,7 @@ angular.module('myApp.controllers', []).
         var alertChangeResult = function (error) {
             if (error) {
                 alertModalService.modalTemplateOptions.title = "Update Password Action Failed!!!";
-                alertModalService.modalTemplateOptions.message = "Action to update user : " + $scope.currentUser.username + "'" + "s password failed due to : " + error.data.message;
+                alertModalService.modalTemplateOptions.message = "Action to update user : " + $scope.currentUser.username + "'" + "s password failed due to : " + error.message;
                 alertModalService.modalSize = 'lg';
                 alertModalService.showErrorAlert();
             }
@@ -727,12 +727,11 @@ angular.module('myApp.controllers', []).
             }, function (error) {
                 //alert failure
                 alertModalService.modalTemplateOptions.title = "Reset Password Action Failed!!!";
-                alertModalService.modalTemplateOptions.message = error.data.message;
+                alertModalService.modalTemplateOptions.message = error.message;
                 alertModalService.showErrorAlert();
             }).finally(function () {
                 $scope.resetPasswordLoading = false;
             });
-
         }
     })
     .controller('ChangePasswordCtrl', function ($stateParams, userService, $scope, $rootScope, alertModalService) {
@@ -751,7 +750,7 @@ angular.module('myApp.controllers', []).
             }, function (error) {
                 //alert failure
                 alertModalService.modalTemplateOptions.title = "Change Password Action Failed!!!";
-                alertModalService.modalTemplateOptions.message = error.data.message;
+                alertModalService.modalTemplateOptions.message = error.message;
                 alertModalService.showErrorAlert();
             }).finally(function () {
                 $scope.changePasswordLoading = false;
