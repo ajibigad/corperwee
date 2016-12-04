@@ -3,5 +3,9 @@
   "description": "A webapp for corpers",
   "devDependencies": {
     "phantomjs": "~1.9"
+  },
+  "dependencies": {
+    "ejs": "^2.5.3",
+    "express": "^4.14.0"
   }
 }
