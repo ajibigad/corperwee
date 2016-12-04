@@ -9,6 +9,7 @@ app.get('/', function (req, res) {
     res.render('index');
 });
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!')
+var port = process.env.PORT || 3000;
+app.listen(port, function () {
+    console.log('Corperwee app listening on port %s', port);
 });
