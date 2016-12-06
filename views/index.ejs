@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="myApp" ng-controller="MainController">
+<head ng-cloak>
+    <!-- Website title & description for search engines -->
+    <title ng-bind="title"></title>
+
+    <meta charset="utf-8">
+
+    <meta name = "description" content="">
+
+    <!-- Mobile viewpoint optimized -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <style>
+        [ng-cloak] {
+            display: none;
+        }
+    </style>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+
+    <!--General CSS-->
+    <link rel="stylesheet" href="css/app.css"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" ng-href="css/{{style}}">
+
+    <!-- Ladda Buttons Styles -->
+    <link rel="stylesheet" href="lib/ladda/dist/ladda-themeless.min.css"/>
+
+    <!--&lt;!&ndash; Custom CSS &ndash;&gt;-->
+    <!--<link rel="stylesheet" type="text/css" ng-href="css/{{style}}">-->
+
+    <!-- Include Modernizr before any other js -->
+    <script src="lib/modernizr-2.6.2.min.js"></script>
+</head>
+<body>
+
+<noscript>
+    <div class="nojs">Javascript is either disabled or not supported in your browser. Please enable it or use a Javascript enabled browser.</div>
+</noscript>
+
+<ng-include src="navbar_url"></ng-include>
+
+<div ui-view></div> <!-- end ng-view -->
+
+<!--<ng-include src="'partials/fragments/footer.html'"></ng-include>-->
+
+<!-- All javaScript at the bottom of the page for faster page loading -->
+
+<!-- if there is no online access fall back to local version of jQuery -->
+<script>window.jQuery || document.write('<script src="lib/jquery-1.11.1.min.js"><\/script>')</script>
+
+<!-- Bootstrap JS -->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Custom JS -->
+<script src="js/script.js"></script>
+
+<!-- In production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  -->
+<script src="lib/angular/angular.js"></script>
+<script src="lib/angular/angular-route.js"></script>
+<script src="lib/angular/angular-ui-router.min.js"></script>
+<script src="lib/angular/angular-cookies.js"></script>
+<script src="lib/angular/angular-resource.js"></script>
+<script src="lib/angular/angular-animate.js"></script>
+<!--<script src="lib/angular/ui-bootstrap-1.1.2.js"></script>-->
+<script src="lib/angular/ui-bootstrap-tpls-1.1.2.js"></script>
+<script src="lib/http-auth-interceptor.js"></script>
+<script src="lib/ladda/dist/spin.min.js"></script>
+<script src="lib/ladda/dist/ladda.min.js"></script>
+<script src="lib/angular-ladda/dist/angular-ladda.min.js"></script>
+<script src="lib/webcam.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/services.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/directives.js"></script>
+</body>
+</html>
+
